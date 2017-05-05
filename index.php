@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿<?php
+	include './php/searchDetail.php';
+?>
+
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>IMDB</title>
@@ -14,7 +18,19 @@
 						</td>
 						<td id="search">
 							<form name="search" action="php/search.php" method="GET">
-								<input type="text" name="search" /><img src="PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px"></form>
+								<input type="text" name="search" />
+								<select name="kind">
+								<?php
+									echo $kind;
+								?>
+								</select>
+								<select name="category">
+								<?php
+									echo $category;
+								?>
+								</select>
+								<img src="PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px">
+							</form>
 						</td>
 						<td id="memberlogin">
 							<form name="memberlogin" action="php/login.php" method="POST">
@@ -27,7 +43,7 @@
 							</form>
 						</td>
 						<td id="memberlogin2">
-							<a href="page/register.html"><img src="PIC/top/register.png" width="70px"></a><br>
+							<a href="page/register.php"><img src="PIC/top/register.png" width="70px"></a><br>
 							<img src="PIC/top/login.png" onclick="document.memberlogin.submit()" width="70px"><br>
 						</td>
 					</tr>

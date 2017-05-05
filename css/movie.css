@@ -1,4 +1,4 @@
-body{
+﻿body{
 	background-color:black;
 	border-radius:8px;
 	font-family:"微軟正黑體";
@@ -60,12 +60,31 @@ body{
 /*context*/
 #context{
 	position: relative;
-	max-width: 600px;
+	max-width: 100%;
 	margin: auto;
 }
-#context input{
+#context table{
 	border-radius:5px;
 	font-family:"微軟正黑體";
-	font-size:16px;
+	font-size:26px;
 	font-weight:bold;
+	width:100%;
+}
+#context th{
+	font-size:32px;
+}
+#context img{
+	width:100%;
+}
+#context a{
+	color:LightSkyBlue;
+}
+.actor{
+	text-align:center;
+}
+.actor td{
+	width:50%;
+}
+#ratings ,#score{
+	color:red;
 }
