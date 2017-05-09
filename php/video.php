@@ -30,16 +30,30 @@
         $conn = null;
         return $result;
     }
-    //啟用 session
-    session_start();
+    //尋找該部電影評論
+    function search_commentary(){
+        $db_host = 'db.mis.kuas.edu.tw';
+        $db_name = 's1104137130';
+        $db_user = 's1104137130';
+        $db_password = '1314520';
+        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
+        $conn = new PDO($dsn,$db_user,$db_password);
+        $sql = "Select `MEMBER_NAME` , `COMMENT_TIME` , `COMMENTARY` , `COMMENTARY_ID` From `commentary` Join `member` On `commentary`.`MEMBER_ID` = `member`.`MEMBER_ID` Where `VIDEO_ID` = '".$_GET['VIDEO_ID']."'";
+        $result = $conn -> query($sql);
+        $conn = null;
+        return $result;
+    }
     $result = search_function();
     $actor = search_actor();
+    $commentary = search_commentary();
     $data = array();//電影資料
     $actor_table = "";//演員的Table表格
+    $commentary_table = "";
     foreach ($result as $row) {
     	array_push($data,$row);
     }
     $index = 0;
+    //演員table
     foreach($actor as $row){
         //一行塞兩個
         if($index == 0){        
@@ -48,6 +62,19 @@
         }else if($index == 1){
             $actor_table .= "<td><a href='actor.php?actor_id=$row[0]'/>".trim($row[1])."</td></tr>";
             $index = 0;
+        }
+    }
+    //評論table
+    $comment_data = $commentary -> fetchAll();
+    //var_dump($comment_data);
+    if(empty($comment_data[0])){
+        $commentary_table = "<tr><td>目前暫無評論<td></tr>";
+    }else{
+        foreach ($comment_data as $row) {
+            $commentary_table .= "<tr><td>#".$row[3]."</td></tr>";
+            $commentary_table .= "<tr><td>Dear ".$row[0]." says：</td></tr>";
+            $commentary_table .= "<tr><td>留言時間：".$row[1]."</td></tr>";
+            $commentary_table .= "<tr><td>".$row[2]."</td></tr>";
         }
     }
 ?>
@@ -150,6 +177,25 @@
 				</tr>
 			</table>
 		</div>
+        <div id="commentary">
+            <table>
+                <?php
+                    echo $commentary_table;
+                ?>
+                <tr>
+                <?php
+                    if(isset($_SESSION['username'])){
+                        echo "<form action='./do_insert_comment.php' method='POST'>";
+                        echo "<textarea name='comment' rows='5' cols='20'></textarea>";
+                        echo "<input type='hidden' name='userid' value='".$_SESSION['userid']."'/>";
+                        echo "<input type='hidden' name='videoid' value='".$_GET['VIDEO_ID']."'/>";
+                        echo "<input type='submit' value='送出' />";
+                        echo "</form>";
+                    }
+                ?>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
 
