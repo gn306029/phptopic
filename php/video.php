@@ -1,7 +1,10 @@
 <?php
+    session_start();
+    //下拉式清單用
     include './searchDetail.php';
 ?>
 <?php
+    //尋找電影詳細資訊
     function search_function(){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
@@ -9,16 +12,43 @@
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        $select = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`REGION`,`SCORE`,`RELEASE_DATE`,`PLAYTIME`,`BUDGET`,`BOXOFFICE`,`PLAYTIME`,`PHOTO`,`STORY`,`TRAIL`From `movie` Join `kind` On `movie`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `movie`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_ID` = '".$_GET['VIDEO_ID']."'";
-        $result = $conn -> query($select);
+        $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`REGION`,`SCORE`,`RELEASE_DATE`,`PLAYTIME`,`BUDGET`,`BOXOFFICE`,`PLAYTIME`,`PHOTO`,`STORY`,`TRAIL`From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_ID` = '".$_GET['VIDEO_ID']."'";
+        $result = $conn -> query($sql);
+        $conn = null;
+        return $result;
+    }
+    //尋找演員
+    function search_actor(){
+        $db_host = 'db.mis.kuas.edu.tw';
+        $db_name = 's1104137130';
+        $db_user = 's1104137130';
+        $db_password = '1314520';
+        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
+        $conn = new PDO($dsn,$db_user,$db_password);
+        $sql = "Select `actor`.`ACTOR_ID`,`ACTOR_NAME` From `actor` Join `actor_list` On `actor`.`ACTOR_ID` = `actor_list`.`ACTOR_ID` Where `VIDEO_ID` = '".$_GET['VIDEO_ID']."'";
+        $result = $conn -> query($sql);
+        $conn = null;
         return $result;
     }
     //啟用 session
     session_start();
     $result = search_function();
-    $data = array();
+    $actor = search_actor();
+    $data = array();//電影資料
+    $actor_table = "";//演員的Table表格
     foreach ($result as $row) {
     	array_push($data,$row);
+    }
+    $index = 0;
+    foreach($actor as $row){
+        //一行塞兩個
+        if($index == 0){        
+            $actor_table .= "<tr class='actor'><td><a href='actor.php?actor_id=$row[0]'/>".trim($row[1])."</td>";
+            $index = 1;
+        }else if($index == 1){
+            $actor_table .= "<td><a href='actor.php?actor_id=$row[0]'/>".trim($row[1])."</td></tr>";
+            $index = 0;
+        }
     }
 ?>
 
@@ -27,7 +57,8 @@
 
 <head>
     <title>IMDB</title>
-    <link type="text/css" rel="stylesheet" href="../css/movie.css">
+	<link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../css/video.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
@@ -37,8 +68,9 @@
             <table>
                 <tr>
                     <td id="logo">
-                        <a href="../index.html"><img src="../PIC/top/logo.png" width="200px"></a>
+                        <a href="../index.php"><img src="../PIC/top/logo.png" width="200px"></a>
                     </td>
+                    <!--搜尋列-->
                     <td id="search">
                         <form name="search" action="../php/search.php" method="GET">
                             <input type="text" name="search" />
@@ -54,6 +86,7 @@
                             </select>
                             <img src="../PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px"></form>
                     </td>
+                    <!--帳號密碼-->
                     <td id="memberlogin">
                         <form name="memberlogin" action="../php/login.php" method="POST">
                             <img src="../PIC/top/account.png" width="70px" />
@@ -64,22 +97,23 @@
                             <br>
                         </form>
                     </td>
+                    <!--註冊-->
                     <td id="memberlogin2">
-                        <a href="../page/register.php"><img src="../PIC/top/register.png" width="70px"></a><br>
+                        <a href="./register.php"><img src="../PIC/top/register.png" width="70px"></a><br>
                         <img src="../PIC/top/login.png" onclick="document.memberlogin.submit()" width="70px"><br>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="movie.php" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>
-                        <a href="drama.php" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>
-                        <a href="tvshow.php" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>
+                        <a href="movie.php" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
+                        <a href="drama.php" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
+                        <a href="tvshow.php" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
                         <a href="actor.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
                     <td>
-                        <a href="forget.html"><img src="../PIC/top/forget.png" width="130px" /></a>
+                        <a href="./forget.php"><img src="../PIC/top/forget.png" width="130px" /></a>
                     </td>
                 </tr>
             </table>
@@ -103,18 +137,11 @@
 				<tr>
 					<td colspan=2>
 						<p>劇情</p>
-						<p><?php echo $data[0]['STORY'] ?>詳全文</a></p>
+						<p><?php echo $data[0]['STORY']."<a href='https://zh.wikipedia.org/wiki/".$data[0]['VIDEO_NAME']."'/>" ?>...詳全文</a></p>
 					</td>
 				</tr>
 				<tr><td colspan=2><p>演員</p></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=湯姆·希德斯頓">湯姆·希德斯頓</a></td><td><a href="actor.php?actor=山繆·傑克森">山繆·傑克森</a></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=約翰·古德曼">約翰·古德曼</a></td><td><a href="actor.php?actor=布麗·拉森">布麗·拉森</a></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=景甜">景甜</a></td><td><a href="actor.php?actor=約翰·奧提茲">約翰·奧提茲</a></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=托比·凱貝爾">托比·凱貝爾</a></td><td> <a href="actor.php?actor=柯瑞·霍金斯">柯瑞·霍金斯</a></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=湯瑪斯·曼恩">湯瑪斯·曼恩</a></td><td><a href="actor.php?actor=傑森·米切爾">傑森·米切爾</a></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=謝伊·惠格姆">謝伊·惠格姆</a></td><td><a href="actor.php?actor=泰瑞·諾塔利">泰瑞·諾塔利</a></td></tr>
-					<tr class="actor"><td><a href="actor.php?actor=約翰·C·萊利">約翰·C·萊利</a></td>
-				</tr>
+                    <?php  echo $actor_table;  ?>				
 				<tr><td colspan=2><p>預告</td></p>
 				<tr>
 					<td colspan=2 align="center">	

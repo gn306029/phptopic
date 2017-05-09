@@ -1,4 +1,5 @@
 ﻿<?php
+    session_start();
     include './searchDetail.php';
 ?>
 <?php
@@ -104,7 +105,7 @@
                     </td>
                     <td></td>
                     <td>
-                        <a href="forget.html"><img src="../PIC/top/forget.png" width="130px" /></a>
+                        <a href="../page/forget.php"><img src="../PIC/top/forget.png" width="130px" /></a>
                     </td>
                 </tr>
             </table>
