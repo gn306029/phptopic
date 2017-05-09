@@ -14,8 +14,6 @@
         $result = $conn -> query($sql);
         return $result;
     }
-    //啟用 session
-    session_start();
     $search = $_GET['search'];
     $kind_ = $_GET['kind'];
     $category_ = $_GET['category'];
