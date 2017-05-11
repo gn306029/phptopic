@@ -2,6 +2,11 @@
     session_start();
     //下拉式清單用
     include './searchDetail.php';
+    $login_form = "<form name='memberlogin' action='./login.php' method='POST'>";
+    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
+    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
+    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
+    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
 ?>
 <?php
     //尋找電影詳細資訊
@@ -48,7 +53,7 @@
     $commentary = search_commentary();
     $data = array();//電影資料
     $actor_table = "";//演員的Table表格
-    $commentary_table = "";
+    $commentary_div = "";
     foreach ($result as $row) {
     	array_push($data,$row);
     }
@@ -68,13 +73,15 @@
     $comment_data = $commentary -> fetchAll();
     //var_dump($comment_data);
     if(empty($comment_data[0])){
-        $commentary_table = "<tr><td>目前暫無評論<td></tr>";
+        $commentary_div = "<div class='member_message'>目前暫無評論</div>";
     }else{
+        $index = 1;
         foreach ($comment_data as $row) {
-            $commentary_table .= "<tr><td>#".$row[3]."</td></tr>";
-            $commentary_table .= "<tr><td>Dear ".$row[0]." says：</td></tr>";
-            $commentary_table .= "<tr><td>留言時間：".$row[1]."</td></tr>";
-            $commentary_table .= "<tr><td>".$row[2]."</td></tr>";
+            $commentary_div .= "<div class='member_message'>#".$index."   </br>";
+            $commentary_div .= "Dear ".$row[0]." says：</br>";
+            $commentary_div .= "留言時間：".$row[1]."</br>";
+            $commentary_div .= $row[2]."</div>";
+            $index++;
         }
     }
 ?>
@@ -115,32 +122,45 @@
                     </td>
                     <!--帳號密碼-->
                     <td id="memberlogin">
-                        <form name="memberlogin" action="../php/login.php" method="POST">
-                            <img src="../PIC/top/account.png" width="70px" />
-                            <input type="text" name="MEMBER_ACCOUNT" />
-                            <br>
-                            <img src="../PIC/top/password.png" width="70px" />
-                            <input type="password" name="MEMBER_PASSWORD">
-                            <br>
-                        </form>
+                        <?php
+                            //判斷登入狀態
+                            if(isset($_SESSION["username"])){
+                                echo $_SESSION["username"]."</br>您好";
+                                echo "<a href='./manager.php'>會員中心</a>";
+                            }else{
+                                echo $login_form;   
+                            }
+                        ?>
                     </td>
                     <!--註冊-->
                     <td id="memberlogin2">
-                        <a href="./register.php"><img src="../PIC/top/register.png" width="70px"></a><br>
-                        <img src="../PIC/top/login.png" onclick="document.memberlogin.submit()" width="70px"><br>
+                        <?php
+                            //判斷登入狀態
+                            if(isset($_SESSION["username"])){
+                                echo "<a href='./logout.php'/>登出";
+                            }else{
+                                echo "<a href=\"./register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
+                                echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
+                            }
+                        ?>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="movie.php" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
-                        <a href="drama.php" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
-                        <a href="tvshow.php" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
-                        <a href="actor.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
+                        <a href="movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
+                        <a href="drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
+                        <a href="tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+                        <a href="actor.php?actor_id=0" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
                     <td>
-                        <a href="./forget.php"><img src="../PIC/top/forget.png" width="130px" /></a>
+                        <?php
+                            //判斷登入狀態
+                            if(!isset($_SESSION["username"])){
+                                echo "<a href=\"./forget.php\"><img src=\"../PIC/top/forget.png\" width=\"130px\" /></a>";
+                            }
+                        ?>
                     </td>
                 </tr>
             </table>
@@ -150,7 +170,7 @@
 			<table>
 				<tr><td width=50%><?php echo "<img src='".$data[0]['PHOTO']."'>";?></td>
 					<td width=50%>
-						<p id='video_name'><?php echo $data[0]['VIDEO_NAME'];?></p>
+						<p id='video_name'><?php echo $data[0]['VIDEO_NAME'];?><a href='./do_add_myfavorite.php'>加入最愛</a></p>
 						<p id="ratings">評分：<?php echo $data[0]['SCORE'];?></p>
 						<p>類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>
 						<p>上映日期：<?php echo $data[0]['RELEASE_DATE'];?></p>
@@ -178,11 +198,12 @@
 			</table>
 		</div>
         <div id="commentary">
-            <table>
+                <div id='show_comment'>
                 <?php
-                    echo $commentary_table;
+                    echo $commentary_div;
                 ?>
-                <tr>
+                </div>
+                <div id='message'>
                 <?php
                     if(isset($_SESSION['username'])){
                         echo "<form action='./do_insert_comment.php' method='POST'>";
@@ -193,8 +214,7 @@
                         echo "</form>";
                     }
                 ?>
-                </tr>
-            </table>
+                </div>
         </div>
     </div>
 </body>

@@ -13,7 +13,7 @@
     date_default_timezone_set('Asia/Taipei');
     $comment_time = date("Y-m-d H:i:s");
 
-    $sql = "INSERT INTO `commentary`(`VIDEO_ID`,`MEMBER_ID`,`COMMENT_TIME`,`COMMENTARY`) Values ('".$video_id."','".$member_id."','".$comment_time."','".$comment."')";
+    $sql = "INSERT INTO `commentary`(`VIDEO_ID`,`MEMBER_ID`,`COMMENT_TIME`,`COMMENTARY`) Values ('".$video_id."','".$member_id."','".$comment_time."','".nl2br($comment)."')";
     echo $sql;
     $result = $conn -> exec($sql);
     header("Location: ./video.php?VIDEO_ID=".$video_id);
