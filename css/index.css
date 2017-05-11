@@ -57,6 +57,13 @@ body{
 #memberlogin2 img{
 	 vertical-align:middle;
 }
+select,option{
+	border-radius:8px;
+	font-family:"微軟正黑體";
+	font-size:16px;
+	font-weight:bold;
+	opacity:0.7;
+}
 /*context*/
 #context{
 	position: relative;

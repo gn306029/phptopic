@@ -1,0 +1,54 @@
+﻿/*context*/
+#context{
+	position: relative;
+	max-width: 100%;
+	margin: auto;
+}
+#context table{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:26px;
+	font-weight:bold;
+	width:100%;
+}
+#context th{
+	font-size:32px;
+}
+#context img{
+	width:100%;
+	border-radius:20px;
+}
+#context a{
+	color:LightSkyBlue;
+}
+.actor{
+	text-align:center;
+}
+.actor td{
+	width:50%;
+}
+#video_name{
+	font-size:32px;
+}
+#ratings{
+	color:red;
+}
+textarea{
+	border-radius:8px;
+	font-family:"微軟正黑體";
+	font-size:20px;
+	font-weight:bold;
+}
+.member_message{
+	border-radius:5px;
+	background-color:rgba(255,255,255,0.2);
+	color:white;
+	
+}
+#message input{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:16px;
+	font-weight:bold;
+	border-color:white;
+}

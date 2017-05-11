@@ -1,0 +1,22 @@
+﻿#context{
+	position: relative;
+	max-width: 100%;
+	margin: auto;
+}
+#context table{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:26px;
+	font-weight:bold;
+	width:100%;
+}
+
+#context td{
+	text-align:center;
+}
+#context a{
+	color:LightSkyBlue;
+}
+#context th{
+	text-align:left;
+}

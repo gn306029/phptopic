@@ -1,7 +1,7 @@
 <?php
 	session_start();
-	//引入sql.php檔案
-	include './sql.php';
+	//引入SQL.php檔案
+	include './SQL.php';
 
 	//建立資料庫連線資料
 	$connection = mysqli_connect("db.mis.kuas.edu.tw","s1104137130","1314520","s1104137130");

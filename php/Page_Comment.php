@@ -16,5 +16,5 @@
     $sql = "INSERT INTO `commentary`(`VIDEO_ID`,`MEMBER_ID`,`COMMENT_TIME`,`COMMENTARY`) Values ('".$video_id."','".$member_id."','".$comment_time."','".nl2br($comment)."')";
     echo $sql;
     $result = $conn -> exec($sql);
-    header("Location: ./video.php?VIDEO_ID=".$video_id);
+    header("Location: ./Page_Video.php?VIDEO_ID=".$video_id);
 ?>

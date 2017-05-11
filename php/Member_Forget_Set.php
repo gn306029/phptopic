@@ -1,6 +1,5 @@
 <?php
-	
-	include './Mail.php';
+	include './Member_SendMail.php';
 	$result = search_account_result($_POST['username'],$_POST['email']);
 	function search_account_result($account,$email){
         $db_host = 'db.mis.kuas.edu.tw';

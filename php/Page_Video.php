@@ -1,8 +1,8 @@
 <?php
     session_start();
     //下拉式清單用
-    include './searchDetail.php';
-    $login_form = "<form name='memberlogin' action='./login.php' method='POST'>";
+    include './Page_Search_Set.php';
+    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
@@ -62,10 +62,10 @@
     foreach($actor as $row){
         //一行塞兩個
         if($index == 0){        
-            $actor_table .= "<tr class='actor'><td><a href='actor.php?actor_id=$row[0]'/>".trim($row[1])."</td>";
+            $actor_table .= "<tr class='actor'><td><a href='Page_Actor.php?actor_id=$row[0]'/>".trim($row[1])."</td>";
             $index = 1;
         }else if($index == 1){
-            $actor_table .= "<td><a href='actor.php?actor_id=$row[0]'/>".trim($row[1])."</td></tr>";
+            $actor_table .= "<td><a href='Page_Actor.php?actor_id=$row[0]'/>".trim($row[1])."</td></tr>";
             $index = 0;
         }
     }
@@ -80,7 +80,7 @@
             $commentary_div .= "<div class='member_message'>#".$index."   </br>";
             $commentary_div .= "Dear ".$row[0]." says：</br>";
             $commentary_div .= "留言時間：".$row[1]."</br>";
-            $commentary_div .= $row[2]."</div>";
+            $commentary_div .= $row[2]."</div><br>";
             $index++;
         }
     }
@@ -106,7 +106,7 @@
                     </td>
                     <!--搜尋列-->
                     <td id="search">
-                        <form name="search" action="../php/search.php" method="GET">
+                        <form name="search" action="../php/Page_SearchList.php" method="GET">
                             <input type="text" name="search" />
                             <select name="kind">
                                 <?php
@@ -126,7 +126,7 @@
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
                                 echo $_SESSION["username"]."</br>您好";
-                                echo "<a href='./manager.php'>會員中心</a>";
+                                echo "<a href='./Member_Manager.php'>會員中心</a>";
                             }else{
                                 echo $login_form;   
                             }
@@ -137,9 +137,9 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo "<a href='./logout.php'/>登出";
+                                echo "<a href='./Member_Logout.php'/>登出";
                             }else{
-                                echo "<a href=\"./register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
+                                echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
                                 echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
                             }
                         ?>
@@ -148,17 +148,17 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
-                        <a href="drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
-                        <a href="tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
-                        <a href="actor.php?actor_id=0" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
+                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
+                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
+                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+                        <a href="Page_Actor.php?actor_id=0" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
                     <td>
                         <?php
                             //判斷登入狀態
                             if(!isset($_SESSION["username"])){
-                                echo "<a href=\"./forget.php\"><img src=\"../PIC/top/forget.png\" width=\"130px\" /></a>";
+                                echo "<a href=\"./Member_Forget.php\"><img src=\"../PIC/top/forget.png\" width=\"130px\" /></a>";
                             }
                         ?>
                     </td>
@@ -206,8 +206,8 @@
                 <div id='message'>
                 <?php
                     if(isset($_SESSION['username'])){
-                        echo "<form action='./do_insert_comment.php' method='POST'>";
-                        echo "<textarea name='comment' rows='5' cols='20'></textarea>";
+                        echo "<form action='./Page_Comment.php' method='POST'>";
+                        echo "<textarea name='comment' rows='5' cols='100' style='width:100%;'></textarea>";
                         echo "<input type='hidden' name='userid' value='".$_SESSION['userid']."'/>";
                         echo "<input type='hidden' name='videoid' value='".$_GET['VIDEO_ID']."'/>";
                         echo "<input type='submit' value='送出' />";
