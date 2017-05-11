@@ -7,6 +7,18 @@
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
+
+    $form_category = "";
+    $index = 0;
+    foreach ($Allcategory as $row) {
+        if($index==4){
+            $form_category .= "</br>";
+            $index = 0;
+        }
+        $form_category .= "<input type=\"checkbox\" id=\"REGISTER_CATEGORY\" name=\"REGISTER_CATEGORY[]\" value='".$row["CATEGORY_ID"]."''>".$row['CATEGORY_NAME'];
+        $index ++;
+    }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -209,16 +221,11 @@
                 <p> 　工　　作　：
                     <input type="text" id="REGISTER_JOB" name="REGISTER_JOB" />
                 </p>
-                <p> 喜愛電影類型：
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="喜劇">喜劇
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="愛情">愛情
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="驚悚">驚悚
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="懸疑">懸疑
-                    <br>
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="冒險">冒險
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="科幻">科幻
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="動作">動作
-                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="其他" checked>其他
+                <p> 喜愛電影類型：<br>
+                    <?php
+                        echo $form_category;
+                    ?>
+                    <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="0" checked>其他
                     <p align="right">
                         <input type="button" id="btn" name="button" value="註冊" />
                     </p>
