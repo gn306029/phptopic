@@ -8,15 +8,50 @@
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
     $login_form .= "</form>";
+    //建立連線
     $db_host = 'db.mis.kuas.edu.tw';
     $db_name = 's1104137130';
     $db_user = 's1104137130';
     $db_password = '1314520';
     $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
-    $sql = "Select * From `member` Where `MEMBER_ID` = '".$_SESSION['userid']."'";
+    //取得會員喜歡的類別
+    $sql = "Select `CATEGORY` From `member` Where `MEMBER_ID` = '".$_SESSION['userid']."'";
     $result = $conn -> query($sql);
     $result = $result -> fetchAll();
+    $favorite_category =  explode(",",$result[0]["CATEGORY"]);
+    //hidden_category 區域要裝的類型
+    $form_category = "";
+    //處理換行用的
+    $index = 0;
+    foreach ($Allcategory as $row) {
+        //每 4 個換一次行
+        if($index==4){
+            $form_category .= "</br>";
+            $index = 0;
+        }
+        //判斷是否找到會員喜愛的類別
+        $find = false;
+        //當找到會員喜歡的類型時，將其設為 selected
+        for($i = 0;$i<count($favorite_category);$i++){
+            if($row["CATEGORY_ID"]===$favorite_category[$i]){
+                $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='".$row["CATEGORY_ID"]."' checked>".$row['CATEGORY_NAME'];
+                $find = true;
+                break;
+            }
+        }
+        if(!$find){
+            $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='".$row["CATEGORY_ID"]."'>".$row['CATEGORY_NAME'];
+        }
+        
+        
+        $index ++;
+    }
+    if($favorite_category[0] == 0){
+        $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='0' checked>其他";
+    }else{
+        $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='0'>其他";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -25,12 +60,13 @@
 <head>
     <title>IMDB</title>
     <link type="text/css" rel="stylesheet" href="../css/index.css">
-    <link type="text/css" rel="stylesheet" href="../css/video.css">
+    <link type="text/css" rel="stylesheet" href="../css/manager.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
-    
-        $(function(){var member_id = $("#member_infor").val();
+        //取得會員詳細資料
+        $(function(){
+            var member_id = $("#member_infor").val();
             $("#member_infor").click(function() {
                    $.ajax({
                     url:"./Member_Information_Set.php",
@@ -42,16 +78,52 @@
                     dataType:"json",
                     success: function(output) {
                         var infor_html = "<table>";
-                        alert(Object.keys(output).length);
-                        infor_html += "<tr><td>";
-                        $("#my_infor").html(JSON.stringify(output));
+                        infor_html += "<tr><td><div id='member_detail'><form id='detail_form'>";
+                        infor_html += "<input type='hidden' name='id' value='"+output[0]+"'></br>";
+                        infor_html += "<input type='hidden' name='action' value='Update'/></br>";
+                        infor_html += "會員帳號："+output[2]+"</br>";
+                        infor_html += "會員名稱：<input type='text' name='member_name' value='"+output[1]+"'></br>";
+                        infor_html += "會員密碼：<input type='text' name='member_password' value='"+output[3]+"'></br>";
+                        infor_html += "生日：<input type='text' name='member_birthday' value='"+output[4]+"'></br>";
+                        infor_html += "信箱：<input type='text' name='member_email' value='"+output[5]+"'></br>";
+                        infor_html += "手機：<input type='text' name='member_phone_num' value='"+output[6]+"'></br>";
+                        infor_html += "性別：<input type='text' name='member_gender' value='"+output[7]+"'></br>";
+                        infor_html += "工作：<input type='text' name='member_job' value='"+output[8]+"'></br>";
+                        //性別與類型要轉換成文字
+                        infor_html += $("#hidden_category").html();
+                        infor_html += "</br>等級："+output[10]+"</br>";
+                        infor_html += "</form>";
+                        infor_html += "<button id='detail_form_send'>修改</button>";
+                        infor_html += "</div></td></tr>";
+                        infor_html += "</table>";
+                        $("#my_infor").html(infor_html);
                     },
                     error: function (request, status, error) {
                         $("#error_log").html(request.responseText);
                     }
                 });
             });
+            //送出會員要修改的資料
+            $("body").on("click","#detail_form_send",function () {
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:$("#detail_form").serialize()+"&action=Update",
+                    type:"post",
+                    success:function(output){
+                        if(output == "success"){
+                            alert("更新成功");
+                        }else{
+                            alert("更新失敗");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
         });
+        
+
     </script>
 </head>
 
@@ -125,14 +197,27 @@
             </table>
         </div>
         <br>
-        <div id="context">
+        <table id='content'>
+        <tr>
+        <td id='left'>
+            <div id="context">
+                    <?php
+                        echo "<button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></br>";
+                        echo "<button id='member_favorite' onclick='' >我的最愛</button>";
+                    ?>
+            </div>
+        </td>
+        <td id='right'>
+            <div id="my_infor"></div>    
+            <div id='error_log'></div>
+        </td>
+        </tr>
+        </table>
+    </div>
+    <div id='hidden_category' style="display:none">
         <?php
-            echo "<button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></br>";
-            echo "<button id='member_favorite' onclick='' >我的最愛</button>";
+            echo $form_category;
         ?>
-        <div id="my_infor"></div>
-        </div>
-        <div id='error_log'></div>
     </div>
 </body>
 
