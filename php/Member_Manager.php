@@ -78,24 +78,26 @@
                     dataType:"json",
                     success: function(output) {
                         var infor_html = "<table>";
-                        infor_html += "<tr><td><div id='member_detail'><form id='detail_form'>";
-                        infor_html += "<input type='hidden' name='id' value='"+output[0]+"'></br>";
-                        infor_html += "<input type='hidden' name='action' value='Update'/></br>";
-                        infor_html += "會員帳號："+output[2]+"</br>";
-                        infor_html += "會員名稱：<input type='text' name='member_name' value='"+output[1]+"'></br>";
-                        infor_html += "會員密碼：<input type='text' name='member_password' value='"+output[3]+"'></br>";
-                        infor_html += "生日：<input type='text' name='member_birthday' value='"+output[4]+"'></br>";
-                        infor_html += "信箱：<input type='text' name='member_email' value='"+output[5]+"'></br>";
-                        infor_html += "手機：<input type='text' name='member_phone_num' value='"+output[6]+"'></br>";
-                        infor_html += "性別：<input type='text' name='member_gender' value='"+output[7]+"'></br>";
-                        infor_html += "工作：<input type='text' name='member_job' value='"+output[8]+"'></br>";
-                        //性別與類型要轉換成文字
-                        infor_html += $("#hidden_category").html();
-                        infor_html += "</br>等級："+output[10]+"</br>";
-                        infor_html += "</form>";
-                        infor_html += "<button id='detail_form_send'>修改</button>";
-                        infor_html += "</div></td></tr>";
-                        infor_html += "</table>";
+                        infor_html += "<tr><td><div id='member_detail'>";
+                        infor_html += "<input type='hidden' id='id' value='"+output[0]+"'></br>";
+                        infor_html += "會員帳號：<div id='user_account'>"+output[2]+"</div></br>";
+                        infor_html += "會員名稱：<div id='user_name'>"+output[1]+"</div></br>";
+                        infor_html += "會員密碼：<div id='user_password'>"+output[3]+"</div></br>";
+                        infor_html += "生日：<div id='user_birthday'>"+output[4]+"</div></br>";
+                        infor_html += "信箱：<div id='user_email'>"+output[5]+"</div></br>";
+                        infor_html += "手機：<div id='user_phone_num'>"+output[6]+"</div></br>";
+                        if(output[7] == 0){
+                            infor_html += "性別：<div id='user_gender'>男</div></br>";
+                        }else if(output[7] == 1){
+                            infor_html += "性別：<div id='user_gender'>女</div></br>";
+                        }else{
+                            infor_html += "性別：<div id='user_gender'>第三性</div></br>";
+                        }
+                        infor_html += "興趣：</br><div>"+$("#hidden_category").html()+"</div>";
+                        infor_html += "<input type='hidden' name='gender' value='"+output[7]+"'></br>";
+                        infor_html += "工作：<div id='user_job'>"+output[8]+"</div></br>";
+                        infor_html += "等級：<div id='user_level'>"+output[10]+"</div></br>";
+                        infor_html += "<button id='update'>修改</button>"
                         $("#my_infor").html(infor_html);
                     },
                     error: function (request, status, error) {
@@ -103,6 +105,29 @@
                     }
                 });
             });
+            //確定修改
+            $("body").on("click","#update",function () {
+                var infor_html = "<table>";
+                infor_html += "<tr><td><div id='member_detail'>";
+                infor_html += "<form id='detail_form'>";
+                infor_html += "<input type='hidden' name='id' value='"+$("#id").val()+"'></br>";
+                infor_html += "<input type='hidden' name='action' value='Update'/></br>";
+                infor_html += "會員帳號："+$("#user_account").text()+"</br>";
+                infor_html += "會員名稱：<input type='text' name='member_name' value='"+$("#user_name").text()+"'></br>";
+                infor_html += "會員密碼：<input type='text' name='member_password' value='"+$("#user_password").text()+"'></br>";
+                infor_html += "生日：<input type='text' name='member_birthday' value='"+$("#user_birthday").text()+"'></br>";
+                infor_html += "信箱：<input type='text' name='member_email' value='"+$("#user_email").text()+"'></br>";
+                infor_html += "手機：<input type='text' name='member_phone_num' value='"+$("#user_birthday").text()+"'></br>";
+                infor_html += "性別："+$("#user_gender").text()+"</br>"
+                infor_html += "工作：<input type='text' name='member_job' value='"+$("#user_job").text()+"'></br>"
+                infor_html += $("#hidden_category").html();
+                infor_html += "</br>等級："+$("#user_level").text()+"</br>";
+                infor_html += "</form>";
+                infor_html += "<button id='detail_form_send'>修改</button>";
+                infor_html += "</div></td></tr>";
+                infor_html += "</table>";
+                $("#my_infor").html(infor_html);
+            })
             //送出會員要修改的資料
             $("body").on("click","#detail_form_send",function () {
                 $.ajax({
@@ -121,9 +146,34 @@
                     }
                 })
             })
+            //取得會員的我的最愛
+            $("#member_favorite").click(function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:{
+                        action:"favorite",
+                        member_id:$("#member_favorite").val()
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(output){
+                        var favorite_infor = "<table><tr><td></td><td>影片名稱</td><td></td></tr>";
+                        for(var i =0; i<Object.keys(output).length;i++){
+                            favorite_infor += "<tr>";
+                            favorite_infor += "<td><a href='./Page_Video.php?VIDEO_ID="+output[i]["VIDEO_ID"]+"' ><img src='"+output[i]["PHOTO"]+"' width=70 /></a></td>";
+                            favorite_infor += "<td><a href='./Page_Video.php?VIDEO_ID="+output[i]["VIDEO_ID"]+"' >"+output[i]["VIDEO_NAME"]+"</a></td>";
+                            favorite_infor += "<td>"+output[i]["STORY"]+"</td>";
+                            favorite_infor += "</tr>";
+                        }
+                        favorite_infor += "</table>";
+                        $("#my_infor").html(favorite_infor);
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
         });
-        
-
     </script>
 </head>
 
@@ -156,8 +206,9 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo $_SESSION["username"]."</br>您好";
-                                echo "<a href='./Member_Manager.php'>會員中心</a>";
+                                echo $_SESSION["username"].",您好<br>";
+								echo " <a href=./Member_Manager.php><img src=../PIC/top/manager-1.png name=manager width=150px></a>　　";
+								echo "<a href='./Member_Logout.php'/><img src=\"../PIC/top/logout.png\" width=\"70px\"></a>";
                             }else{
                                 echo $login_form;   
                             }
@@ -168,7 +219,7 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo "<a href='./Member_Logout.php'/>登出";
+                               
                             }else{
                                 echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
                                 echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
@@ -182,7 +233,7 @@
                         <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
                         <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
                         <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
-                        <a href="Page_Actor.php?actor_id=0" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
+                        <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
                     <td>
