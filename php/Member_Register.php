@@ -1,6 +1,9 @@
 <?php
 	session_start();
-    //下拉式清單用
+    /*
+     * 下拉清單用
+     *
+     */
     include './Page_Search_Set.php';
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
@@ -35,7 +38,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
-    //檢查帳號是否重複
+    /*
+     * 檢查帳號是否重複
+     *
+     */
     var isInput = false;
 
     function checkAccount() {
@@ -58,7 +64,10 @@
             }
         })
     }
-    //檢查密碼是否一致
+    /*
+     * 檢查密碼是否一致
+     *
+     */
     function checkPassword() {
         var DETERMIND_PASSWORD = $('#DETERMIND_PASSWORD').val();
         var REGISTER_PASSWORD = $('#REGISTER_PASSWORD').val();
@@ -70,7 +79,10 @@
             isInput = true;
         }
     }
-    //檢查手機格式
+    /*
+     * 檢查手機格式
+     *
+     */
     function checkPhoneNum(phone_num) {
         var pattern = /^09\d{8}$/;
         if (pattern.test(phone_num)) {
@@ -81,7 +93,10 @@
             isInput = false;
         }
     }
-
+    /*
+     * 檢查信箱格式
+     *
+     */
     function checkEmail(email) {
         var pattern = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
         if (pattern.test(email)) {
@@ -92,7 +107,10 @@
             isInput = false;
         }
     }
-
+    /*
+     * 檢查表單是否遺漏以及格式是否正確
+     *
+     */
     $(document).ready(function() {
         $('#btn').click(function() {
             var input = true;

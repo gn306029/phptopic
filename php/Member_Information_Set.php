@@ -8,7 +8,6 @@
     $conn = new PDO($dsn,$db_user,$db_password);
 
     function get_infor(){
-    	//使用全域變數
     	global $conn;
     	$sql = "Select * From Member Where member_id = '".$_POST['member_id']."'";
     	$result = $conn -> query($sql);
@@ -17,7 +16,10 @@
     	return $result;
     }
 
-    //更新使用者資訊
+    /*
+     * 更新使用者資訊
+     *
+     */
     function update_infor(){
         global $conn;
         $category = "";
@@ -39,7 +41,10 @@
         }
     }
 
-    //取得使用者的最愛
+    /*
+     * 取得使用者的最愛
+     *
+     */
     function get_favorite(){
         global $conn;
         $favorite = "";
@@ -51,11 +56,13 @@
 
     }
 
-    //判斷 Ajax 動作
+    /*
+     * 判斷 Ajax 動作
+     *
+     */
     switch($_POST['action']){
     	case 'infor':
     		$result = get_infor();
-    		//echo json_encode($result);
     		echo json_encode($result[0]);
     		break;
         case 'favorite':

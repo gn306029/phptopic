@@ -1,7 +1,14 @@
 <?php
     session_start();
-    //下拉式清單用
+    /*
+     * include 為產生下拉清單的 Php
+     *
+     */
     include './Page_Search_Set.php';
+    /*
+     * 帳號與密碼的輸入框
+     *
+     */
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
@@ -10,7 +17,10 @@
 	$login_form .= "</form>";
 ?>
 <?php
-    //尋找電影詳細資訊
+    /*
+     * 尋找電影詳細資訊
+     *
+     */
     function search_function(){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
@@ -23,7 +33,10 @@
         $conn = null;
         return $result;
     }
-    //尋找演員
+    /*
+     * 尋找演員
+     *
+     */
     function search_actor(){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
@@ -36,7 +49,10 @@
         $conn = null;
         return $result;
     }
-    //尋找該部電影評論
+    /*
+     * 尋找該部電影評論
+     *
+     */
     function search_commentary(){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
@@ -52,16 +68,23 @@
     $result = search_function();
     $actor = search_actor();
     $commentary = search_commentary();
-    $data = array();//電影資料
-    $actor_table = "";//演員的Table表格
+    /*
+     * data 為電影資料
+     *
+     */
+    $data = $result -> fetchAll();
+    $actor_table = "";
     $commentary_div = "";
-    foreach ($result as $row) {
-    	array_push($data,$row);
-    }
     $index = 0;
-    //演員table
+    /*
+     * 演員的Table表格
+     *
+     */
     foreach($actor as $row){
-        //一行塞兩個
+        /*
+         * 一行塞兩個
+         *
+         */
         if($index == 0){        
             $actor_table .= "<tr class='actor'><td><a href='Page_Actor.php?actor_id=$row[0]'/>".trim($row[1])."</td>";
             $index = 1;
@@ -70,9 +93,11 @@
             $index = 0;
         }
     }
-    //評論table
+    /*
+     * 評論 table
+     *
+     */
     $comment_data = $commentary -> fetchAll();
-    //var_dump($comment_data);
     if(empty($comment_data[0])){
         $commentary_div = "<div class='member_message'>目前暫無評論</div>";
     }else{
@@ -172,6 +197,7 @@
 			<table>
 				<tr><td width=50%><?php echo "<img src='".$data[0]['PHOTO']."'>";?></td>
 					<td width=50%>
+                        <?php echo "<input type='hidden' id='V_id' value='".$data[0]["VIDEO_ID"]."'>"?>
 						<p id='video_name'><?php echo $data[0]['VIDEO_NAME'];?><a href='./do_add_myfavorite.php'>加入最愛</a></p>
 						<p id="ratings">評分：<?php echo $data[0]['SCORE'];?></p>
 						<p>類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>

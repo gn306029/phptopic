@@ -6,9 +6,7 @@
 	$db_password = '1314520';
 	$dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
 	$conn = new PDO($dsn,$db_user,$db_password);
-	//Select
 	$select = $conn->query("Select * From kind");
-	//讀出所有資料
 	$result = $select -> fetchAll();
 	$kind = "<option value='0' selected='selected'>-----</option>";
 	foreach($result as $row){

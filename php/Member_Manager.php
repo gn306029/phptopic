@@ -1,6 +1,15 @@
 <?php
+    /*
+     *
+     * 該檔案有 Bug , 修改資料後無法顯示最新的興趣
+     *
+     *
+     */
     session_start();
-    //下拉式清單用
+    /*
+     * 下拉清單用
+     *
+     */
     include './Page_Search_Set.php';
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
@@ -8,31 +17,52 @@
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
     $login_form .= "</form>";
-    //建立連線
+    /*
+     * 建立連線
+     *
+     */
     $db_host = 'db.mis.kuas.edu.tw';
     $db_name = 's1104137130';
     $db_user = 's1104137130';
     $db_password = '1314520';
     $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
-    //取得會員喜歡的類別
+    /*
+     * 取得會員喜歡的類別
+     *
+     */
     $sql = "Select `CATEGORY` From `member` Where `MEMBER_ID` = '".$_SESSION['userid']."'";
     $result = $conn -> query($sql);
     $result = $result -> fetchAll();
     $favorite_category =  explode(",",$result[0]["CATEGORY"]);
-    //hidden_category 區域要裝的類型
+    /*
+     * Hidden category 區域要裝的東西
+     *
+     */
     $form_category = "";
-    //處理換行用的
+    /*
+     * 處理換行用
+     *
+     */
     $index = 0;
     foreach ($Allcategory as $row) {
-        //每 4 個換一次行
+        /*
+         * 每 4 個換一次行
+         *
+         */
         if($index==4){
             $form_category .= "</br>";
             $index = 0;
         }
-        //判斷是否找到會員喜愛的類別
+        /*
+         * 該變數用來判斷是否找到會員喜歡的種類
+         *
+         */
         $find = false;
-        //當找到會員喜歡的類型時，將其設為 selected
+        /*
+         * 當找到會員喜歡的種類時 將其設為 checked
+         *
+         */
         for($i = 0;$i<count($favorite_category);$i++){
             if($row["CATEGORY_ID"]===$favorite_category[$i]){
                 $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='".$row["CATEGORY_ID"]."' checked>".$row['CATEGORY_NAME'];
@@ -52,6 +82,9 @@
     }else{
         $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='0'>其他";
     }
+    if(isset($_POST['action'])){
+        echo $form_category;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -60,11 +93,13 @@
 <head>
     <title>IMDB</title>
     <link type="text/css" rel="stylesheet" href="../css/index.css">
-    <link type="text/css" rel="stylesheet" href="../css/manager.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
-        //取得會員詳細資料
+        /*
+         * 取得會員詳細資料
+         *
+         */
         $(function(){
             var member_id = $("#member_infor").val();
             $("#member_infor").click(function() {
@@ -105,7 +140,10 @@
                     }
                 });
             });
-            //確定修改
+            /*
+             * 確定修改
+             *
+             */
             $("body").on("click","#update",function () {
                 var infor_html = "<table>";
                 infor_html += "<tr><td><div id='member_detail'>";
@@ -128,7 +166,10 @@
                 infor_html += "</table>";
                 $("#my_infor").html(infor_html);
             })
-            //送出會員要修改的資料
+            /*
+             * 送出會員要修改的資料
+             *
+             */
             $("body").on("click","#detail_form_send",function () {
                 $.ajax({
                     url:"./Member_Information_Set.php",
@@ -137,6 +178,7 @@
                     success:function(output){
                         if(output == "success"){
                             alert("更新成功");
+                            
                         }else{
                             alert("更新失敗");
                         }
@@ -146,7 +188,10 @@
                     }
                 })
             })
-            //取得會員的我的最愛
+            /*
+             * 取得會員的我的最愛
+             *
+             */
             $("#member_favorite").click(function(){
                 $.ajax({
                     url:"./Member_Information_Set.php",

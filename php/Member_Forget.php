@@ -1,7 +1,14 @@
 <?php
 	session_start();
-    //下拉式清單用
+    /*
+     * 下拉清單用
+     *
+     */
     include './Page_Search_Set.php';
+    /*
+     * 帳號與密碼的輸入框
+     *
+     */
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";

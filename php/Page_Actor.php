@@ -1,7 +1,14 @@
 <?php
     session_start();
-    //下拉式清單用
+    /*
+     * include 為產生下拉清單的 Php
+     *
+     */
     include './Page_Search_Set.php';
+    /*
+     * 帳號與密碼的輸入框
+     *
+     */
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
@@ -24,7 +31,7 @@
     $detail = actor_detail();
     $data = "";
     foreach($detail as $row){
-        $data .= "<tr><td>".$row[0]."</br>".$row[1]."</br><img src='".$row[2]."'>"."</td></tr>";
+        $data .= "<tr><td>".$row[0]."</br>".$row[1]."<a href='https://zh.wikipedia.org/wiki/".$row[0]."'>詳全文</a>"."</br><img src='".$row[2]."'>"."</td></tr>";
     }
 ?>
 

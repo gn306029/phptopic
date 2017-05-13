@@ -1,6 +1,16 @@
 <?php
+    /*
+     * 引入寄信的 Php 檔案
+     *
+     */
 	include './Member_SendMail.php';
 	$result = search_account_result($_POST['username'],$_POST['email']);
+    /*
+     * 依使用者輸入的帳號與密碼來做查詢
+     * 若是有撈到資料 代表輸入正確
+     * 否則回傳資料不符
+     *
+     */
 	function search_account_result($account,$email){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
