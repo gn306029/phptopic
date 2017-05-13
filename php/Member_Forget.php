@@ -7,6 +7,7 @@
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
+	$login_form .= "</form>";
 ?>
 <!DOCTYPE html>
 <html>

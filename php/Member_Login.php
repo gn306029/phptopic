@@ -15,7 +15,7 @@
 		setcookie("username",$data[3],time()+3600);
 		header("Location: ../index.php");
 	}else{
-		echo "No";
+		echo "<script>alert('登入失敗)</script>";
 	}
 
 	mysqli_close($connection);

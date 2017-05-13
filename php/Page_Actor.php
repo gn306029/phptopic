@@ -7,6 +7,7 @@
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
+	$login_form .= "</form>";
 ?>
 <?php
     function actor_detail(){
@@ -65,8 +66,9 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo $_SESSION["username"]."</br>您好";
-                                echo "<a href='./Member_Manager.php'>會員中心</a>";
+                                echo $_SESSION["username"].",您好<br>";
+								echo " <a href=./Member_Manager.php><img src=../PIC/top/manager-1.png name=manager width=150px></a>　　";
+								echo "<a href='./Member_Logout.php'/><img src=\"../PIC/top/logout.png\" width=\"70px\"></a>";
                             }else{
                                 echo $login_form;   
                             }
@@ -77,7 +79,7 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo "<a href='./Member_Logout.php'/>登出";
+                               
                             }else{
                                 echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
                                 echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
@@ -91,7 +93,7 @@
                         <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
                         <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
                         <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
-                        <a href="Page_Actor.php?actor_id=0" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
+                        <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
                     <td>

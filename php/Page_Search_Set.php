@@ -15,11 +15,10 @@
 		$kind .= "<option value='".$row['KIND_ID']."'>".$row['KIND_NAME']."</option>";
 	}
 	$select = $conn->query("Select * From category");
+	$Allcategory = $select -> fetchAll();
 	$category = "<option value='0' selected='selected'>-----</option>";
-	foreach ($select as $row) {
+	foreach ($Allcategory as $row) {
 		$category .= "<option value='".$row['CATEGORY_ID']."'>".$row['CATEGORY_NAME']."</option>";
 	}
-	$select = $conn->query("Select * From category");
-	$Allcategory = $select -> fetchAll();
 	$conn = null;
 ?>

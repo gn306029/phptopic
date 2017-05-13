@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     session_start();
     //下拉式清單用
     include './Page_Search_Set.php';
@@ -56,22 +56,22 @@
         $table .= "<td><label class='score'>".$row['SCORE']."</label></td>";
         $table .= "</tr>";
     }
-	$movietable='';
-	$movietable .= "<tr>";
+	$tvshowtable='';
+	$tvshowtable .= "<tr>";
 	foreach($stmt as $row){	
-        $movietable .= '<td><a href=./Page_Movie.php?search=&kind=1&category='. $row['CATEGORY_ID']. '>'. $row['CATEGORY_NAME'].'</a></td>';
+        $tvshowtable .= '<td><a href=./Page_Tvshow.php?search=&kind=2&category='. $row['CATEGORY_ID']. '>'. $row['CATEGORY_NAME'].'</a></td>';
 	}
-	$movietable .= "</tr>";
+	$tvshowtable .= "</tr>";
 ?>
 
 <!DOCTYPE html>
 <html>
-
+ 
 <head>
     <title>IMDB</title>
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
 <body>
@@ -97,7 +97,7 @@
                             </select>
                             <img src="../PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px"></form>
                     </td>
-					<!--帳號密碼-->
+                    <!--帳號密碼-->
                     <td id="memberlogin">
                         <?php
                             //判斷登入狀態
@@ -147,7 +147,7 @@
         <div id="context">
 			<table align='center'>
 				<?php
-					echo $movietable;
+					echo $tvshowtable;
 				?>
 			</table>
 			<table>

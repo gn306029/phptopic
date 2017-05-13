@@ -19,49 +19,26 @@
 	
 	$stmt=$conn->query("SELECT * FROM CATEGORY");
 	
-	 function search_function($search,$category,$kind){
+	 function search_function(){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
         $db_user = 's1104137130';
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind."";
+        $sql = "SELECT * FROM `actor`";
         $result = $conn -> query($sql);
         return $result;
     }
-    $search = $_GET['search'];
-    $kind_ = $_GET['kind'];
-    $category_ = $_GET['category'];
-
-    if($kind_ == "0"){
-        $kind_ = "`video`.`KIND_ID` LIKE '%%'";
-    }else{
-        $kind_ = "`video`.`KIND_ID` = '".$_GET['kind']."'";
-    }
-    if($category_ == "0"){
-        $category_ = "`video`.`CATEGORY_ID` LIKE '%%'";
-    }else{
-        $category_ = "`video`.`CATEGORY_ID` = '".$_GET['category']."'";
-    }$result = search_function($search,$category_,$kind_);
+	$result = search_function();
 	$table = "";
     foreach ($result as $row) {
         $table .= "<tr>";
-	$table .= "<td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' width='70px'></a></td>";
-        $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</th>";
-        $table .= "<td>".$row['CATEGORY_NAME']."</td>";
-        $table .= "<td>".$row['KIND_NAME']."</td>";
-        $table .= "<td>".$row['LANGUAGE']."</td>";
-        $table .= "<td>".$row['RELEASE_DATE']."</td>";
-        $table .= "<td><label class='score'>".$row['SCORE']."</label></td>";
+		$table .= "<td><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'><img src='".$row['ACTOR_PHOTO']."' width='70px'></a></td>";
+        $table .= "<td><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'>".$row['ACTOR_NAME']."</td>";
+        $table .= "<td Width='200'>".mb_substr($row['ACTOR_HISTORY'],0,30)."...</td>";
         $table .= "</tr>";
     }
-	$movietable='';
-	$movietable .= "<tr>";
-	foreach($stmt as $row){	
-        $movietable .= '<td><a href=./Page_Movie.php?search=&kind=1&category='. $row['CATEGORY_ID']. '>'. $row['CATEGORY_NAME'].'</a></td>';
-	}
-	$movietable .= "</tr>";
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +48,7 @@
     <title>IMDB</title>
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 
 <body>
@@ -82,6 +59,7 @@
                     <td id="logo">
                         <a href="../index.php"><img src="../PIC/top/logo.png" width="200px"></a>
                     </td>
+                    <!--搜尋列-->
                     <td id="search">
                         <form name="search" action="../php/Page_SearchList.php" method="GET">
                             <input type="text" name="search" />
@@ -97,7 +75,7 @@
                             </select>
                             <img src="../PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px"></form>
                     </td>
-					<!--帳號密碼-->
+                    <!--帳號密碼-->
                     <td id="memberlogin">
                         <?php
                             //判斷登入狀態
@@ -145,14 +123,9 @@
         </div>
 		<br>
         <div id="context">
-			<table align='center'>
-				<?php
-					echo $movietable;
-				?>
-			</table>
 			<table>
 				<tr>
-					<td colspan='2'>名稱</td><td>類別</td><td>類型</td><td>語言</td><td>上映日期</td><td>分數</td>
+					<td></td><td>名稱</td><td Width='750'>簡歷</td>
 				</tr>
 				<?php
 					echo $table;

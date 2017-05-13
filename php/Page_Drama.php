@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     session_start();
     //下拉式清單用
     include './Page_Search_Set.php';
@@ -7,6 +7,7 @@
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
+	$login_form .= "</form>";
 ?>
 <?php
 	$db_host='fs.mis.kuas.edu.tw';
@@ -25,7 +26,7 @@
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`REGION`,`SCORE`,`RELEASE_DATE`,`PLAYTIME` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind."";
+        $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind."";
         $result = $conn -> query($sql);
         return $result;
     }
@@ -44,19 +45,17 @@
         $category_ = "`video`.`CATEGORY_ID` = '".$_GET['category']."'";
     }$result = search_function($search,$category_,$kind_);
 	$table = "";
-    foreach ($result as $row1) {
+    foreach ($result as $row) {
         $table .= "<tr>";
-        $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row1['VIDEO_ID']."'>".$row1['VIDEO_NAME']."</th>";
-        $table .= "<td>".$row1['CATEGORY_NAME']."</td>";
-        $table .= "<td>".$row1['KIND_NAME']."</td>";
-        $table .= "<td>".$row1['LANGUAGE']."</td>";
-        $table .= "<td>".$row1['REGION']."</td>";
-        $table .= "<td>".$row1['SCORE']."</td>";
-        $table .= "<td>".$row1['RELEASE_DATE']."</td>";
-        $table .= "<td>".$row1['PLAYTIME']."</td>";
+	$table .= "<td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' width='70px'></a></td>";
+        $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</th>";
+        $table .= "<td>".$row['CATEGORY_NAME']."</td>";
+        $table .= "<td>".$row['KIND_NAME']."</td>";
+        $table .= "<td>".$row['LANGUAGE']."</td>";
+        $table .= "<td>".$row['RELEASE_DATE']."</td>";
+        $table .= "<td><label class='score'>".$row['SCORE']."</label></td>";
         $table .= "</tr>";
     }
-
 	$dramatable='';
 	$dramatable .= "<tr>";
 	foreach($stmt as $row){	
@@ -103,8 +102,9 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo $_SESSION["username"]."</br>您好";
-                                echo "<a href='./Member_Manager.php'>會員中心</a>";
+                                echo $_SESSION["username"].",您好<br>";
+								echo " <a href=./Member_Manager.php><img src=../PIC/top/manager-1.png name=manager width=150px></a>　　";
+								echo "<a href='./Member_Logout.php'/><img src=\"../PIC/top/logout.png\" width=\"70px\"></a>";
                             }else{
                                 echo $login_form;   
                             }
@@ -115,7 +115,7 @@
                         <?php
                             //判斷登入狀態
                             if(isset($_SESSION["username"])){
-                                echo "<a href='./Member_Logout.php'/>登出";
+                               
                             }else{
                                 echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
                                 echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
@@ -129,7 +129,7 @@
                         <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
                         <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
                         <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
-                        <a href="Page_Actor.php?actor_id=0" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
+                        <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
                     <td>
@@ -150,7 +150,10 @@
 					echo $dramatable;
 				?>
 			</table>
-			<table align='center'>
+			<table>
+				<tr>
+					<td colspan='2'>名稱</td><td>類別</td><td>類型</td><td>語言</td><td>上映日期</td><td>分數</td>
+				</tr>
 				<?php
 					echo $table;
 				?>
