@@ -20,3 +20,10 @@
 #context th{
 	text-align:left;
 }
+.score{
+	color:rgb(230, 25, 25);
+	font-size:30px;
+}
+#context img{
+	border-radius:8px;
+}

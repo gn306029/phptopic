@@ -31,7 +31,8 @@
 	font-size:32px;
 }
 #ratings{
-	color:red;
+	color:rgb(230, 25, 25);
+	font-size:30px;
 }
 textarea{
 	border-radius:8px;

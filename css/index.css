@@ -1,5 +1,6 @@
-body{
+﻿body{
 	background-color:black;
+	background-image: url();
 	border-radius:8px;
 	font-family:"微軟正黑體";
 	font-size:20px;
@@ -17,7 +18,10 @@ body{
 }
 
 #header {
-	background-image:url("../PIC/top/bg.png");
+	background-color:black;
+}
+#header a{
+	color:LightSkyBlue;
 }
 #logo {
 	width:210px;
@@ -69,6 +73,7 @@ select,option{
 	position: relative;
 	max-width: 600px;
 	margin: auto;
+	background-image: url();
 }
 #context input{
 	border-radius:5px;
