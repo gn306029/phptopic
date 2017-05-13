@@ -1,7 +1,14 @@
 <?php
     session_start();
-    //下拉式清單用
+    /*
+     * include 為產生下拉清單的 Php
+     *
+     */
     include './Page_Search_Set.php';
+    /*
+     * 帳號與密碼的輸入框
+     *
+     */
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
@@ -10,6 +17,10 @@
 	$login_form .= "</form>";
 ?>
 <?php
+    /*
+     * 建立資料庫連線
+     *
+     */
 	$db_host='fs.mis.kuas.edu.tw';
 	$db_name='s1104137130';
 	$db_user='s1104137130';
@@ -17,23 +28,36 @@
 	$dsn="mysql:host=$db_host;dbname=$db_name;charset=utf8";
 	$conn=new PDO($dsn,$db_user,$db_pswd);
 	
+    /*
+     * 搜尋所有種類
+     *
+     */
 	$stmt=$conn->query("SELECT * FROM CATEGORY");
 	
-	 function search_function($search,$category,$kind){
-        $db_host = 'db.mis.kuas.edu.tw';
-        $db_name = 's1104137130';
-        $db_user = 's1104137130';
-        $db_password = '1314520';
-        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
-        $conn = new PDO($dsn,$db_user,$db_password);
-        $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind."";
+    /*
+     * 搜尋所有種類為戲劇的影片
+     * limit 不等於 null , 為分頁用的資料
+     * limit 等於 null , 為計算資料總數用的 Sql
+     */
+	function search_function($search,$category,$kind,$limit){
+        global $conn;
+        if($limit != null){
+            $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind." Order by `VIDEO_NAME` ".$limit;
+        }else{
+            $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind;
+        }
         $result = $conn -> query($sql);
         return $result;
     }
+
     $search = $_GET['search'];
     $kind_ = $_GET['kind'];
     $category_ = $_GET['category'];
 
+    /*
+     * 如果沒有指定類別或種類 就搜尋全部
+     *
+     */
     if($kind_ == "0"){
         $kind_ = "`video`.`KIND_ID` LIKE '%%'";
     }else{
@@ -43,11 +67,63 @@
         $category_ = "`video`.`CATEGORY_ID` LIKE '%%'";
     }else{
         $category_ = "`video`.`CATEGORY_ID` = '".$_GET['category']."'";
-    }$result = search_function($search,$category_,$kind_);
+    }
+
+    /*
+     * 預設頁數
+     *
+     */
+    $now_pages = 1;
+    /*
+     * 如果有頁數 就使用該頁數
+     *
+     */
+    if (isset($_GET['page'])) {
+      $now_pages = $_GET['page'];
+    }
+
+    /*
+     * result 為要顯示的資料
+     * count_movie 為要計算總數的查詢
+     *
+     */
+    $result = search_function($search,$category_,$kind_,"LIMIT ".($now_pages*10-10).",10");
+    $count_movie = search_function($search,$category_,$kind_,null) -> fetchAll();
+    /*
+     * 計算有幾筆資料
+     *
+     */
+    $all_num = count($count_movie);
+    $page_list = "<select name='page' id='select_page'>";
+    /*
+     * 如果總數不被整除 , 頁碼要加一
+     *
+     */
+    if($all_num % 10 != 0){
+        $all_num = floor( $all_num / 10 ) + 1 ;
+    }else{
+        $all_num = floor( $all_num / 10 );
+    }
+    /*
+     * 新增頁碼到 Select
+     *
+     */
+    for($i = 1;$i<=$all_num;$i++){
+        if($i == $now_pages){
+            $page_list .= "<option value='".$i."' selected>".$i."</option>";
+        }else{
+            $page_list .= "<option value='".$i."' >".$i."</option>";
+        }
+    }
+    /*
+     * $table 為要輸出的影片 table
+     *
+     */
 	$table = "";
+    $page_list .= "</select>";
     foreach ($result as $row) {
         $table .= "<tr>";
-	$table .= "<td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' width='70px'></a></td>";
+	    $table .= "<td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' width='70px'></a></td>";
         $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</th>";
         $table .= "<td>".$row['CATEGORY_NAME']."</td>";
         $table .= "<td>".$row['KIND_NAME']."</td>";
@@ -56,12 +132,27 @@
         $table .= "<td><label class='score'>".$row['SCORE']."</label></td>";
         $table .= "</tr>";
     }
+    /*
+     * 按下 戲劇 後的那一排選擇種類
+     *
+     */
 	$movietable='';
 	$movietable .= "<tr>";
 	foreach($stmt as $row){	
         $movietable .= '<td><a href=./Page_Movie.php?search=&kind=1&category='. $row['CATEGORY_ID']. '>'. $row['CATEGORY_NAME'].'</a></td>';
 	}
 	$movietable .= "</tr>";
+    /*
+     * 頁碼設定
+     *
+     */
+    if($now_pages == 1){
+        $table .= "<tr><td colspan='3' align='center'>".$page_list."<a href='./Page_Movie.php?page=".($now_pages+1)."&search=&kind=1&category=0'>下一頁</a></td></tr>";
+    }else if($now_pages == $all_num){
+        $table .= "<tr><td colspan='3' align='center'><a href='./Page_Movie.php?page=".($now_pages-1)."&search=&kind=1&category=0'>前一頁</a>".$page_list."</td></tr>";
+    }else{
+        $table .= "<tr><td colspan='3' align='center'><a href='./Page_Movie.php?page=".($now_pages-1)."&search=&kind=1&category=0'>前一頁</a>".$page_list." <a href='./Page_Movie.php?page=".($now_pages+1)."&search=&kind=1&category=0'>下一頁</a></td></tr>";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -72,6 +163,20 @@
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript">
+        /*
+         * 用下拉選單選擇 Page 時觸發的事件
+         *
+         */
+        $(function(){
+            $("#select_page").change(function(){
+                $.get("./Page_Drama.php?page="+$("#select_page").val()+"&search=&kind=3&category=0",function(data){
+                    $("body").html(data);
+                })
+            })
+        })
+    </script>
 </head>
 
 <body>

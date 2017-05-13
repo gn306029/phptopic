@@ -1,7 +1,14 @@
 <?php
     session_start();
-    //下拉式清單用
+    /*
+     * include 為產生下拉清單的 Php
+     *
+     */
     include './Page_Search_Set.php';
+    /*
+     * 帳號與密碼的輸入框
+     *
+     */
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
@@ -10,27 +17,47 @@
 	$login_form .= "</form>";
 ?>
 <?php
-	$db_host='fs.mis.kuas.edu.tw';
-	$db_name='s1104137130';
-	$db_user='s1104137130';
-	$db_pswd='1314520';
-	$dsn="mysql:host=$db_host;dbname=$db_name;charset=utf8";
-	$conn=new PDO($dsn,$db_user,$db_pswd);
-	
-	$stmt=$conn->query("SELECT * FROM CATEGORY");
-	
-	 function search_function(){
+    
+    function search_function($sql){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
         $db_user = 's1104137130';
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        $sql = "SELECT * FROM `actor`";
+        
         $result = $conn -> query($sql);
         return $result;
     }
-	$result = search_function();
+    /*
+     * 預設頁數
+     *
+     */
+    $now_pages = 1;
+    /*
+     * 如果有頁數 就使用該頁數
+     *
+     */
+    if (isset($_GET['page'])) {
+      $now_pages = $_GET['page'];
+    }
+    /*
+     * result 為要顯示的資料
+     * count_actor 為要計算總數的查詢
+     *
+     */
+    $sql = "SELECT * FROM `actor` Order by `ACTOR_NAME` LIMIT ".($now_pages*10-10).",10";
+	$result = search_function($sql) -> fetchAll();
+    $count_actor = search_function("SELECT `ACTOR_ID` FROM `actor`") -> fetchAll();
+    /*
+     * 計算有幾筆資料
+     *
+     */
+    $all_num = count($count_actor);
+    /*
+     * table 為要輸出的演員資料
+     *
+     */
 	$table = "";
     foreach ($result as $row) {
         $table .= "<tr>";
@@ -39,6 +66,40 @@
         $table .= "<td Width='200'>".mb_substr($row['ACTOR_HISTORY'],0,30)."...</td>";
         $table .= "</tr>";
     }
+    /*
+     * 如果總數不被整除 , 頁碼要加一
+     *
+     */
+    if($all_num % 10 != 0){
+        $all_num = floor( $all_num / 10 ) + 1 ;
+    }else{
+        $all_num = floor( $all_num / 10 );
+    }
+    /*
+     * 新增頁碼到 Select
+     *
+     */
+    $page_list = "<select name='page' id='select_page'>";
+    for($i = 1;$i<=$all_num;$i++){
+        if($i == $now_pages){
+            $page_list .= "<option value='".$i."' selected>".$i."</option>";
+        }else{
+            $page_list .= "<option value='".$i."' >".$i."</option>";
+        }
+    }
+    $page_list .= "</select>";
+    /*
+     * 頁碼設定
+     *
+     */
+    if($now_pages == 1){
+        $table .= "<tr><td colspan='3' align='center'>".$page_list."<a href='./Page_ActorList.php?page=".($now_pages+1)."'>下一頁</a></td></tr>";
+    }else if($now_pages == $all_num){
+        $table .= "<tr><td colspan='3' align='center'><a href='./Page_ActorList.php?page=".($now_pages-1)."'>前一頁</a>".$page_list."</td></tr>";
+    }else{
+        $table .= "<tr><td colspan='3' align='center'><a href='./Page_ActorList.php?page=".($now_pages-1)."'>前一頁</a>".$page_list." <a href='./Page_ActorList.php?page=".($now_pages+1)."'>下一頁</a></td></tr>";
+    }
+    
 ?>
 
 <!DOCTYPE html>
@@ -49,6 +110,20 @@
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript">
+        /*
+         * 用下拉選單選擇 Page 時觸發的事件
+         *
+         */
+        $(function(){
+            $("#select_page").change(function(){
+                $.get("./Page_ActorList.php?page="+$("#select_page").val(),function(data){
+                    $("body").html(data);
+                })
+            })
+        })
+    </script>
 </head>
 
 <body>
