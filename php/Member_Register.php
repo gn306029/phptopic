@@ -137,10 +137,9 @@
             }
             if (input && isInput) {
                 $.post("./Member_Register_Set.php", $('#register_form').serialize(), function(data) {
-                    alert($('#register_form').serialize());
-                    alert(data);
                     if (data.substring(1) == "Insert成功") {
                         alert("成功");
+                        window.location.href = "../index.php";
                     } else if (data.substring(1) == "Insert失敗") {
                         alert("失敗");
                     } else {
