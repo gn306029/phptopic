@@ -10,7 +10,7 @@
     $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
     $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-
+    $login_form .= "</form>";
     $form_category = "";
     $index = 0;
     foreach ($Allcategory as $row) {
@@ -136,7 +136,9 @@
                 input = false;
             }
             if (input && isInput) {
-                $.post("../php/Member_Register_Set.php", $('#register_form').serialize(), function(data) {
+                $.post("./Member_Register_Set.php", $('#register_form').serialize(), function(data) {
+                    alert($('#register_form').serialize());
+                    alert(data);
                     if (data.substring(1) == "Insert成功") {
                         alert("成功");
                     } else if (data.substring(1) == "Insert失敗") {
@@ -224,7 +226,8 @@
             </table>
         </div>
         <div id="context">
-            <form id="register_form" action="Member_Register.php" method="POST">
+        
+            <form id="register_form">
                 <p> 　帳　　號　：
                     <input type="text" id="REGISTER_ACCOUNT" name="REGISTER_ACCOUNT" onchange="checkAccount()" /><span id="imply"></span></p>
                 <p> 　密　　碼　：
@@ -253,10 +256,11 @@
                         echo $form_category;
                     ?>
                     <input type="checkbox" id="REGISTER_CATEGORY" name="REGISTER_CATEGORY[]" value="0" checked>其他
-                    <p align="right">
-                        <input type="button" id="btn" name="button" value="註冊" />
-                    </p>
+                    
             </form>
+            <p align="right">
+                <input type="button" id="btn" name="button" value="註冊" />
+            </p>
         </div>
     </div>
 </body>
