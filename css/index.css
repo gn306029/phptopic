@@ -36,7 +36,7 @@
 	font-size:16px;
 	font-weight:bold;
 	opacity:0.7;
-	width:200px;
+	width:130px;
 }
 #search img{
 	 vertical-align:middle;
@@ -44,6 +44,9 @@
 #memberlogin {
 	width:300px;
 	text-align:top;
+	font-family:"微軟正黑體";
+	font-size:20px;
+	color:white;
 }
 #memberlogin input{
 	border-radius:8px;

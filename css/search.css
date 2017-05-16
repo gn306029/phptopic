@@ -24,6 +24,9 @@
 	color:rgb(230, 25, 25);
 	font-size:30px;
 }
-#context img{
-	border-radius:8px;
+#context div{
+	width:70px;
+	height:70px;
+    background:white;
+    -webkit-clip-path:circle(35px at 50% 50%);
 }
