@@ -5,7 +5,7 @@
      *
      */
     include './Page_Search_Set.php';
-    /*
+	/*
      * 帳號與密碼的輸入框
      *
      */
@@ -17,8 +17,7 @@
 	$login_form .= "</form>";
 ?>
 <?php
-
-    /*
+	/*
      * 建立資料庫連線
      *
      */
@@ -28,14 +27,12 @@
 	$db_pswd='1314520';
 	$dsn="mysql:host=$db_host;dbname=$db_name;charset=utf8";
 	$conn=new PDO($dsn,$db_user,$db_pswd);
-	
-    /*
+	/*
      * 搜尋所有種類
      *
      */
-	$stmt=$conn->query("SELECT * FROM CATEGORY");
-	
-    /*
+	$stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID=2");
+	 /*
      * 搜尋所有種類為綜藝節目的影片
      * limit 不等於 null , 為分頁用的資料
      * limit 等於 null , 為計算資料總數用的 Sql
@@ -56,12 +53,11 @@
         $result = $conn -> query($sql);
         return $result;
     }
-
+	
     $search = $_GET['search'];
     $kind_ = $_GET['kind'];
     $category_ = $_GET['category'];
-
-    /*
+	/*
      * 如果沒有指定類別或種類 就搜尋全部
      *
      */
@@ -75,8 +71,7 @@
     }else{
         $category_ = "`video`.`CATEGORY_ID` = '".$_GET['category']."'";
     }
-
-    /*
+	 /*
      * 預設頁數
      *
      */
@@ -129,7 +124,7 @@
 	$table = "";
     foreach ($result as $row) {
         $table .= "<tr>";
-	$table .= "<td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' width='70px'></a></td>";
+	$table .= "<td><div><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' height='100%'></a></div></td>";
         $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</th>";
         $table .= "<td>".$row['CATEGORY_NAME']."</td>";
         $table .= "<td>".$row['KIND_NAME']."</td>";
@@ -138,25 +133,30 @@
         $table .= "<td><label class='score'>".$row['SCORE']."</label></td>";
         $table .= "</tr>";
     }
+	$i=0;
 	$tvshowtable='';
 	$tvshowtable .= "<tr>";
 	foreach($stmt as $row){	
         $tvshowtable .= '<td><a href=./Page_Tvshow.php?search=&kind=2&category='. $row['CATEGORY_ID']. '>'. $row['CATEGORY_NAME'].'</a></td>';
+		$i++;
+		if($i%10==0){
+			$tvshowtable .='</tr><tr>';
+		}
 	}
 	$tvshowtable .= "</tr>";
-    /*
+	/*
      * 頁碼設定
      * $now_pages == 1 && $all_num == 1 這個 if 判斷在 tvshow 資料多了之後可以拿掉
      *
      */
     if($now_pages == 1 && $all_num == 1){
-        $table .= "<tr><td colspan='3' align='center'>".$page_list."</td></tr>";
+        $table .= "<tr><td colspan='8' align='center'>".$page_list."</td></tr>";
     }else if($now_pages == 1){
-        $table .= "<tr><td colspan='3' align='center'>".$page_list."<a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
+        $table .= "<tr><td colspan='8' align='center'>".$page_list."<a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
     }else if($now_pages == $all_num){
-        $table .= "<tr><td colspan='3' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list."</td></tr>";
+        $table .= "<tr><td colspan='8' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list."</td></tr>";
     }else{
-        $table .= "<tr><td colspan='3' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list." <a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
+        $table .= "<tr><td colspan='8' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list." <a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
     }
 ?>
 
@@ -168,7 +168,7 @@
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
         /*
          * 用下拉選單選擇 Page 時觸發的事件
@@ -236,9 +236,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>

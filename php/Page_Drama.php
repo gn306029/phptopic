@@ -1,11 +1,12 @@
-<?php
+﻿<?php
     session_start();
+    //下拉式清單用
     /*
      * include 為產生下拉清單的 Php
      *
      */
     include './Page_Search_Set.php';
-    /*
+	/*
      * 帳號與密碼的輸入框
      *
      */
@@ -17,7 +18,6 @@
 	$login_form .= "</form>";
 ?>
 <?php
-    
     /*
      * 搜尋所有種類為戲劇的影片
      * limit 不等於 null , 為分頁用的資料
@@ -46,13 +46,12 @@
 	$db_pswd='1314520';
 	$dsn="mysql:host=$db_host;dbname=$db_name;charset=utf8";
 	$conn=new PDO($dsn,$db_user,$db_pswd);
-	
-    /*
+	/*
      * 搜尋所有種類
      *
      */
-	$stmt=$conn->query("SELECT * FROM CATEGORY");
-    /*
+	$stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID=3");
+	/*
      * 預設頁數
      *
      */
@@ -64,16 +63,14 @@
     if (isset($_GET['page'])) {
       $now_pages = $_GET['page'];
     }
-
-    /*
+	/*
      * 指派值
      *
      */
     $search = $_GET['search'];
     $kind_ = $_GET['kind'];
     $category_ = $_GET['category'];
-
-    /*
+	/*
      * 如果沒有指定類別或種類 就搜尋全部
      *
      */
@@ -128,7 +125,7 @@
 	$table = "";
     foreach ($result as $row) {
         $table .= "<tr>";
-	    $table .= "<td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' width='70px'></a></td>";
+		$table .= "<td><div><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' height='100%'></a></div></td>";
         $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</th>";
         $table .= "<td>".$row['CATEGORY_NAME']."</td>";
         $table .= "<td>".$row['KIND_NAME']."</td>";
@@ -137,26 +134,31 @@
         $table .= "<td><label class='score'>".$row['SCORE']."</label></td>";
         $table .= "</tr>";
     }
+	$i=0;
 	$dramatable='';
 	$dramatable .= "<tr>";
-    /*
+	/*
      * 按下 戲劇 後的那一排選擇種類
      *
      */
 	foreach($stmt as $row){	
         $dramatable .= '<td><a href=./Page_Drama.php?search=&kind=3&category='. $row['CATEGORY_ID']. '>'. $row['CATEGORY_NAME'].'</a></td>';
+		$i++;
+		if($i%10==0){
+			$dramatable .='</tr><tr>';
+		}
 	}
 	$dramatable .= "</tr>";
-    /*
+	/*
      * 頁碼設定
      *
      */
     if($now_pages == 1){
-        $table .= "<tr><td colspan='3' align='center'>".$page_list."<a href='./Page_Drama.php?page=".($now_pages+1)."&search=&kind=3&category=0'>下一頁</a></td></tr>";
+        $table .= "<tr><td colspan='8' align='center'>".$page_list."<a href='./Page_Drama.php?page=".($now_pages+1)."&search=&kind=3&category=0'>下一頁</a></td></tr>";
     }else if($now_pages == $all_num){
-        $table .= "<tr><td colspan='3' align='center'><a href='./Page_Drama.php?page=".($now_pages-1)."&search=&kind=3&category=0'>前一頁</a>".$page_list."</td></tr>";
+       $table .= "<tr><td colspan='8' align='center'><a href='./Page_Drama.php?page=".($now_pages-1)."&search=&kind=3&category=0'>前一頁</a>".$page_list."</td></tr>";
     }else{
-        $table .= "<tr><td colspan='3' align='center'><a href='./Page_Drama.php?page=".($now_pages-1)."&search=&kind=3&category=0'>前一頁</a>".$page_list." <a href='./Page_Drama.php?page=".($now_pages+1)."&search=&kind=3&category=0'>下一頁</a></td></tr>";
+        $table .= "<tr><td colspan='8' align='center'><a href='./Page_Drama.php?page=".($now_pages-1)."&search=&kind=3&category=0'>前一頁</a>".$page_list." <a href='./Page_Drama.php?page=".($now_pages+1)."&search=&kind=3&category=0'>下一頁</a></td></tr>";
     }
 ?>
 
@@ -168,7 +170,7 @@
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
         /*
          * 用下拉選單選擇 Page 時觸發的事件
@@ -197,7 +199,7 @@
                             <input type="text" name="search" />
                             <select name="kind">
                                 <?php
-                                    /*
+									/*
                                      * 輸出 種類 下拉清單
                                      *
                                      */
@@ -206,7 +208,7 @@
                             </select>
                             <select name="category">
                                 <?php
-                                    /*
+									/*
                                      * 輸出 類別 下拉清單
                                      *
                                      */
@@ -241,7 +243,7 @@
                              * 登入時輸出 會員名稱 與 會員管理 及 登出
                              *
                              */
-                            if(!isset($_SESSION["username"])){
+                            if(!isset($_SESSION["username"])){ 
                                 echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
                                 echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
                             }
@@ -251,9 +253,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
@@ -277,11 +279,11 @@
         <div id="context">
 			<table align='center'>
 				<?php
-                    /*
+					/*
                      * 輸出那一排 選擇種類 的標題
                      *
                      */
-					echo $dramatable;
+					 echo $dramatable;
 				?>
 			</table>
 			<table>
@@ -289,7 +291,7 @@
 					<td colspan='2'>名稱</td><td>類別</td><td>類型</td><td>語言</td><td>上映日期</td><td>分數</td>
 				</tr>
 				<?php
-                    /*
+					/*
                      * 輸出影片資訊
                      *
                      */
