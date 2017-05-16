@@ -92,7 +92,8 @@
 
 <head>
     <title>IMDB</title>
-    <link type="text/css" rel="stylesheet" href="../css/index.css">
+    <link type="text/css" rel="stylesheet" href="../css/index.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/manager.css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
@@ -103,6 +104,7 @@
         $(function(){
             var member_id = $("#member_infor").val();
             $("#member_infor").click(function() {
+                    $("#button_area").html("");
                    $.ajax({
                     url:"./Member_Information_Set.php",
                     data:{
@@ -171,6 +173,7 @@
              *
              */
             $("body").on("click","#detail_form_send",function () {
+                $("#button_area").html("");
                 $.ajax({
                     url:"./Member_Information_Set.php",
                     data:$("#detail_form").serialize()+"&action=Update",
@@ -178,7 +181,6 @@
                     success:function(output){
                         if(output == "success"){
                             alert("更新成功");
-                            
                         }else{
                             alert("更新失敗");
                         }
@@ -193,6 +195,7 @@
              *
              */
             $("#member_favorite").click(function(){
+                $("#button_area").html("");
                 $.ajax({
                     url:"./Member_Information_Set.php",
                     data:{
@@ -218,6 +221,218 @@
                     }
                 })
             })
+            /*
+             * 建立管理者介面
+             *
+             */
+            $("#member_manager").click(function(){
+                $("#my_infor").html("");
+                $("#button_area").html("<button id='add_new_video'>新增影片</button>     "
+                                     +"<button id='get_video_detail'>修改與刪除</button>");
+             })
+            /*
+             * 建立新增影片的欄位
+             *
+             */
+            $("body").on("click","#add_new_video",function(){
+                var video_infor = "<form id='add_new_video_form'>";
+                video_infor += "影片名稱：<input type='text' name='video_name' /></br>";
+                video_infor += "上映日期：<input type='date' name='release_date' /></br>";
+                video_infor += "影片種類：<select name='add_kind'>"+$("[name=kind]").html()+"</select></br>";
+                video_infor += "影片類別：<select name='add_category'>"+$("[name=category]").html()+"</select></br>";
+                video_infor += "影片語言：<input type='text' name='language' /></br>";
+                video_infor += "影片地區：<input type='text' name='region' /></br>";
+                video_infor += "影片分數：<input type='text' name='score' /></br>";
+                video_infor += "影片預算：<input type='text' name='budget' /></br>";
+                video_infor += "影片票房：<input type='text' name='boxoffice' /></br>";
+                video_infor += "影片長度：<input type='text' name='playtime' /></br>";
+                video_infor += "圖片網址：<input type='url' name='photo' /></br>";
+                video_infor += "影片簡介：<textarea name='story'></textarea></br>";
+                video_infor += "Youtube影片編號：<input type='text' name='trail' /></br>";
+                video_infor += "</form>";
+                video_infor += "<button id='do_add_new_video'>新增</button>";
+                $("#my_infor").html(video_infor);
+            })
+            /*
+             * 確定新增
+             *
+             */
+            $("body").on("click","#do_add_new_video",function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:$("#add_new_video_form").serialize()+"&action=add_new_video",
+                    type:"post",
+                    success:function(output){
+                        if(output == "success"){
+                            alert("新增成功");
+                            $("#my_infor").html("");
+                        }else{
+                            alert("新增失敗");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
+            /*
+             * 取出影片資料欄位
+             * 用 ajax 抓出所有影片
+             * 更新與刪除都使用這個方法
+             *
+             */
+            $("body").on("click","#get_video_detail",function(){
+                 $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:{
+                        action:"get_video"
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(output){
+                        $("#my_infor").html("");
+                        var select_tag = "<select name='video_select'>";
+                        select_tag += "<option value='0' selected>---------------請選擇---------------</option>";
+                        for(var i =0;i<output.length;i++){
+                            select_tag += "<option value='"+output[i]['VIDEO_ID']+"'>"+output[i]['VIDEO_NAME']+"</option>";
+                        }
+                        select_tag += "</select>";
+                        $("#my_infor").html("請選擇電影名稱："+select_tag);
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                 })
+            })
+            /*
+             * 建立刪除影片的欄位
+             * 用 ajax 把相關資料丟到後台
+             * 再把資料顯示到前台
+             * 讓管理者做修改
+             *
+             */
+            $("body").on("change","[name=video_select]",function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:{
+                        action:"get_video_detail",
+                        video_id:$("[name=video_select]").val()
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(output){
+                        /*
+                         * 把該部影片的類別與種類設為預設
+                         *
+                         */
+                        var output_kind = "";
+                        $("[name=kind] option").each(function(){
+                            if(output[0]["KIND_ID"] == $(this).val()){
+                                output_kind += "<option value='"+$(this).val()+"' selected>"+$(this).text()+"</option>";
+                            }else{
+                                output_kind += "<option value='"+$(this).val()+"' >"+$(this).text()+"</option>";
+                            }
+                        })
+                        var output_category = "";
+                        $("[name=category] option").each(function(){
+                            if(output[0]["CATEGORY_ID"] == $(this).val()){
+                                output_category += "<option value='"+$(this).val()+"' selected>"+$(this).text()+"</option>";
+                            }else{
+                                output_category += "<option value='"+$(this).val()+"' >"+$(this).text()+"</option>";
+                            }
+                        })
+                        if(output != "false"){
+                            html = "<form id='video_detail'>";
+                            html += "<input type='hidden' name='video_id' value='"+output[0]['VIDEO_ID']+"'/>";
+                            html += "影片名稱：<input type='text' name='video_name' value='"+output[0]['VIDEO_NAME']+"'></br>";
+                            html += "上映日期：<input type='date' name='release_date' value='"+output[0]['RELEASE_DATE']+"'/></br>";
+                            html += "影片種類：<select name='add_kind'>"+output_kind+"</select></br>";
+                            html += "影片類別：<select name='add_category'>"+output_category+"</select></br>";
+                            html += "影片語言：<input type='text' name='language' value='"+output[0]['LANGUAGE']+"'/></br>";
+                            html += "影片地區：<input type='text' name='region' value='"+output[0]['REGION']+"'/></br>";
+                            html += "影片分數：<input type='text' name='score' value='"+output[0]['SCORE']+"'/></br>";
+                            html += "影片預算：<input type='text' name='budget' value='"+output[0]['BUDGET']+"'/></br>";
+                            html += "影片票房：<input type='text' name='boxoffice' value='"+output[0]['BOXOFFICE']+"'/></br>";
+                            html += "影片長度：<input type='text' name='playtime' value='"+output[0]['PLAYTIME']+"'/></br>";
+                            html += "圖片網址：<input type='url' name='photo' value='"+output[0]['PHOTO']+"'/></br>";
+                            html += "影片簡介：<textarea name='story'>"+output[0]['STORY']+"</textarea></br>";
+                            html += "Youtube影片編號：<input type='text' name='trail' value='"+output[0]['TRAIL']+"'/></br>";
+                            html += "</form>";
+                            html += "<button id='do_update_video'>更新</button>      ";
+                            html += "<button id='do_delete_video'>刪除</button>";
+                            $("#my_infor").html(html);
+                        }else{
+                            alert("請選擇電影");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
+            /*
+             * 送出更新資料
+             *
+             */
+            $("body").on("click","#do_update_video",function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:$("#video_detail").serialize() + "&action=update_video",
+                    type:"post",
+                    success:function(output){
+                        if(output == "success"){
+                            alert("更新成功");
+                        }else{
+                            alert(output);
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
+            /*
+             * 建立刪除影片的欄位
+             * 用 ajax 把相關資料丟到後台做相關處理
+             *
+             */
+            $("body").on("click","#do_delete_video",function(){
+                if(confirm("確定刪除這部影片嗎?")){
+                    if(confirm("你真的確定刪除這部影片嗎?")){
+                        if(confirm("你真的真的不會後悔嗎?")){
+                            if(confirm("再問最後一次，你真的不後悔嗎?")){
+                                if(confirm("真的?")){
+                                    alert("好吧");
+                                    $.ajax({
+                                        url:"./Member_Information_Set.php",
+                                        data:{
+                                            action:"delete_video",
+                                            video_id:$("[name=video_id]").val()
+                                        },
+                                        type:"post",
+                                        success:function(output){
+                                            if(output == "success"){
+                                                alert("刪除成功");
+                                                var msg = "<div>被刪除的影片就像變了心的女朋友，回不來了</div>";
+                                                msg += "<img src='http://pic.pimg.tw/clean0074/1341514837-1641908809.jpg'></img>";
+                                                $("#my_infor").html(msg);
+
+                                            }else{
+                                                alert(output);
+                                            }
+                                        },
+                                        error: function (request, status, error) {
+                                            $("#error_log").html(request.responseText);
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+             
+
         });
     </script>
 </head>
@@ -298,12 +513,17 @@
         <td id='left'>
             <div id="context">
                     <?php
-                        echo "<button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></br>";
-                        echo "<button id='member_favorite' onclick='' >我的最愛</button>";
+                        echo "<button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></br></br>";
+                        echo "<button id='member_favorite' onclick='' >我的最愛</button></br></br>";
+                        if($_SESSION['level']=="管理員"){
+                            echo "<button id='member_manager'>管理者介面</button></br></br>";
+                        }
                     ?>
-            </div>
+            </div></br>
+            
         </td>
         <td id='right'>
+            <div id="button_area"></div>
             <div id="my_infor"></div>    
             <div id='error_log'></div>
         </td>
