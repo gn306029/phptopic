@@ -1,11 +1,11 @@
 <?php
     session_start();
-    /*
+	/*
      * include 為產生下拉清單的 Php
      *
      */
     include './Page_Search_Set.php';
-    /*
+	/*
      * 帳號與密碼的輸入框
      *
      */
@@ -68,7 +68,7 @@
     $result = search_function();
     $actor = search_actor();
     $commentary = search_commentary();
-    /*
+	/*
      * data 為電影資料
      *
      */
@@ -120,6 +120,144 @@
 	<link type="text/css" rel="stylesheet" href="../css/index.css">
     <link type="text/css" rel="stylesheet" href="../css/video.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script>
+	//加入我的最愛
+	$(function(){
+		$("#favorite").click(function(){
+			$.ajax({
+                    url:"./Member_Favorite.php",
+                    data:{
+						memberid:$("#uid").val(),
+						videoid:$("#vid").val()
+					},
+                    type:"post",
+                    success:function(output){
+                        if(output == "1"){
+                            alert("新增成功");
+                        }else{
+                            alert("新增失敗");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+		})
+	})
+	var img_num = null;
+	var check = null;
+	//================== 
+	// 圖片地址設置 
+	//================== 
+	var imgSrc = '../PIC/top/star.png'; //沒有填色的星星
+	var imgSrc_2 = '../PIC/top/star-1.png'; //打分後有顏色的星星
+	//--------------------------------------------------------------------------- 
+	var checkvid = (window.location.search).substring(10);
+	var checklogin = "<?php if(isset($_SESSION['userid'])){echo $_SESSION['userid'];}else{echo "fuck";}  ?>";
+	if(checklogin=="fuck"){
+		check = 1;
+		}
+	else{
+		$.ajax({
+			url:"./Page_Rating.php",
+			data:{
+				member_id:checklogin,
+				video_id:checkvid
+			},
+			dataType:"json",
+			type:"get",	
+			success: function(output) {
+				if(typeof output[0] == "undefined"){
+					check = 0;
+					var rate_html ="　";
+					for(i=0;i<10;i++){
+						check = 0;
+						rate_html += "<img src='../PIC/top/star.png' style=\"width:20px\"/>";
+					}
+				}
+				else{
+					check = 1;
+					console.log(output[0]);
+					var rate_html = "　";
+					for(i=0;i<output[0];i++){
+						rate_html += "<img src='../PIC/top/star-1.png' style=\"width:20px\"/>";
+					}
+					for(i=0;i<(10-output[0]);i++){
+						rate_html += "<img src='../PIC/top/star.png' style=\"width:20px\"/>";
+					}
+				}
+				$(".starWrapper").html(rate_html);
+			},
+			error: function (request, status, error) {
+				console.log("fuck");
+				$("#error_log").html(request.responseText);
+			}
+		})
+		
+	}
+	function phprating(){
+		if(check==1) {
+			check=0;
+			return;
+		}
+		$.ajax({
+			url:"./Page_Rating.php",
+			data:{
+				member_id:$("#uid").val(),
+				video_id:$("#vid").val(),
+				rating:img_num
+			},
+			type:"get",	
+			success: function(output) {
+				if(output == "1"){
+					alert("評分成功");
+					check = 1;
+					var imgArray = obj.getElementsByTagName("img"); 
+					for(var i=0;i<imgArray.length;i++){ 
+					   imgArray[i]._num = i;
+					}  
+					for(var j=0;j<img_num;j++){  
+					 imgArray[j].src=imgSrc_2;
+					 } 
+					for(var j=0;j<10-img_num;j++){ 
+					 imgArray[j].src=imgSrc; 
+					} 
+				} 
+				else{
+					
+					alert("評分失敗");
+			}}
+			,
+			error: function (request, status, error) {
+				$("#error_log").html(request.responseText);
+			}
+		})
+	}
+	function rate(obj,oEvent){ 
+		if(check==1) return; 
+		var e = oEvent || window.event; 
+		var target = e.target || e.srcElement;  
+		var imgArray = obj.getElementsByTagName("img"); 
+		for(var i=0;i<imgArray.length;i++){ 
+		   imgArray[i]._num = i;
+		} 
+		if(target.tagName=="IMG"){ 
+		   for(var j=0;j<imgArray.length;j++){ 
+			if(j<=target._num){ 
+			 imgArray[j].src=imgSrc_2;
+			 img_num = imgArray[j]._num+1;
+			 } else { 
+			 imgArray[j].src=imgSrc; 
+			} 
+		   } 
+		} else { 
+		   for(var k=0;k<imgArray.length;k++){ 
+			imgArray[k].src=imgSrc; 
+		   } 
+		} 
+	} 
+	</script>
 </head>
 
 <body>
@@ -175,9 +313,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
@@ -197,52 +335,61 @@
 			<table>
 				<tr><td width=50%><?php echo "<img src='".$data[0]['PHOTO']."'>";?></td>
 					<td width=50%>
-                        <?php echo "<input type='hidden' id='V_id' value='".$data[0]["VIDEO_ID"]."'>"?>
-						<p id='video_name'><?php echo $data[0]['VIDEO_NAME'];?><a href='./do_add_myfavorite.php'>加入最愛</a></p>
-						<p id="ratings">評分：<?php echo $data[0]['SCORE'];?></p>
-						<p>類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>
-						<p>上映日期：<?php echo $data[0]['RELEASE_DATE'];?></p>
-						<p>語　　言：<?php echo $data[0]['LANGUAGE'];?></p>
-						<p>地　　區：<?php echo $data[0]['REGION'];?></p>
-						<p>預　　算：<?php echo $data[0]['BUDGET'];?> 元</p>
-						<p>票　　房：<?php echo $data[0]['BOXOFFICE'];?> 元</p>
-						<p>片　　長：<?php echo $data[0]['PLAYTIME'];?></p>
+						<?php echo "<input type='hidden' id='V_id' value='".$data[0]["VIDEO_ID"]."'>"?>
+						<p id='video_name' style='color:hotpink;'>　<?php echo $data[0]['VIDEO_NAME'];?> <?php if(isset($_SESSION['userid'])){ echo "<input type='button' value='加入我的最愛' id='favorite'/>";} ?></p>
+						<?php
+							if(isset($_SESSION['userid'])){
+								echo "<input type='hidden' value='".$_SESSION['userid']."' id='uid'>";
+							}
+						?>
+						<p id="ratings">　評分：<?php echo $data[0]['SCORE'];?></p>
+						<p class='starWrapper' onmouseover='rate(this,event)' onclick='phprating()'></p>
+						<p id='rerate'></p>
+						<p id = "error_log"></p>
+						<p>　類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>
+						<p>　上映日期：<?php echo $data[0]['RELEASE_DATE'];?></p>
+						<p>　語　　言：<?php echo $data[0]['LANGUAGE'];?></p>
+						<p>　地　　區：<?php echo $data[0]['REGION'];?></p>
+						<p>　預　　算：<?php echo $data[0]['BUDGET'];?> 元</p>
+						<p>　票　　房：<?php echo $data[0]['BOXOFFICE'];?> 元</p>
+						<p>　片　　長：<?php echo $data[0]['PLAYTIME'];?></p>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2>
-						<p>劇情</p>
+						<p style='color:hotpink;'>劇情</p>
 						<p><?php echo $data[0]['STORY']."<a href='https://zh.wikipedia.org/wiki/".$data[0]['VIDEO_NAME']."'/>" ?>...詳全文</a></p>
 					</td>
 				</tr>
-				<tr><td colspan=2><p>演員</p></td></tr>
+				<tr><td colspan=2><p style='color:hotpink;'>演員</p></td></tr>
                     <?php  echo $actor_table;  ?>				
-				<tr><td colspan=2><p>預告</td></p>
+				<tr><td colspan=2><p style='color:hotpink;'>預告</td></p>
 				<tr>
 					<td colspan=2 align="center">	
 						<?php echo "<iframe width='863' height='485' src='https://www.youtube.com/embed/".$data[0]['TRAIL']."' frameborder='0' allowfullscreen></iframe>"; ?>
 					</td>
 				</tr>
+				<tr><td colspan=2><p style='color:hotpink;'>評論</td></p></td></tr>
 			</table>
 		</div>
         <div id="commentary">
-                <div id='show_comment'>
-                <?php
-                    echo $commentary_div;
-                ?>
-                </div>
-                <div id='message'>
-                <?php
-                    if(isset($_SESSION['username'])){
-                        echo "<form action='./Page_Comment.php' method='POST'>";
-                        echo "<textarea name='comment' rows='5' cols='100' style='width:100%;'></textarea>";
-                        echo "<input type='hidden' name='userid' value='".$_SESSION['userid']."'/>";
-                        echo "<input type='hidden' name='videoid' value='".$_GET['VIDEO_ID']."'/>";
-                        echo "<input type='submit' value='送出' />";
-                        echo "</form>";
-                    }
-                ?>
-                </div>
+            <div id='show_comment'>
+			<?php
+				echo $commentary_div;
+			?>
+			</div>
+			<div id='message'>
+			<?php
+				if(isset($_SESSION['username'])){
+					echo "<form action='./Page_Comment.php' method='POST'>";
+					echo "<textarea name='comment' rows='5' cols='100' style='width:100%;'></textarea>";
+					echo "<input type='hidden' name='userid' value='".$_SESSION['userid']."'/>";
+					echo "<input type='hidden' id='vid' name='videoid' value='".$_GET['VIDEO_ID']."'/>";
+					echo "<input type='submit' value='送出' />";
+					echo "</form>";
+				}
+			?>
+			</div>
         </div>
     </div>
 </body>
