@@ -1,0 +1,25 @@
+﻿#table{
+	width:100%;
+}
+
+#table #left button{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:18px;
+	font-weight:bold;
+	width:100%;
+}
+#table #right button{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:18px;
+	font-weight:bold;
+	width:40%;
+}
+#left{
+	width:30%;
+	vertical-align:text-top;
+}
+#right{
+	width:70%;
+}
