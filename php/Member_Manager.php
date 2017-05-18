@@ -1,15 +1,13 @@
 <?php
-    /*
-     *
-     * 該檔案有 Bug , 修改資料後無法顯示最新的興趣
-     *
-     *
-     */
+	/*
+	 * 登陸成功就設定session 並重新導向首頁
+	 *
+	 */
     session_start();
-    /*
-     * 下拉清單用
-     *
-     */
+	/*
+	 * 下拉式清單用
+	 *
+	 */
     include './Page_Search_Set.php';
     $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
     $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
@@ -18,51 +16,58 @@
     $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
     $login_form .= "</form>";
     /*
-     * 建立連線
-     *
-     */
+	 * 建立連線
+	 *
+	 *
+	 */
     $db_host = 'db.mis.kuas.edu.tw';
     $db_name = 's1104137130';
     $db_user = 's1104137130';
     $db_password = '1314520';
     $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
-    /*
-     * 取得會員喜歡的類別
-     *
-     */
+	/*
+	 * 取得會員喜歡的類別
+	 *
+	 *
+	 */
     $sql = "Select `CATEGORY` From `member` Where `MEMBER_ID` = '".$_SESSION['userid']."'";
     $result = $conn -> query($sql);
     $result = $result -> fetchAll();
     $favorite_category =  explode(",",$result[0]["CATEGORY"]);
-    /*
-     * Hidden category 區域要裝的東西
-     *
-     */
+	/*
+	 * Hidden category 區域要裝的類型
+	 *
+	 *
+	 */
     $form_category = "";
     /*
-     * 處理換行用
-     *
-     */
+	 * 處理換行用的
+	 *
+	 *
+	 */
     $index = 0;
     foreach ($Allcategory as $row) {
         /*
-         * 每 4 個換一次行
-         *
-         */
+		 * 每 4 個換一次行
+		 *
+		 *
+		 */
         if($index==4){
             $form_category .= "</br>";
             $index = 0;
         }
         /*
-         * 該變數用來判斷是否找到會員喜歡的種類
-         *
-         */
+		 * 該變數用來判斷是否找到會員喜歡的種類
+		 *
+		 *
+		 */
         $find = false;
         /*
-         * 當找到會員喜歡的種類時 將其設為 checked
-         *
-         */
+		 * 當找到會員喜歡的種類時 將其設為 checked
+		 *
+		 *
+		 */
         for($i = 0;$i<count($favorite_category);$i++){
             if($row["CATEGORY_ID"]===$favorite_category[$i]){
                 $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='".$row["CATEGORY_ID"]."' checked>".$row['CATEGORY_NAME'];
@@ -82,7 +87,7 @@
     }else{
         $form_category .= "<input type=\"checkbox\" id=\"MEMBER_CATEGORY\" name=\"member_category[]\" value='0'>其他";
     }
-    if(isset($_POST['action'])){
+	if(isset($_POST['action'])){
         echo $form_category;
     }
 ?>
@@ -92,60 +97,63 @@
 
 <head>
     <title>IMDB</title>
-    <link type="text/css" rel="stylesheet" href="../css/index.css"/>
-    <link type="text/css" rel="stylesheet" href="../css/manager.css"/>
+    <link type="text/css" rel="stylesheet" href="../css/index.css" />
+    <link type="text/css" rel="stylesheet" href="../css/manager.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
         /*
-         * 取得會員詳細資料
-         *
-         */
+		 * 取得會員詳細資料
+		 *
+		 *
+		 */
         $(function(){
             var member_id = $("#member_infor").val();
             $("#member_infor").click(function() {
-                    $("#button_area").html("");
-                   $.ajax({
-                    url:"./Member_Information_Set.php",
-                    data:{
-                        action:"infor",
-                        member_id:member_id
-                    },
-                    type:"post",
-                    dataType:"json",
-                    success: function(output) {
-                        var infor_html = "<table>";
-                        infor_html += "<tr><td><div id='member_detail'>";
-                        infor_html += "<input type='hidden' id='id' value='"+output[0]+"'></br>";
-                        infor_html += "會員帳號：<div id='user_account'>"+output[2]+"</div></br>";
-                        infor_html += "會員名稱：<div id='user_name'>"+output[1]+"</div></br>";
-                        infor_html += "會員密碼：<div id='user_password'>"+output[3]+"</div></br>";
-                        infor_html += "生日：<div id='user_birthday'>"+output[4]+"</div></br>";
-                        infor_html += "信箱：<div id='user_email'>"+output[5]+"</div></br>";
-                        infor_html += "手機：<div id='user_phone_num'>"+output[6]+"</div></br>";
-                        if(output[7] == 0){
-                            infor_html += "性別：<div id='user_gender'>男</div></br>";
-                        }else if(output[7] == 1){
-                            infor_html += "性別：<div id='user_gender'>女</div></br>";
-                        }else{
-                            infor_html += "性別：<div id='user_gender'>第三性</div></br>";
-                        }
-                        infor_html += "興趣：</br><div>"+$("#hidden_category").html()+"</div>";
-                        infor_html += "<input type='hidden' name='gender' value='"+output[7]+"'></br>";
-                        infor_html += "工作：<div id='user_job'>"+output[8]+"</div></br>";
-                        infor_html += "等級：<div id='user_level'>"+output[10]+"</div></br>";
-                        infor_html += "<button id='update'>修改</button>"
-                        $("#my_infor").html(infor_html);
-                    },
-                    error: function (request, status, error) {
-                        $("#error_log").html(request.responseText);
-                    }
+				 $("#button_area").html("");
+				   $.ajax({
+					url:"./Member_Information_Set.php",
+					data:{
+						action:"infor",
+						member_id:member_id
+					},
+					type:"post",
+					dataType:"json",
+					success: function(output) {
+						var infor_html = "<table>";
+						infor_html += "<tr><td><div id='member_detail'>";
+						infor_html += "<input type='hidden' id='id' value='"+output[0]+"'>";
+						infor_html += "會員帳號：<label id='user_account'>"+output[2]+"</label><br>";
+						infor_html += "會員名稱：<label id='user_name'>"+output[1]+"</label><br>";
+						infor_html += "會員密碼：<label id='user_password'>"+output[3]+"</label><br>";
+						infor_html += "生日：<label id='user_birthday'>"+output[4]+"</label><br>";
+						infor_html += "信箱：<label id='user_email'>"+output[5]+"</label><br>";
+						infor_html += "手機：<label id='user_phone_num'>"+output[6]+"</label><br>";
+						if(output[7] == 0){
+							infor_html += "性別：<label id='user_gender'>男</label><br>";
+						}else if(output[7] == 1){
+							infor_html += "性別：<label id='user_gender'>女</label><br>";
+						}else{
+							infor_html += "性別：<label id='user_gender'>第三性</label><br>";
+						}
+						infor_html += "興趣：</br><label>"+$("#hidden_category").html()+"</label><br>";
+						infor_html += "<input type='hidden' name='gender' value='"+output[7]+"'><br>";
+						infor_html += "工作：<label id='user_job'>"+output[8]+"</label><br>";
+						infor_html += "等級：<label id='user_level'>"+output[10]+"</label><br>";
+						infor_html += "<button id='update'>修改</button>"
+						infor_html += "</div></td></tr></table>"
+						$("#my_infor").html(infor_html);
+					},
+					error: function (request, status, error) {
+						$("#error_log").html(request.responseText);
+					}
                 });
             });
-            /*
-             * 確定修改
-             *
-             */
+			/*
+			 * 確定修改
+			 *
+			 *
+			 */
             $("body").on("click","#update",function () {
                 var infor_html = "<table>";
                 infor_html += "<tr><td><div id='member_detail'>";
@@ -155,7 +163,7 @@
                 infor_html += "會員帳號："+$("#user_account").text()+"</br>";
                 infor_html += "會員名稱：<input type='text' name='member_name' value='"+$("#user_name").text()+"'></br>";
                 infor_html += "會員密碼：<input type='text' name='member_password' value='"+$("#user_password").text()+"'></br>";
-                infor_html += "生日：<input type='text' name='member_birthday' value='"+$("#user_birthday").text()+"'></br>";
+                infor_html += "生日：<input type='date' name='member_birthday' value='"+$("#user_birthday").text()+"'></br>";
                 infor_html += "信箱：<input type='text' name='member_email' value='"+$("#user_email").text()+"'></br>";
                 infor_html += "手機：<input type='text' name='member_phone_num' value='"+$("#user_birthday").text()+"'></br>";
                 infor_html += "性別："+$("#user_gender").text()+"</br>"
@@ -168,12 +176,13 @@
                 infor_html += "</table>";
                 $("#my_infor").html(infor_html);
             })
-            /*
-             * 送出會員要修改的資料
-             *
-             */
+			/*
+			 * 送出會員要修改的資料
+			 *
+			 *
+			 */
             $("body").on("click","#detail_form_send",function () {
-                $("#button_area").html("");
+				$("#button_area").html("");
                 $.ajax({
                     url:"./Member_Information_Set.php",
                     data:$("#detail_form").serialize()+"&action=Update",
@@ -184,18 +193,20 @@
                         }else{
                             alert("更新失敗");
                         }
+						history.go(0);
                     },
                     error: function (request, status, error) {
                         $("#error_log").html(request.responseText);
                     }
                 })
             })
-            /*
-             * 取得會員的我的最愛
-             *
-             */
+			/*
+			 * 取得會員的我的最愛
+			 *
+			 *
+			 */
             $("#member_favorite").click(function(){
-                $("#button_area").html("");
+				$("#button_area").html("");
                 $.ajax({
                     url:"./Member_Information_Set.php",
                     data:{
@@ -221,13 +232,13 @@
                     }
                 })
             })
-            /*
+			/*
              * 建立管理者介面
              *
-             */
++             */
             $("#member_manager").click(function(){
                 $("#my_infor").html("");
-                $("#button_area").html("<button id='add_new_video'>新增影片</button>     "
+                $("#button_area").html("<button id='add_new_video'>新增影片</button>　"
                                      +"<button id='get_video_detail'>修改與刪除</button>");
              })
             /*
@@ -359,7 +370,7 @@
                             html += "Youtube影片編號：<input type='text' name='trail' value='"+output[0]['TRAIL']+"'/></br>";
                             html += "</form>";
                             html += "<button id='do_update_video'>更新</button>      ";
-                            html += "<button id='do_delete_video'>刪除</button>";
+							html += "<button id='do_delete_video'>刪除</button>";
                             $("#my_infor").html(html);
                         }else{
                             alert("請選擇電影");
@@ -431,8 +442,6 @@
                     }
                 }
             })
-             
-
         });
     </script>
 </head>
@@ -490,9 +499,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a>　
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a>　
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
@@ -508,27 +517,30 @@
             </table>
         </div>
         <br>
-        <table id='content'>
-        <tr>
-        <td id='left'>
-            <div id="context">
-                    <?php
-                        echo "<button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></br></br>";
-                        echo "<button id='member_favorite' onclick='' >我的最愛</button></br></br>";
-                        if($_SESSION['level']=="管理員"){
-                            echo "<button id='member_manager'>管理者介面</button></br></br>";
-                        }
-                    ?>
-            </div></br>
-            
-        </td>
-        <td id='right'>
-            <div id="button_area"></div>
-            <div id="my_infor"></div>    
-            <div id='error_log'></div>
-        </td>
-        </tr>
-        </table>
+		<div id='context'>
+			<table id='table'>
+				<tr>
+					<td id='left'>
+						<div>
+								<?php
+									echo "<p><button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></p>";
+									echo "<p><button id='member_favorite' onclick='' >我的最愛</button></p>";
+									if(isset($_SESSION['level'])){
+										if($_SESSION['level']=="管理員"){
+											echo "<p><button id='member_manager'>管理者介面</button><br></p>";
+										}
+									}
+								?>
+						</div>
+					</td>
+					<td id='right'>
+						<div id="button_area"></div>
+						<div id="my_infor"></div>    
+						<div id='error_log'></div>
+					</td>
+				</tr>
+			</table>
+		</div>
     </div>
     <div id='hidden_category' style="display:none">
         <?php

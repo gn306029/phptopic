@@ -154,7 +154,7 @@
     }else if($now_pages == $all_num){
         $table .= "<tr><td colspan='8' align='center'><a href='./Page_Movie.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=1&category=".$_GET['category']."'>前一頁</a>".$page_list."</td></tr>";
     }else{
-        $table .= "<tr><td colspan='8' align='center'><a href='./Page_Movie.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=1&category=".$_GET['category']."'>前一頁</a>".$page_list." <a href='./Page_Movie.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=1&category=".$_GET['category']."'>下一頁</a></td></tr>";
+         $table .= "<tr><td colspan='8' align='center'><a href='./Page_Movie.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=1&category=".$_GET['category']."'>前一頁</a>".$page_list." <a href='./Page_Movie.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=1&category=".$_GET['category']."'>下一頁</a></td></tr>";
     }
 ?>
 

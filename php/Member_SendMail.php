@@ -12,7 +12,7 @@ function send_email($user_name,$user_email,$email_title,$email_content){
 	$mail->Password = "L125071747";
 	//這邊是你的gmail帳號和密碼
 
-	$mail->FromName = "=?UTF-8?B?".base64_encode("蘿莉控")."?=";
+	$mail->FromName = "=?UTF-8?B?".base64_encode("IMDB")."?=";
 	// 寄件者名稱(你自己要顯示的名稱)
 	$webmaster_email = "1104137130@gm.kuas.edu.tw"; 
 	//回覆信件至此信箱

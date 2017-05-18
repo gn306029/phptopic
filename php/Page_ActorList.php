@@ -61,7 +61,7 @@
         $table .= "<tr>";
 		$table .= "<td><div><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'><img src='".$row['ACTOR_PHOTO']."' height='100%'></a></div></td>";
         $table .= "<td><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'>".$row['ACTOR_NAME']."</td>";
-        $table .= "<td Width='200'>".mb_substr($row['ACTOR_HISTORY'],0,30)."...</td>";
+        $table .= "<th Width='200'>".mb_substr($row['ACTOR_HISTORY'],0,30)."...</th>";
         $table .= "</tr>";
     }
 	/*
