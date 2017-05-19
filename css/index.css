@@ -74,7 +74,7 @@ select,option{
 /*context*/
 #context{
 	position: relative;
-	max-width: 600px;
+	max-width: 1000px;
 	margin: auto;
 	background-image: url();
 }
@@ -83,4 +83,15 @@ select,option{
 	font-family:"微軟正黑體";
 	font-size:16px;
 	font-weight:bold;
+}
+#rank{
+	position: absolute;
+	top:440px;
+}
+.video_photo{
+	background-size: cover;
+	width:70px;
+	height:70px;
+    background:white;
+	-webkit-clip-path:circle(35px at 50% 50%);
 }
