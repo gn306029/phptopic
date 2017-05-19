@@ -40,7 +40,7 @@
              * 取得使用者的最愛
              *
              */
-            $sql = "Select `video`.`VIDEO_ID` , `VIDEO_NAME` , `PHOTO` , `STORY` From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = '".$_POST['member_id']."'";
+            $sql = "Select `video`.`VIDEO_ID` , `VIDEO_NAME` , `PHOTO`  From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = '".$_POST['member_id']."'";
             $result = sql_select($sql);
             echo json_encode($result);
             break;
@@ -122,6 +122,10 @@
             }
             break;
         case 'delete_video':
+            /*
+             * 刪除資料
+             *
+             */
             try{
                 $sql = "DELETE FROM `actor_list` WHERE `VIDEO_ID` = '".$_POST['video_id']."'";
                 sql_exec($sql);
@@ -133,6 +137,35 @@
             }catch(Exception $e){
                 echo $e -> getMessage();
             }
+            break;
+        case 'rate_movie_top5':
+            /*
+             * 取得電影排名
+             *
+             */
+            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '1' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
+            $result = sql_select($sql);
+            echo json_encode($result);
+            break;
+        case 'rate_drama_top5':
+            /*
+             * 取得電影排名
+             *
+             */
+            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '2' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
+            $result = sql_select($sql);
+            echo json_encode($result);
+            break;
+        case 'rate_tvshow_top5':
+            /*
+             * 取得電影排名
+             *
+             */
+            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '3' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
+            $result = sql_select($sql);
+            echo json_encode($result);
+            break;
+
     }
 
 ?>

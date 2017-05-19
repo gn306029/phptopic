@@ -221,7 +221,6 @@
                             favorite_infor += "<tr>";
                             favorite_infor += "<td><a href='./Page_Video.php?VIDEO_ID="+output[i]["VIDEO_ID"]+"' ><img src='"+output[i]["PHOTO"]+"' width=70 /></a></td>";
                             favorite_infor += "<td><a href='./Page_Video.php?VIDEO_ID="+output[i]["VIDEO_ID"]+"' >"+output[i]["VIDEO_NAME"]+"</a></td>";
-                            favorite_infor += "<td>"+output[i]["STORY"]+"</td>";
                             favorite_infor += "</tr>";
                         }
                         favorite_infor += "</table>";
@@ -442,6 +441,34 @@
                     }
                 }
             })
+            /*
+             * 管理首頁
+             *
+             */
+            $("#manager_index").click(function(){
+                $("my_infor").html("");
+                $("#button_area").html("<button id='manager_ad'>廣告管理</button>");
+            })
+            /*
+             * 廣告管理
+             *
+             */
+            $("body").on("click","#manager_ad",function(){
+                var form = "<form id='select_ad' enctype='multipart/form-data' action='./Member_Save_Picture.php' method='post'>";
+                form += "<input name='file[]' type='file'></br>";
+                form += "<input type='submit' value='確定'/>";
+                form += "</form>";
+                form += "<button id='add_picture'>新增檔案</button>";
+                form += "<button id='send_picture'>確定</button>";
+                $("#my_infor").html(form);
+            })
+            /*
+             * 新增可選擇的檔案
+             *
+             */
+            $("body").on("click","#add_picture",function(){
+                $("#select_ad").append("<input name='file[]' type='file'></br>");
+            })
         });
     </script>
 </head>
@@ -523,11 +550,12 @@
 					<td id='left'>
 						<div>
 								<?php
-									echo "<p><button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button></p>";
-									echo "<p><button id='member_favorite' onclick='' >我的最愛</button></p>";
+									echo "<button id='member_infor' value='".$_SESSION['userid']."'>基本資料管理</button>";
+									echo "<p><button id='member_favorite' value='".$_SESSION['userid']."'>我的最愛</button></p>";
 									if(isset($_SESSION['level'])){
 										if($_SESSION['level']=="管理員"){
-											echo "<p><button id='member_manager'>管理者介面</button><br></p>";
+                                            echo "<button id='manager_index'>管理首頁</button>";
+											echo "<p><button id='member_manager'>影片管理</button><br></p>";
 										}
 									}
 								?>
