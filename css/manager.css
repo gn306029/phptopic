@@ -18,8 +18,16 @@
 }
 #left{
 	width:30%;
-	vertical-align:text-top;
+	vertical-align: top;
 }
 #right{
 	width:70%;
+	vertical-align: top;
+}
+div#button_area{
+	overflow: auto;
+
+}
+div#my_infor{
+	overflow: auto;
 }
