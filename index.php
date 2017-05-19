@@ -9,11 +9,101 @@
 	$login_form .= "</form>";
 ?>
 
+<?php
+
+	$db_host = 'db.mis.kuas.edu.tw';
+	$db_name = 's1104137130';
+	$db_user = 's1104137130';
+	$db_password = '1314520';
+	$dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
+	$conn = new PDO($dsn,$db_user,$db_password);
+
+	$sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '1' ORDER BY `SCORE` DESC LIMIT 5";
+
+	$result = $conn -> query($sql);
+	$conn = null;
+	$result = $result -> fetchAll();
+	$rank = "<table id='top_list'>";
+	$rank .= "<tr><td>排名</td><td></td><td>影片名稱</td><td>分數</td></tr>";
+	$index = 1;
+	foreach($result as $row){
+		$rank .= "<tr>";
+		$rank .= "<td>".$index."</td>";
+		$rank .= "<td><div class='video_photo'><img  width='70px' height='70px' src='".$row['PHOTO']."'></div></td>";
+		$rank .= "<td><a href='./php/Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</td>";
+		$rank .= "<td>".$row['SCORE']."</td>";
+		$rank .= "</tr>";
+		$index ++;
+	}
+	$rank .= "</table>"
+
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
 		<title>IMDB</title>
 		<link type="text/css" rel="stylesheet" href="./css/index.css">
+		<link href="./js/js-image-slider.css" rel="stylesheet" />
+    	<script src="./js/js-image-slider.js" type="text/javascript"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script type="text/javascript">
+			function ajax(action,rate){
+				$.ajax({
+				url:"./php/Member_Information_Set.php",
+					data:{
+						action:action,
+						rate:rate
+					},
+					type:"post",
+					success:function(output){
+						var result = JSON.parse(output);
+						var rank = "<tr><td>排名</td><td></td><td>影片名稱</td><td>分數</td></tr>";
+							for(var i =0;i<Object.keys(result).length;i++){
+							rank += "<tr>";
+							rank += "<td>"+(i+1)+"</td>";
+							rank += "<td><div class='video_photo'><img  width='70px' height='70px' src='"+result[i]['PHOTO']+"'></div></td>";
+							rank += "<td><a href='./php/Page_Video.php?VIDEO_ID="+result[i]['VIDEO_ID']+"'>"+result[i]['VIDEO_NAME']+"</td>";
+							rank += "<td>"+result[i]['SCORE']+"</td>";
+							rank += "</tr>";
+						}
+						$("#top_list").html(rank);
+					},
+					error: function (request, status, error) {
+						$("#error_log").html(request.responseText);
+					}
+				})
+			}
+			$(function(){
+				/*
+				 * 滑鼠在該標題上的事件
+				 *
+				 */
+				$(".video_title").mouseover(function(event){
+					$(this).css("background-color","blue");
+					if($(this).text() == "TOP5 電影"){
+						ajax("rate_movie_top5","DESC")
+					}else if($(this).text() == "TOP5 戲劇"){
+						ajax("rate_drama_top5","DESC")
+					}else if($(this).text() == "TOP5 綜藝節目"){
+						ajax("rate_tvshow_top5","DESC")
+					}else if($(this).text() == "糞電影"){
+						ajax("rate_movie_top5","ASC")
+					}else if($(this).text() == "狗血劇"){
+						ajax("rate_drama_top5","ASC")
+					}else if($(this).text() == "大學生了沒"){
+						ajax("rate_tvshow_top5","ASC")
+					}				
+				})
+				/*
+				 * 滑鼠離開標題時的事件
+				 *
+				 */
+				$(".video_title").mouseout(function(event){
+					$(this).css("background-color","black");
+				})
+			})
+		</script>
 	</head>
 	<body>
 		<div id="main">
@@ -86,8 +176,36 @@
 				</table>
 			</div>
 			<div id="context">
-				
+				<div id="sliderFrame">
+					<div id="slider">
+						<?php
+							$dir = '../PIC/tmp_photo';
+								if($dh = opendir($dir)){
+									while(($file=readdir($dh))!==false){
+										if($file!='..' && $file!='.'){
+									       $file=iconv("BIG5", "UTF-8",$file); //必要,否則中文會亂碼
+									       echo pathinfo($file, PATHINFO_DIRNAME).pathinfo($file, PATHINFO_FILENAME );
+									   }
+										
+									}
+								}
+						?>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB1.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB2.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB5.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB9.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB10.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/Lin_LoLi-2.jpg"/></a>
+					</div>
+				</div>
+				<div id='rank'>
+					<table width="800px"><tr><td class="video_title" align="center">TOP5 電影</td><td class="video_title" align="center">TOP5 戲劇</td><td class="video_title" align="center">TOP5 綜藝節目</td><td class="video_title" align="center">糞電影</td><td class="video_title" align="center">狗血劇</td><td class="video_title" align="center">大學生了沒</td></tr></table>
+					<?php
+						echo $rank;
+					?>
+				</div>
 			</div>
 		</div>
+		<div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 	</body>
 </html>
