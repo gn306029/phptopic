@@ -1,4 +1,7 @@
-﻿#table{
+﻿a{
+	color:LightSkyBlue;
+}
+#table{
 	width:100%;
 }
 
@@ -18,16 +21,19 @@
 }
 #left{
 	width:20%;
-	vertical-align: top;
+	vertical-align:top;
 }
 #right{
 	width:70%;
-	vertical-align: top;
+	vertical-align:top;
 }
-div#button_area{
+#button_area{
 	overflow: auto;
 
 }
-div#my_infor{
-	overflow: auto;
+#circlepic{
+	width:70px;
+	height:70px;
+    background:white;
+    -webkit-clip-path:circle(35px at 50% 50%);
 }
