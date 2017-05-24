@@ -97,7 +97,7 @@
 
 <head>
     <title>IMDB</title>
-    <link type="text/css" rel="stylesheet" href="../css/index.css" />
+    <link type="text/css" rel="stylesheet" href="../css/common.css" />
     <link type="text/css" rel="stylesheet" href="../css/manager.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -219,7 +219,7 @@
                         var favorite_infor = "<table><tr><td></td><td>影片名稱</td><td></td></tr>";
                         for(var i =0; i<Object.keys(output).length;i++){
                             favorite_infor += "<tr>";
-                            favorite_infor += "<td><a href='./Page_Video.php?VIDEO_ID="+output[i]["VIDEO_ID"]+"' ><img src='"+output[i]["PHOTO"]+"' width=70 /></a></td>";
+                            favorite_infor += "<td><div id='circlepic'><a href='./Page_Actor.php?actor_id="+output[i]["VIDEO_ID"]+"'><img src='"+output[i]["PHOTO"]+"' height='100%'></a></div></td>";
                             favorite_infor += "<td><a href='./Page_Video.php?VIDEO_ID="+output[i]["VIDEO_ID"]+"' >"+output[i]["VIDEO_NAME"]+"</a></td>";
                             favorite_infor += "</tr>";
                         }
@@ -232,7 +232,37 @@
                 })
             })
 			/*
-             * 建立管理者介面
+			 * 管理首頁
+             *
+             */
+            $("#manager_index").click(function(){
+				$("#my_infor").html("");
+                $("#button_area").html("<button id='manager_ad'>廣告管理</button>");
+            })
+            /*
+             * 廣告管理
+             *
+             */
+            $("body").on("click","#manager_ad",function(){
+                var form = "<form id='select_ad' action='Member_Save_Picture.php' method='post' enctype='multipart/form-data'>";
+                        form += "<input name='file[]' type='file'>";
+                        form += "</form>";
+                        form += "<button id='add_picture'>增加</button>";
+                        form += "<button id='send_picture'>上傳</button>";
+                        $("#my_infor").html(form);
+            })
+            /*
+             * 新增可選擇的檔案
+             *
+             */
+            $("body").on("click","#add_picture",function(){
+                $("#select_ad").append("<input name='file[]' type='file'></br>");
+            })
+            $("body").on("click","#send_picture",function(){
+                $("#select_ad").submit();
+            })
+			/*
+             * 建立影片管理者介面
              *
 +             */
             $("#member_manager").click(function(){
@@ -246,19 +276,19 @@
              */
             $("body").on("click","#add_new_video",function(){
                 var video_infor = "<form id='add_new_video_form'>";
-                video_infor += "影片名稱：<input type='text' name='video_name' /></br>";
-                video_infor += "上映日期：<input type='date' name='release_date' /></br>";
-                video_infor += "影片種類：<select name='add_kind'>"+$("[name=kind]").html()+"</select></br>";
-                video_infor += "影片類別：<select name='add_category'>"+$("[name=category]").html()+"</select></br>";
-                video_infor += "影片語言：<input type='text' name='language' /></br>";
-                video_infor += "影片地區：<input type='text' name='region' /></br>";
-                video_infor += "影片分數：<input type='text' name='score' /></br>";
-                video_infor += "影片預算：<input type='text' name='budget' /></br>";
-                video_infor += "影片票房：<input type='text' name='boxoffice' /></br>";
-                video_infor += "影片長度：<input type='text' name='playtime' /></br>";
-                video_infor += "圖片網址：<input type='url' name='photo' /></br>";
-                video_infor += "影片簡介：<textarea name='story'></textarea></br>";
-                video_infor += "Youtube影片編號：<input type='text' name='trail' /></br>";
+                video_infor += "<p>影片名稱：<input type='text' name='video_name' /></p>";
+                video_infor += "<p>上映日期：<input type='date' name='release_date' /></p>";
+                video_infor += "<p>影片種類：<select name='add_kind'>"+$("[name=kind]").html()+"</select></p>";
+                video_infor += "<p>影片類別：<select name='add_category'>"+$("[name=category]").html()+"</select></p>";
+                video_infor += "<p>影片語言：<input type='text' name='language' /></p>";
+                video_infor += "<p>影片地區：<input type='text' name='region' /></p>";
+                video_infor += "<p>影片分數：<input type='text' name='score' /></p>";
+                video_infor += "<p>影片預算：<input type='text' name='budget' /></p>";
+                video_infor += "<p>影片票房：<input type='text' name='boxoffice' /></p>";
+                video_infor += "<p>影片長度：<input type='text' name='playtime' /></p>";
+                video_infor += "<p>圖片網址：<input type='url' name='photo' /></p>";
+                video_infor += "<p>影片簡介：<textarea name='story'></textarea></p>";
+                video_infor += "<p>Youtube影片編號：<input type='text' name='trail' /></p>";
                 video_infor += "</form>";
                 video_infor += "<button id='do_add_new_video'>新增</button>";
                 $("#my_infor").html(video_infor);
@@ -354,19 +384,19 @@
                         if(output != "false"){
                             html = "<form id='video_detail'>";
                             html += "<input type='hidden' name='video_id' value='"+output[0]['VIDEO_ID']+"'/>";
-                            html += "影片名稱：<input type='text' name='video_name' value='"+output[0]['VIDEO_NAME']+"'></br>";
-                            html += "上映日期：<input type='date' name='release_date' value='"+output[0]['RELEASE_DATE']+"'/></br>";
-                            html += "影片種類：<select name='add_kind'>"+output_kind+"</select></br>";
-                            html += "影片類別：<select name='add_category'>"+output_category+"</select></br>";
-                            html += "影片語言：<input type='text' name='language' value='"+output[0]['LANGUAGE']+"'/></br>";
-                            html += "影片地區：<input type='text' name='region' value='"+output[0]['REGION']+"'/></br>";
-                            html += "影片分數：<input type='text' name='score' value='"+output[0]['SCORE']+"'/></br>";
-                            html += "影片預算：<input type='text' name='budget' value='"+output[0]['BUDGET']+"'/></br>";
-                            html += "影片票房：<input type='text' name='boxoffice' value='"+output[0]['BOXOFFICE']+"'/></br>";
-                            html += "影片長度：<input type='text' name='playtime' value='"+output[0]['PLAYTIME']+"'/></br>";
-                            html += "圖片網址：<input type='url' name='photo' value='"+output[0]['PHOTO']+"'/></br>";
-                            html += "影片簡介：<textarea name='story'>"+output[0]['STORY']+"</textarea></br>";
-                            html += "Youtube影片編號：<input type='text' name='trail' value='"+output[0]['TRAIL']+"'/></br>";
+                            html += "<p>影片名稱：<input type='text' name='video_name' value='"+output[0]['VIDEO_NAME']+"'></p>";
+                            html += "<p>上映日期：<input type='date' name='release_date' value='"+output[0]['RELEASE_DATE']+"'/></p>";
+                            html += "<p>影片種類：<select name='add_kind'>"+output_kind+"</select></p>";
+                            html += "<p>影片類別：<select name='add_category'>"+output_category+"</select></p>";
+                            html += "<p>影片語言：<input type='text' name='language' value='"+output[0]['LANGUAGE']+"'/></p>";
+                            html += "<p>影片地區：<input type='text' name='region' value='"+output[0]['REGION']+"'/></p>";
+                            html += "<p>影片分數：<input type='text' name='score' value='"+output[0]['SCORE']+"'/></p>";
+                            html += "<p>影片預算：<input type='text' name='budget' value='"+output[0]['BUDGET']+"'/></p>";
+                            html += "<p>影片票房：<input type='text' name='boxoffice' value='"+output[0]['BOXOFFICE']+"'/></p>";
+                            html += "<p>影片長度：<input type='text' name='playtime' value='"+output[0]['PLAYTIME']+"'/></p>";
+                            html += "<p>圖片網址：<input type='url' name='photo' value='"+output[0]['PHOTO']+"'/></p>";
+                            html += "<p>影片簡介：<textarea name='story'>"+output[0]['STORY']+"</textarea></p>";
+                            html += "<p>Youtube影片編號：<input type='text' name='trail' value='"+output[0]['TRAIL']+"'/></p>";
                             html += "</form>";
                             html += "<button id='do_update_video'>更新</button>      ";
 							html += "<button id='do_delete_video'>刪除</button>";
@@ -441,35 +471,95 @@
                     }
                 }
             })
-            /*
-             * 管理首頁
+			
+			/*
+             * 建立演員管理介面
+             *
+			 */
+            $("#actor_manager").click(function(){
+                $("#my_infor").html("");
+                $("#button_area").html("<button id='add_new_actor'>新增演員</button>　"
+                                     +"<button id='get_actor_detail'>演員修改與刪除</button>");
+             })
+			/*
+             * 建立新增演員的欄位
              *
              */
-            $("#manager_index").click(function(){
-                $("my_infor").html("");
-                $("#button_area").html("<button id='manager_ad'>廣告管理</button>");
+            $("body").on("click","#add_new_actor",function(){
+				$.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:$("#get_video").serialize() + "&action=get_video",
+                    type:"post",
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+                var actor_infor = "<form id='add_new_actor_form'>";
+                actor_infor += "<p>演員名稱：<input type='text' name='actor_name' /></p>";
+                actor_infor += "<p>演員生日：<input type='date' name='actor_birth' /></p>";
+                actor_infor += "<p>演員生平：<input type='text' name='actor_history' /></p>";
+                actor_infor += "<p>圖片網址：<input type='url' name='actor_photo' /></p>";
+                actor_infor += "<p>Facebook：<input type='url' name='actor_fb' /></p>";
+                actor_infor += "</form>";
+				actor_infor += "<p id='video_list'></p>";
+				actor_infor += "<button id='add_more_actorlist'>增加影片</button>　";
+				actor_infor += "<button id='do_add_new_actor' >新增演員</button>";
+                $("#my_infor").html(actor_infor);
             })
-            /*
-             * 廣告管理
-             *
-             */
-            $("body").on("click","#manager_ad",function(){
-                var form = "<form id='select_ad' enctype='multipart/form-data' action='./Member_Save_Picture.php' method='post'>";
-                form += "<input name='file[]' type='file'></br>";
-                form += "<input type='submit' value='確定'/>";
-                form += "</form>";
-                form += "<button id='add_picture'>新增檔案</button>";
-                form += "<button id='send_picture'>確定</button>";
-                $("#my_infor").html(form);
+			$("body").on("click","#add_more_actorlist",function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:{
+                        action:"get_video"
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(output){
+                        var select_tag = "<select name='video_list[]'>";
+                        select_tag += "<option value='0' selected>---------------請選擇---------------</option>";
+                        for(var i =0;i<output.length;i++){
+                            select_tag += "<option value='"+output[i]['VIDEO_ID']+"'>"+output[i]['VIDEO_NAME']+"</option>";
+                        }
+                        select_tag += "</select><br>";
+                        $("#video_list").append("請選擇電影名稱："+select_tag);
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                 })
             })
-            /*
-             * 新增可選擇的檔案
-             *
-             */
-            $("body").on("click","#add_picture",function(){
-                $("#select_ad").append("<input name='file[]' type='file'></br>");
-            })
-        });
+		});
+		/*
+		 *Line加入好友滾動
+		 *
+		 *
+		 */
+		$(window).load(function(){
+				var $win = $(window),
+					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
+					_width = $ad.width(),
+					_height = $ad.height(),
+					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
+					_moveSpeed = 300;	// 移動的速度
+			 
+				// 先把 #line 移動到定點
+				$ad.css({
+					top: $(document).height(),
+					left: $win.width() - _width - _diffX,
+					opacity: 1
+				});
+			 
+				// 幫網頁加上 scroll 及 resize 事件
+				$win.bind('scroll resize', function(){
+					var $this = $(this);
+			 
+					// 控制 #line 的移動
+					$ad.stop().animate({
+						top: $this.scrollTop() + $this.height() - _height - _diffY,
+						left: $this.scrollLeft() + $this.width() - _width - _diffX
+					}, _moveSpeed);
+				}).scroll();	// 觸發一次 scroll()
+			});
     </script>
 </head>
 
@@ -554,8 +644,9 @@
 									echo "<p><button id='member_favorite' value='".$_SESSION['userid']."'>我的最愛</button></p>";
 									if(isset($_SESSION['level'])){
 										if($_SESSION['level']=="管理員"){
-                                            echo "<button id='manager_index'>管理首頁</button>";
-											echo "<p><button id='member_manager'>影片管理</button><br></p>";
+											echo "<button id='manager_index'>管理首頁</button>";
+											echo "<p><button id='member_manager'>影片管理</button></p>";
+											echo "<p><button id='actor_manager'>演員管理</button></p>";
 										}
 									}
 								?>
@@ -575,6 +666,7 @@
             echo $form_category;
         ?>
     </div>
+	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>
