@@ -30,7 +30,7 @@
 
 <head>
     <title>IMDB</title>
-	<link type="text/css" rel="stylesheet" href="../css/index.css">
+	<link type="text/css" rel="stylesheet" href="../css/common.css">
     <link type="text/css" rel="stylesheet" href="../css/register.css">
     <style>
     input:focus {
@@ -49,23 +49,28 @@
 
     function checkAccount() {
         var REGISTER_ACCOUNT = $('#REGISTER_ACCOUNT').val();
-        $.ajax({
-            url: "../php/SQL.php",
-            data: {
-                action: 'checkaccount',
-                account: REGISTER_ACCOUNT
-            },
-            type: 'post',
-            success: function(output) {
-                if (output == 0) {
-                    $('#imply').html("該帳號可以使用");
-                    isInput = true;
-                } else if (output == 1) {
-                    $('#imply').html("該帳號已有人使用");
-                    isInput = false;
+        if(!checkspecial(REGISTER_ACCOUNT)){
+            $.ajax({
+                url: "../php/SQL.php",
+                data: {
+                    action: 'checkaccount',
+                    account: REGISTER_ACCOUNT
+                },
+                type: 'post',
+                success: function(output) {
+                    if (output == 0) {
+                        $('#imply').html("該帳號可以使用");
+                        isInput = true;
+                    } else if (output == 1) {
+                        $('#imply').html("該帳號已有人使用");
+                        isInput = false;
+                    }
                 }
-            }
-        })
+            })
+        }else{
+            $('#imply').html("不得包含特殊字元");
+            isInput = false;
+        }
     }
 	/*
 	 * 檢查密碼是否一致
@@ -75,13 +80,19 @@
     function checkPassword() {
         var DETERMIND_PASSWORD = $('#DETERMIND_PASSWORD').val();
         var REGISTER_PASSWORD = $('#REGISTER_PASSWORD').val();
-        if (REGISTER_PASSWORD != DETERMIND_PASSWORD) {
-            $('#passwordImply').html("密碼不同");
+        if(!checkspcial(DETERMIND_PASSWORD) && !checkspcial(REGISTER_PASSWORD)){
+            if (REGISTER_PASSWORD != DETERMIND_PASSWORD) {
+                $('#passwordImply').html("密碼不同");
+                isInput = false;
+            } else {
+                $('#passwordImply').html("正確");
+                isInput = true;
+            }
+        }else{
+            $('#passwordImply').html("不得包含特殊字元");
             isInput = false;
-        } else {
-            $('#passwordImply').html("正確");
-            isInput = true;
         }
+        
     }
 	/*
 	 * 檢查手機格式
@@ -118,6 +129,21 @@
 	 *
 	 *
 	 */
+    function checkspecial(val){
+        var toalarm = false;
+        var ch;
+        var stralarm = new Array("<",">",".","!","'");
+        for (var i=0;i<stralarm.length;i++){ //依序載入使用者輸入的每個字元
+            for (var j=0;j<val.length;j++)
+            {
+                ch=val.substr(j,1);
+                if (ch==stralarm[i]) //如果包含禁止字元
+                {
+                    return true;
+                }
+            } 
+        }
+    }
     $(document).ready(function() {
         $('#btn').click(function() {
             var input = true;
@@ -157,7 +183,44 @@
                 alert("請檢查表單輸入是否確實");
             }
         })
+        $("#REGISTER_JOB").change(function(){
+            if(checkspecial($(this).val())){
+                $('#job_imply').html("不得包含特殊字元");
+                isInput = false;
+            }
+        })
     })
+	/*
+	 *Line加入好友滾動
+	 *
+	 *
+	 */
+	$(window).load(function(){
+				var $win = $(window),
+					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
+					_width = $ad.width(),
+					_height = $ad.height(),
+					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
+					_moveSpeed = 300;	// 移動的速度
+			 
+				// 先把 #line 移動到定點
+				$ad.css({
+					top: $(document).height(),
+					left: $win.width() - _width - _diffX,
+					opacity: 1
+				});
+			 
+				// 幫網頁加上 scroll 及 resize 事件
+				$win.bind('scroll resize', function(){
+					var $this = $(this);
+			 
+					// 控制 #line 的移動
+					$ad.stop().animate({
+						top: $this.scrollTop() + $this.height() - _height - _diffY,
+						left: $this.scrollLeft() + $this.width() - _width - _diffX
+					}, _moveSpeed);
+				}).scroll();	// 觸發一次 scroll()
+			});
     </script>
 </head>
 
@@ -254,7 +317,7 @@
                     <input type="radio" id="REGISTER_GENDER" name="REGISTER_GENDER" value="0" checked>男
                     <input type="radio" id="REGISTER_GENDER" name="REGISTER_GENDER" value="1">女</p>
                 <p> 　工　　作　：
-                    <input type="text" id="REGISTER_JOB" name="REGISTER_JOB" />
+                    <input type="text" id="REGISTER_JOB" name="REGISTER_JOB" /><span id="job_imply"></span></p>
                 </p>
                 <p> 喜愛電影類型：<br>
                     <?php
@@ -267,6 +330,7 @@
 			</p>
         </div>
     </div>
+	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>
