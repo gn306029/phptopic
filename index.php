@@ -43,11 +43,16 @@
 <html>
 	<head>
 		<title>IMDB</title>
+		<link type="text/css" rel="stylesheet" href="./css/common.css">
 		<link type="text/css" rel="stylesheet" href="./css/index.css">
 		<link href="./js/js-image-slider.css" rel="stylesheet" />
     	<script src="./js/js-image-slider.js" type="text/javascript"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script type="text/javascript">
+			/*
+			 * 排名
+			 *
+			 */
 			function ajax(action,rate){
 				$.ajax({
 				url:"./php/Member_Information_Set.php",
@@ -80,7 +85,7 @@
 				 *
 				 */
 				$(".video_title").mouseover(function(event){
-					$(this).css("background-color","blue");
+					$(this).css("background-color","#90CFF0");
 					if($(this).text() == "TOP5 電影"){
 						ajax("rate_movie_top5","DESC")
 					}else if($(this).text() == "TOP5 戲劇"){
@@ -100,7 +105,7 @@
 				 *
 				 */
 				$(".video_title").mouseout(function(event){
-					$(this).css("background-color","black");
+					$(this).css("background-color","white");
 				})
 			})
 		</script>
@@ -178,23 +183,15 @@
 			<div id="context">
 				<div id="sliderFrame">
 					<div id="slider">
-						<?php
-							$dir = '../PIC/tmp_photo';
-								if($dh = opendir($dir)){
-									while(($file=readdir($dh))!==false){
-										if($file!='..' && $file!='.'){
-									       $file=iconv("BIG5", "UTF-8",$file); //必要,否則中文會亂碼
-									       echo pathinfo($file, PATHINFO_DIRNAME).pathinfo($file, PATHINFO_FILENAME );
-									   }
-										
-									}
-								}
-						?>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB1.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB2.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB5.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB9.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/STB10.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/1.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/2.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/3.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/4.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/5.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/6.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/7.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/8.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/9.jpg"/></a>
 						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/Lin_LoLi-2.jpg"/></a>
 					</div>
 				</div>
@@ -205,7 +202,16 @@
 					?>
 				</div>
 			</div>
+			<footer><table><tr>
+				<td><a href="./php/About.php?action=Me">關於</a></td>
+				<td><a href="./php/About.php?action=Dev">開發人員</a></td>
+				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
+				
+			</tr>
+			<tr>
+				<td colspan=3>© 2017 YouTube, LLC</td>
+			</tr></table></footer>
 		</div>
-		<div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
+		
 	</body>
 </html>
