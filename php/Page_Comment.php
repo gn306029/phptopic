@@ -10,9 +10,9 @@
     $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
 
-    $video_id = $_POST['videoid'];
-    $comment = $_POST['comment'];
-    $member_id = $_POST['userid'];
+    $video_id = addslashes($_POST['videoid']);
+    $comment = addslashes($_POST['comment']);
+    $member_id = addslashes($_POST['userid']);
 	/*
      * 設定時區及時間格式
      *

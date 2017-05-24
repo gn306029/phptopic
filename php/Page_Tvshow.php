@@ -165,7 +165,7 @@
  
 <head>
     <title>IMDB</title>
-	<link type="text/css" rel="stylesheet" href="../css/index.css">
+	<link type="text/css" rel="stylesheet" href="../css/common.css">
     <link type="text/css" rel="stylesheet" href="../css/search.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -181,6 +181,37 @@
                 })
             })
         })
+		/*
+		 *Line加入好友滾動
+		 *
+		 *
+		 */
+		$(window).load(function(){
+				var $win = $(window),
+					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
+					_width = $ad.width(),
+					_height = $ad.height(),
+					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
+					_moveSpeed = 300;	// 移動的速度
+			 
+				// 先把 #line 移動到定點
+				$ad.css({
+					top: $(document).height(),
+					left: $win.width() - _width - _diffX,
+					opacity: 1
+				});
+			 
+				// 幫網頁加上 scroll 及 resize 事件
+				$win.bind('scroll resize', function(){
+					var $this = $(this);
+			 
+					// 控制 #line 的移動
+					$ad.stop().animate({
+						top: $this.scrollTop() + $this.height() - _height - _diffY,
+						left: $this.scrollLeft() + $this.width() - _width - _diffX
+					}, _moveSpeed);
+				}).scroll();	// 觸發一次 scroll()
+			});
     </script>
 </head>
 
@@ -270,6 +301,7 @@
 			</table>
 		</div>
     </div>
+	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>

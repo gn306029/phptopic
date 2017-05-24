@@ -1,92 +1,33 @@
-<?php
-    session_start();
-	/*
-     * include 為產生下拉清單的 Php
-     *
-     */
-    include './Page_Search_Set.php';
-	/*
-	 * 帳號與密碼的輸入框
-	 *
-	 */
-    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
-    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
-    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-	$login_form .= "</form>";
-?>
-<?php
-    function actor_detail(){
-        $db_host = 'db.mis.kuas.edu.tw';
-        $db_name = 's1104137130';
-        $db_user = 's1104137130';
-        $db_password = '1314520';
-        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
-        $conn = new PDO($dsn,$db_user,$db_password);
-        //$sql = "Select `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = '".$_GET['actor_id']."'";
-        $sql = "Select `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = ?";
-        $array = array($_GET['actor_id']);
-        $stmt = $conn -> prepare($sql);
-        $stmt -> execute($array);
-        $conn = null;
-        return $stmt -> fetchAll();
-    }
-    $detail = actor_detail();
-?>
-
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>IMDB</title>
-	<link type="text/css" rel="stylesheet" href="../css/common.css">
-    <link type="text/css" rel="stylesheet" href="../css/actor.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script type="text/javascript">
-			/*
-			 *Line加入好友滾動
-			 *
-			 *
-			 */
-			$(window).load(function(){
-				var $win = $(window),
-					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
-					_width = $ad.width(),
-					_height = $ad.height(),
-					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
-					_moveSpeed = 300;	// 移動的速度
-			 
-				// 先把 #line 移動到定點
-				$ad.css({
-					top: $(document).height(),
-					left: $win.width() - _width - _diffX,
-					opacity: 1
-				});
-			 
-				// 幫網頁加上 scroll 及 resize 事件
-				$win.bind('scroll resize', function(){
-					var $this = $(this);
-			 
-					// 控制 #line 的移動
-					$ad.stop().animate({
-						top: $this.scrollTop() + $this.height() - _height - _diffY,
-						left: $this.scrollLeft() + $this.width() - _width - _diffX
-					}, _moveSpeed);
-				}).scroll();	// 觸發一次 scroll()
-			});
-		</script>
+	<link type="text/css" rel="stylesheet" href="../css/common.css" />
+	<?php
+		include './Page_Search_Set.php';
+		$login_form = "<form name='memberlogin' action='php/Member_Login.php' method='POST'>";
+		$login_form .= "<img src=\"PIC/top/account.png\" width=\"70px\" />";
+		$login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
+		$login_form .= "<img src=\"PIC/top/password.png\" width=\"70px\" />";
+		$login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
+		$login_form .= "</form>";
+		if($_GET['action'] == "Me"){
+			echo "<title>關於我們</title>";
+		}else if($_GET['action'] == "Dev"){
+			echo "<title>開發人員</title>";
+		}else{
+			echo "<title>Not Found</title>";
+		}
+	?>
 </head>
-
 <body>
-    <div id="main">
-        <div id="header">
+	<div id="main">
+			<div id="header">
             <table>
                 <tr>
                     <td id="logo">
                         <a href="../index.php"><img src="../PIC/top/logo.png" width="200px"></a>
                     </td>
+                    <!--搜尋列-->
                     <td id="search">
                         <form name="search" action="../php/Page_SearchList.php" method="GET">
                             <input type="text" name="search" />
@@ -148,21 +89,35 @@
                 </tr>
             </table>
         </div>
-		<br>
-        <div id="context">
-			<table>
-                <tr><td width=50%><?php echo "<img id='PIC' src='".$detail[0]['ACTOR_PHOTO']."'>";?></td>
-					<td width=50%>
-						<p id='actor_name' style='color:hotpink;'><?php echo $detail[0]['ACTOR_NAME'];?> <?php if(!is_null($detail[0]['ACTOR_FB'])) {echo "<a href=".$detail[0]['ACTOR_FB']."><img id='FB' src='../PIC/top/FB.png'></a>";}?></p>
-						<p>生日：<?php echo $detail[0]['AcTOR_BIRTH'];?></p>
-						<p style='color:hotpink;'>介紹</p>
-						<p><?php echo $detail[0]['ACTOR_HISTORY']."<a href='https://zh.wikipedia.org/wiki/".$detail[0]['ACTOR_NAME']."'/>" ?>詳全文</a></p>
-					</td>
-				</tr>
-			</table>
+		<div id="context">
+			<?php
+				if($_GET['action'] == "Me"){
+					echo "<table>";
+					echo "<tr><td>這是個網站</td></tr>";
+					echo "<tr><td>用來查電影</td></tr>";
+					echo "<tr><td>跟用來評分</td></tr>";
+					echo "<tr><td>大Guy4這樣</td></tr>";
+					echo "</table>";
+				}else if($_GET['action'] == "Dev"){
+					echo "<table>";
+					echo "<tr><td><a href='https://www.facebook.com/ruyutiffany'>黃汝淯</a></td><td>組長</td><td>美編</td></tr>";
+					echo "<tr><td><a href='https://www.facebook.com/profile.php?id=100001256308475'>劉志營</a></td><td>組員</td><td>資料處理</td></tr>";
+					echo "<tr><td><a href='https://www.facebook.com/profile.php?id=100001723677181'>林奕儒</a></td><td>組員</td><td>功能</td></tr>";
+					echo "<tr><td><a href='https://www.facebook.com/a9331109'>范廷維</a></td><td>組員</td><td>美編</td></tr>";
+					echo "<tr><td><a href='https://www.facebook.com/linzheguang'>林哲廣</a></td><td>組員</td><td>評分</td></tr>";
+					echo "</table>";
+				}
+				?>
 		</div>
-    </div>
-	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
+		<footer><table><tr>
+			<td><a href="../php/About.php?action=Me">關於</a></td>
+			<td><a href="../php/About.php?action=Dev">開發人員</a></td>
+			<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
+			
+		</tr>
+		<tr>
+			<td colspan=3>© 2017 YouTube, LLC</td>
+		</tr></table></footer>
+		</div>
 </body>
-
 </html>

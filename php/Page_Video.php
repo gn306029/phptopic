@@ -117,7 +117,7 @@
 
 <head>
     <title>IMDB</title>
-	<link type="text/css" rel="stylesheet" href="../css/index.css">
+	<link type="text/css" rel="stylesheet" href="../css/common.css">
     <link type="text/css" rel="stylesheet" href="../css/video.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -256,7 +256,38 @@
 			imgArray[k].src=imgSrc; 
 		   } 
 		} 
-	} 
+	}
+	/*
+	 *Line加入好友滾動
+	 *
+	 *
+	 */
+	$(window).load(function(){
+		var $win = $(window),
+			$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
+			_width = $ad.width(),
+			_height = $ad.height(),
+			_diffY = 20, _diffX = 20,	// 距離右及下方邊距
+			_moveSpeed = 300;	// 移動的速度
+	 
+		// 先把 #line 移動到定點
+		$ad.css({
+			top: $(document).height(),
+			left: $win.width() - _width - _diffX,
+			opacity: 1
+		});
+	 
+		// 幫網頁加上 scroll 及 resize 事件
+		$win.bind('scroll resize', function(){
+			var $this = $(this);
+	 
+			// 控制 #line 的移動
+			$ad.stop().animate({
+				top: $this.scrollTop() + $this.height() - _height - _diffY,
+				left: $this.scrollLeft() + $this.width() - _width - _diffX
+			}, _moveSpeed);
+		}).scroll();	// 觸發一次 scroll()
+	});	
 	</script>
 </head>
 
@@ -336,34 +367,34 @@
 				<tr><td width=50%><?php echo "<img src='".$data[0]['PHOTO']."'>";?></td>
 					<td width=50%>
 						<?php echo "<input type='hidden' id='V_id' value='".$data[0]["VIDEO_ID"]."'>"?>
-						<p id='video_name' style='color:hotpink;'>　<?php echo $data[0]['VIDEO_NAME'];?> <?php if(isset($_SESSION['userid'])){ echo "<input type='button' value='加入我的最愛' id='favorite'/>";} ?></p>
+						<p id='video_name' style='color:hotpink;'><?php echo $data[0]['VIDEO_NAME'];?> <?php if(isset($_SESSION['userid'])){ echo "<input type='button' value='加入我的最愛' id='favorite'/>";} ?></p>
 						<?php
 							if(isset($_SESSION['userid'])){
 								echo "<input type='hidden' value='".$_SESSION['userid']."' id='uid'>";
 							}
 						?>
-						<p id="ratings">　評分：<?php echo $data[0]['SCORE'];?></p>
+						<p id="ratings">評分：<?php echo $data[0]['SCORE'];?></p>
 						<p class='starWrapper' onmouseover='rate(this,event)' onclick='phprating()'></p>
 						<p id='rerate'></p>
 						<p id = "error_log"></p>
-						<p>　類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>
-						<p>　上映日期：<?php echo $data[0]['RELEASE_DATE'];?></p>
-						<p>　語　　言：<?php echo $data[0]['LANGUAGE'];?></p>
-						<p>　地　　區：<?php echo $data[0]['REGION'];?></p>
-						<p>　預　　算：<?php echo $data[0]['BUDGET'];?> 元</p>
-						<p>　票　　房：<?php echo $data[0]['BOXOFFICE'];?> 元</p>
-						<p>　片　　長：<?php echo $data[0]['PLAYTIME'];?></p>
+						<p>類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>
+						<p>上映日期：<?php echo $data[0]['RELEASE_DATE'];?></p>
+						<p>語　　言：<?php echo $data[0]['LANGUAGE'];?></p>
+						<p>地　　區：<?php echo $data[0]['REGION'];?></p>
+						<p>預　　算：<?php echo $data[0]['BUDGET'];?> 元</p>
+						<p>票　　房：<?php echo $data[0]['BOXOFFICE'];?> 元</p>
+						<p>片　　長：<?php echo $data[0]['PLAYTIME'];?></p>
 					</td>
 				</tr>
 				<tr>
 					<td colspan=2>
-						<p style='color:hotpink;'>劇情</p>
-						<p><?php echo $data[0]['STORY']."<a href='https://zh.wikipedia.org/wiki/".$data[0]['VIDEO_NAME']."'/>" ?>...詳全文</a></p>
+						<p style='color:hotpink;'>介紹</p>
+						<p><?php echo $data[0]['STORY']."<a href='https://zh.wikipedia.org/wiki/".$data[0]['VIDEO_NAME']."'/>" ?>詳全文</a></p>
 					</td>
 				</tr>
-				<tr><td colspan=2><p style='color:hotpink;'>演員</p></td></tr>
+				<tr><td colspan=2><p style='color:hotpink;'></p></td></tr>
                     <?php  echo $actor_table;  ?>				
-				<tr><td colspan=2><p style='color:hotpink;'>預告</td></p>
+				<tr><td colspan=2><p style='color:hotpink;'>影片</td></p>
 				<tr>
 					<td colspan=2 align="center">	
 						<?php echo "<iframe width='863' height='485' src='https://www.youtube.com/embed/".$data[0]['TRAIL']."' frameborder='0' allowfullscreen></iframe>"; ?>
@@ -392,6 +423,7 @@
 			</div>
         </div>
     </div>
+	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>
