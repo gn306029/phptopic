@@ -92,7 +92,9 @@
              */
             $sql = "INSERT INTO `video`(`VIDEO_NAME`,`RELEASE_DATE`,`CATEGORY_ID`,`LANGUAGE`,`REGION`,`SCORE`,`BUDGET`,`BOXOFFICE`,`PLAYTIME`,`KIND_ID`,`PHOTO`,`STORY`,`TRAIL`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             $array = array($_POST['video_name'],$_POST['release_date'],$_POST['add_category'],$_POST['language'],$_POST['region'],$_POST['score'],$_POST['budget'],$_POST['boxoffice'],$_POST['playtime'],$_POST['add_kind'],$_POST['photo'],$_POST['story'],$_POST['trail']);
-            if(gettype(sql_exec($sql,$array)) != false){
+            
+            $test = sql_exec($sql,$array);
+            if(gettype($test) != false){
                 echo "success";
             }else{
                 echo "fail";
