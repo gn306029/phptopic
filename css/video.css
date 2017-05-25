@@ -28,7 +28,18 @@
 	text-align:center;
 }
 .actor td{
-	width:50%;
+	width:100%;
+}
+.actor div{
+	width:70px;
+	height:70px;
+    background:white;
+    -webkit-clip-path:circle(35px at 50% 50%);
+	display:inline-block;
+}
+#context .actor div img{
+	width:auto;
+	border-radius: 0px;
 }
 #video_name{
 	font-size:32px;

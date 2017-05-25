@@ -44,7 +44,7 @@
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        $sql = "Select `actor`.`ACTOR_ID`,`ACTOR_NAME` From `actor` Join `actor_list` On `actor`.`ACTOR_ID` = `actor_list`.`ACTOR_ID` Where `VIDEO_ID` = '".$_GET['VIDEO_ID']."'";
+        $sql = "Select `actor`.`ACTOR_ID`,`ACTOR_NAME`,`ACTOR_PHOTO` From `actor` Join `actor_list` On `actor`.`ACTOR_ID` = `actor_list`.`ACTOR_ID` Where `VIDEO_ID` = '".$_GET['VIDEO_ID']."'";
         $result = $conn -> query($sql);
         $conn = null;
         return $result;
@@ -86,10 +86,10 @@
          *
          */
         if($index == 0){        
-            $actor_table .= "<tr class='actor'><td><a href='Page_Actor.php?actor_id=$row[0]'/>".trim($row[1])."</td>";
+            $actor_table .= "<tr class='actor'><td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
             $index = 1;
         }else if($index == 1){
-            $actor_table .= "<td><a href='Page_Actor.php?actor_id=$row[0]'/>".trim($row[1])."</td></tr>";
+            $actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td></tr>";
             $index = 0;
         }
     }
@@ -110,6 +110,34 @@
             $index++;
         }
     }
+	/*
+     * 搜尋我的最愛資料
+     *
+     */
+	function search_favorite(){
+		$db_host = 'db.mis.kuas.edu.tw';
+        $db_name = 's1104137130';
+        $db_user = 's1104137130';
+        $db_password = '1314520';
+        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
+        $conn = new PDO($dsn,$db_user,$db_password);
+        $sql = "Select `video`.`VIDEO_ID` , `VIDEO_NAME` , `PHOTO` From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = '".$_SESSION['userid']."'";
+        $result = $conn -> query($sql);
+        $conn = null;
+        return $result;
+	}
+	if(isset($_SESSION['username'])){
+		$favorite = search_favorite();
+		$msg="";
+		foreach ($favorite as $row){
+			if($data[0]["VIDEO_ID"] == $row['VIDEO_ID'] ){
+				$msg="<input type='button' value='取消我的最愛' id='favorite' style='background-color: black;color: white;' onclick=\"favorite()\"/>";
+				break;
+			}else{
+				$msg="<input type='button' value='加入我的最愛' id='favorite' style='background-color:yellow;' onclick=\"favorite()\"/>";
+			}
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -123,28 +151,30 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script>
 	//加入我的最愛
-	$(function(){
-		$("#favorite").click(function(){
-			$.ajax({
-                    url:"./Member_Favorite.php",
-                    data:{
-						memberid:$("#uid").val(),
-						videoid:$("#vid").val()
-					},
-                    type:"post",
-                    success:function(output){
-                        if(output == "1"){
-                            alert("新增成功");
-                        }else{
-                            alert("新增失敗");
-                        }
-                    },
-                    error: function (request, status, error) {
-                        $("#error_log").html(request.responseText);
-                    }
-                })
+	function favorite(){
+		$.ajax({
+			url:"./Member_Favorite.php",
+			data:{
+				videoid:$("#vid").val()
+			},
+			type:"post",
+			dataType:"json",
+			success:function(output){
+				if(output=="1"){
+					alert("新增成功");
+					$("#button_name").html("<input type='button' value='取消我的最愛' id='favorite' style='background-color:black;color: white; 'onclick=\"favorite()\"/>");
+				}else if(output!="1"){
+					alert("取消成功");
+					$("#button_name").html("<input type='button' value='加入我的最愛' id='favorite' style='background-color:yellow;' onclick=\"favorite()\"/>");
+				}
+				
+			},
+			error: function (request, status, error) {
+				alert(request.responseText);
+				$("#error_log").html(request.responseText);
+			}
 		})
-	})
+	}
 	var img_num = null;
 	var check = null;
 	//================== 
@@ -257,37 +287,6 @@
 		   } 
 		} 
 	}
-	/*
-	 *Line加入好友滾動
-	 *
-	 *
-	 */
-	$(window).load(function(){
-		var $win = $(window),
-			$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
-			_width = $ad.width(),
-			_height = $ad.height(),
-			_diffY = 20, _diffX = 20,	// 距離右及下方邊距
-			_moveSpeed = 300;	// 移動的速度
-	 
-		// 先把 #line 移動到定點
-		$ad.css({
-			top: $(document).height(),
-			left: $win.width() - _width - _diffX,
-			opacity: 1
-		});
-	 
-		// 幫網頁加上 scroll 及 resize 事件
-		$win.bind('scroll resize', function(){
-			var $this = $(this);
-	 
-			// 控制 #line 的移動
-			$ad.stop().animate({
-				top: $this.scrollTop() + $this.height() - _height - _diffY,
-				left: $this.scrollLeft() + $this.width() - _width - _diffX
-			}, _moveSpeed);
-		}).scroll();	// 觸發一次 scroll()
-	});	
 	</script>
 </head>
 
@@ -367,7 +366,13 @@
 				<tr><td width=50%><?php echo "<img src='".$data[0]['PHOTO']."'>";?></td>
 					<td width=50%>
 						<?php echo "<input type='hidden' id='V_id' value='".$data[0]["VIDEO_ID"]."'>"?>
-						<p id='video_name' style='color:hotpink;'><?php echo $data[0]['VIDEO_NAME'];?> <?php if(isset($_SESSION['userid'])){ echo "<input type='button' value='加入我的最愛' id='favorite'/>";} ?></p>
+						<label id='video_name' style='color:hotpink;'><?php echo $data[0]['VIDEO_NAME'];?></label>
+						<label id='button_name' style='color:hotpink;'><?php 
+								if(isset($_SESSION['userid'])){ 
+									echo $msg;
+								}
+							?>
+						</label>
 						<?php
 							if(isset($_SESSION['userid'])){
 								echo "<input type='hidden' value='".$_SESSION['userid']."' id='uid'>";
@@ -387,13 +392,16 @@
 					</td>
 				</tr>
 				<tr>
+					<td colspan=2><p><?php  echo $actor_table;  ?></p></td>
+				</tr>  
+				<tr>
 					<td colspan=2>
 						<p style='color:hotpink;'>介紹</p>
 						<p><?php echo $data[0]['STORY']."<a href='https://zh.wikipedia.org/wiki/".$data[0]['VIDEO_NAME']."'/>" ?>詳全文</a></p>
 					</td>
 				</tr>
-				<tr><td colspan=2><p style='color:hotpink;'></p></td></tr>
-                    <?php  echo $actor_table;  ?>				
+							
+													 
 				<tr><td colspan=2><p style='color:hotpink;'>影片</td></p>
 				<tr>
 					<td colspan=2 align="center">	
@@ -422,8 +430,16 @@
 			?>
 			</div>
         </div>
+		<footer><table><tr>
+				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
+				<td><a href="./About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="../PIC/footer/dev.png"></a></td>
+				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
+				
+			</tr>
+			<tr>
+				<td colspan=3>© 2017 IMDB,KUASMIS</td>
+			</tr></table></footer>
     </div>
-	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>

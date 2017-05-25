@@ -34,6 +34,9 @@
 #circlepic{
 	width:70px;
 	height:70px;
-    background:white;
-    -webkit-clip-path:circle(35px at 50% 50%);
+    	background:white;
+    	-webkit-clip-path:circle(35px at 50% 50%);
+}
+footer{
+	bottom:-50%;
 }

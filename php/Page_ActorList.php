@@ -60,7 +60,7 @@
     foreach ($result as $row) {
         $table .= "<tr>";
 		$table .= "<td><div><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'><img src='".$row['ACTOR_PHOTO']."' height='100%'></a></div></td>";
-        $table .= "<td><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'>".$row['ACTOR_NAME']."</td>";
+        $table .= "<td><a href='./Page_Actor.php?actor_id=".$row['ACTOR_ID']."'>".$row['ACTOR_NAME']."</a></td>";
         $table .= "<th Width='200'>".mb_substr($row['ACTOR_HISTORY'],0,30)."...</th>";
         $table .= "</tr>";
     }
@@ -120,37 +120,6 @@
                 })
             })
         })
-		/*
-		 *Line加入好友滾動
-		 *
-		 *
-		 */
-		$(window).load(function(){
-				var $win = $(window),
-					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
-					_width = $ad.width(),
-					_height = $ad.height(),
-					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
-					_moveSpeed = 300;	// 移動的速度
-			 
-				// 先把 #line 移動到定點
-				$ad.css({
-					top: $(document).height(),
-					left: $win.width() - _width - _diffX,
-					opacity: 1
-				});
-			 
-				// 幫網頁加上 scroll 及 resize 事件
-				$win.bind('scroll resize', function(){
-					var $this = $(this);
-			 
-					// 控制 #line 的移動
-					$ad.stop().animate({
-						top: $this.scrollTop() + $this.height() - _height - _diffY,
-						left: $this.scrollLeft() + $this.width() - _width - _diffX
-					}, _moveSpeed);
-				}).scroll();	// 觸發一次 scroll()
-			});
     </script>
 </head>
 
@@ -235,8 +204,16 @@
 				?>
 			</table>
 		</div>
+		<footer><table><tr>
+				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
+				<td><a href="./About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="../PIC/footer/dev.png"></a></td>
+				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
+				
+			</tr>
+			<tr>
+				<td colspan=3>© 2017 IMDB,KUASMIS</td>
+			</tr></table></footer>
     </div>
-	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>

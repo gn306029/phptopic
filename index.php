@@ -10,7 +10,6 @@
 ?>
 
 <?php
-
 	$db_host = 'db.mis.kuas.edu.tw';
 	$db_name = 's1104137130';
 	$db_user = 's1104137130';
@@ -24,14 +23,14 @@
 	$conn = null;
 	$result = $result -> fetchAll();
 	$rank = "<table id='top_list'>";
-	$rank .= "<tr><td>排名</td><td></td><td>影片名稱</td><td>分數</td></tr>";
+	$rank .= "<tr><td width=10%>排名</td><td width=10%></td><td width=70%>影片名稱</td><td width=10%>分數</td></tr>";
 	$index = 1;
 	foreach($result as $row){
 		$rank .= "<tr>";
-		$rank .= "<td>".$index."</td>";
-		$rank .= "<td><div class='video_photo'><img  width='70px' height='70px' src='".$row['PHOTO']."'></div></td>";
-		$rank .= "<td><a href='./php/Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</td>";
-		$rank .= "<td>".$row['SCORE']."</td>";
+		$rank .= "<td width=10%>".$index."</td>";
+		$rank .= "<td width=10%><div class='video_photo'><img src='".$row['PHOTO']."'></div></td>";
+		$rank .= "<td width=70%><a href='./php/Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</td>";
+		$rank .= "<td id='ratings' width=10%>".$row['SCORE']."</td>";
 		$rank .= "</tr>";
 		$index ++;
 	}
@@ -49,10 +48,6 @@
     	<script src="./js/js-image-slider.js" type="text/javascript"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script type="text/javascript">
-			/*
-			 * 排名
-			 *
-			 */
 			function ajax(action,rate){
 				$.ajax({
 				url:"./php/Member_Information_Set.php",
@@ -63,13 +58,13 @@
 					type:"post",
 					success:function(output){
 						var result = JSON.parse(output);
-						var rank = "<tr><td>排名</td><td></td><td>影片名稱</td><td>分數</td></tr>";
+						var rank = "<tr><td width=10%>排名</td><td width=10%></td><td width=70%>影片名稱</td><td>分數</td></tr>";
 							for(var i =0;i<Object.keys(result).length;i++){
 							rank += "<tr>";
-							rank += "<td>"+(i+1)+"</td>";
-							rank += "<td><div class='video_photo'><img  width='70px' height='70px' src='"+result[i]['PHOTO']+"'></div></td>";
-							rank += "<td><a href='./php/Page_Video.php?VIDEO_ID="+result[i]['VIDEO_ID']+"'>"+result[i]['VIDEO_NAME']+"</td>";
-							rank += "<td>"+result[i]['SCORE']+"</td>";
+							rank += "<td width=10%>"+(i+1)+"</td>";
+							rank += "<td width=10%><div class='video_photo'><img src='"+result[i]['PHOTO']+"'></div></td>";
+							rank += "<td width=70%><a href='./php/Page_Video.php?VIDEO_ID="+result[i]['VIDEO_ID']+"'>"+result[i]['VIDEO_NAME']+"</a></td>";
+							rank += "<td id='ratings' width=10%>"+result[i]['SCORE']+"</td>";
 							rank += "</tr>";
 						}
 						$("#top_list").html(rank);
@@ -85,7 +80,7 @@
 				 *
 				 */
 				$(".video_title").mouseover(function(event){
-					$(this).css("background-color","#90CFF0");
+					$(this).css("background-color","black").css("color","LightSkyBlue");
 					if($(this).text() == "TOP5 電影"){
 						ajax("rate_movie_top5","DESC")
 					}else if($(this).text() == "TOP5 戲劇"){
@@ -105,7 +100,7 @@
 				 *
 				 */
 				$(".video_title").mouseout(function(event){
-					$(this).css("background-color","white");
+					$(this).css("background-color","white").css("color","black");
 				})
 			})
 		</script>
@@ -163,9 +158,9 @@
 					<tr>
 						<td></td>
 						<td align="center">
-							<a href="php/Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='PIC/top/movie.png'" onMouseOver="document.movie.src='PIC/top/movie-1.png'"><img src="PIC/top/movie.png" name="movie" width="70px"></a>　
-							<a href="php/Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='PIC/top/drama.png'" onMouseOver="document.drama.src='PIC/top/drama-1.png'"><img src="PIC/top/drama.png" name="drama" width="70px"></a>　
-							<a href="php/Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='PIC/top/tvshow-1.png'"><img src="PIC/top/tvshow.png" name="tvshow" width="70px"></a>　
+							<a href="php/Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='PIC/top/movie.png'" onMouseOver="document.movie.src='PIC/top/movie-1.png'"><img src="PIC/top/movie.png" name="movie" width="70px"></a> 
+							<a href="php/Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='PIC/top/drama.png'" onMouseOver="document.drama.src='PIC/top/drama-1.png'"><img src="PIC/top/drama.png" name="drama" width="70px"></a> 
+							<a href="php/Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='PIC/top/tvshow-1.png'"><img src="PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
 							<a href="php/Page_ActorList.php" onMouseOut="document.actor.src='PIC/top/actor.png'" onMouseOver="document.actor.src='PIC/top/actor-1.png'"><img src="PIC/top/actor.png" name="actor" width="70px"></a>
 						</td>
 						<td></td>
@@ -183,35 +178,43 @@
 			<div id="context">
 				<div id="sliderFrame">
 					<div id="slider">
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/1.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/2.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/3.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/4.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/5.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/6.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/7.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/8.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/9.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/tmp_photo/Lin_LoLi-2.jpg"/></a>
+						<?php
+							$dir = './PIC/tmp_photo';
+								if($dh = opendir($dir)){
+									while(($file=readdir($dh))!==false){
+										if($file!='..' && $file!='.'){
+									       $file=iconv("BIG5", "UTF-8",$file); //必要,否則中文會亂碼
+									       echo pathinfo($file, PATHINFO_DIRNAME).pathinfo($file, PATHINFO_FILENAME );
+									   }
+										
+									}
+								}
+						?>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB1.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB2.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB5.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB9.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB10.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/Lin_LoLi-2.jpg"/></a>
 					</div>
 				</div>
 				<div id='rank'>
-					<table width="800px"><tr><td class="video_title" align="center">TOP5 電影</td><td class="video_title" align="center">TOP5 戲劇</td><td class="video_title" align="center">TOP5 綜藝節目</td><td class="video_title" align="center">糞電影</td><td class="video_title" align="center">狗血劇</td><td class="video_title" align="center">大學生了沒</td></tr></table>
+					<table><tr><td class="video_title">TOP5 電影</td><td class="video_title">TOP5 戲劇</td><td class="video_title">TOP5 綜藝節目</td><td class="video_title">糞電影</td><td class="video_title">狗血劇</td><td class="video_title">大學生了沒</td></tr></table>
 					<?php
 						echo $rank;
 					?>
 				</div>
+				
 			</div>
 			<footer><table><tr>
-				<td><a href="./php/About.php?action=Me">關於</a></td>
-				<td><a href="./php/About.php?action=Dev">開發人員</a></td>
+				<td><a href="./php/About.php?action=Me"><img height="36" border="0" alter="關於" src="./PIC/footer/about.png"></a></td>
+				<td><a href="./php/About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="./PIC/footer/dev.png"></a></td>
 				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
 				
 			</tr>
 			<tr>
-				<td colspan=3>© 2017 YouTube, LLC</td>
+				<td colspan=3>© 2017 IMDB,KUASMIS</td>
 			</tr></table></footer>
 		</div>
-		
 	</body>
 </html>

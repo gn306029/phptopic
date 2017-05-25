@@ -14,7 +14,6 @@
 		$val = str_replace("'",'&rsquo;',$val);
 		return $val;
 	}
-
 	//建立資料庫連線資料
 	$connection = mysqli_connect("db.mis.kuas.edu.tw","s1104137130","1314520","s1104137130");
 	mysqli_query($connection,"SET NAMES utf8");

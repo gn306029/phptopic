@@ -168,7 +168,7 @@
              * 取得戲劇排名
              *
              */
-            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '3' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
+            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '2' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
             $result = sql_select($sql,null);
             echo json_encode($result);
             break;
@@ -177,7 +177,7 @@
              * 取得綜藝排名
              *
              */
-            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '2' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
+            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME`,`SCORE`,`PHOTO` FROM `video` Where `KIND_ID` = '3' ORDER BY `SCORE` ".$_POST['rate']." LIMIT 5";
             $result = sql_select($sql,null);
             echo json_encode($result);
             break;

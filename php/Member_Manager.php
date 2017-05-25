@@ -244,12 +244,12 @@
              *
              */
             $("body").on("click","#manager_ad",function(){
-                var form = "<form id='select_ad' action='Member_Save_Picture.php' method='post' enctype='multipart/form-data'>";
-                        form += "<input name='file[]' type='file'>";
-                        form += "</form>";
-                        form += "<button id='add_picture'>增加</button>";
-                        form += "<button id='send_picture'>上傳</button>";
-                        $("#my_infor").html(form);
+                var form = "<form id='select_ad' enctype='multipart/form-data' action='./Member_Save_Picture.php' method='post'>";
+                form += "<input name='file[]' type='file'></br>";
+                form += "</form>";
+                form += "<button id='add_picture'>新增檔案</button>";
+                form += "<button id='send_picture'>上傳</button>";
+                $("#my_infor").html(form);
             })
             /*
              * 新增可選擇的檔案
@@ -258,9 +258,9 @@
             $("body").on("click","#add_picture",function(){
                 $("#select_ad").append("<input name='file[]' type='file'></br>");
             })
-            $("body").on("click","#send_picture",function(){
+			$("body").on("click","#send_picture",function(){
                 $("#select_ad").submit();
-            })
+            })												
 			/*
              * 建立影片管理者介面
              *
@@ -529,37 +529,6 @@
                  })
             })
 		});
-		/*
-		 *Line加入好友滾動
-		 *
-		 *
-		 */
-		$(window).load(function(){
-				var $win = $(window),
-					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
-					_width = $ad.width(),
-					_height = $ad.height(),
-					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
-					_moveSpeed = 300;	// 移動的速度
-			 
-				// 先把 #line 移動到定點
-				$ad.css({
-					top: $(document).height(),
-					left: $win.width() - _width - _diffX,
-					opacity: 1
-				});
-			 
-				// 幫網頁加上 scroll 及 resize 事件
-				$win.bind('scroll resize', function(){
-					var $this = $(this);
-			 
-					// 控制 #line 的移動
-					$ad.stop().animate({
-						top: $this.scrollTop() + $this.height() - _height - _diffY,
-						left: $this.scrollLeft() + $this.width() - _width - _diffX
-					}, _moveSpeed);
-				}).scroll();	// 觸發一次 scroll()
-			});
     </script>
 </head>
 
@@ -660,13 +629,21 @@
 				</tr>
 			</table>
 		</div>
+		<footer><table><tr>
+				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
+				<td><a href="./About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="../PIC/footer/dev.png"></a></td>
+				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
+				
+			</tr>
+			<tr>
+				<td colspan=3>© 2017 IMDB,KUASMIS</td>
+			</tr></table></footer>
     </div>
     <div id='hidden_category' style="display:none">
         <?php
             echo $form_category;
         ?>
     </div>
-	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>

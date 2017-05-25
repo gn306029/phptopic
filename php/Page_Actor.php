@@ -24,7 +24,6 @@
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        //$sql = "Select `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = '".$_GET['actor_id']."'";
         $sql = "Select `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = ?";
         $array = array($_GET['actor_id']);
         $stmt = $conn -> prepare($sql);
@@ -43,40 +42,6 @@
 	<link type="text/css" rel="stylesheet" href="../css/common.css">
     <link type="text/css" rel="stylesheet" href="../css/actor.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script type="text/javascript">
-			/*
-			 *Line加入好友滾動
-			 *
-			 *
-			 */
-			$(window).load(function(){
-				var $win = $(window),
-					$ad = $('#line').css('opacity', 0).show(),	// 讓廣告區塊變透明且顯示出來
-					_width = $ad.width(),
-					_height = $ad.height(),
-					_diffY = 20, _diffX = 20,	// 距離右及下方邊距
-					_moveSpeed = 300;	// 移動的速度
-			 
-				// 先把 #line 移動到定點
-				$ad.css({
-					top: $(document).height(),
-					left: $win.width() - _width - _diffX,
-					opacity: 1
-				});
-			 
-				// 幫網頁加上 scroll 及 resize 事件
-				$win.bind('scroll resize', function(){
-					var $this = $(this);
-			 
-					// 控制 #line 的移動
-					$ad.stop().animate({
-						top: $this.scrollTop() + $this.height() - _height - _diffY,
-						left: $this.scrollLeft() + $this.width() - _width - _diffX
-					}, _moveSpeed);
-				}).scroll();	// 觸發一次 scroll()
-			});
-		</script>
 </head>
 
 <body>
@@ -151,18 +116,26 @@
 		<br>
         <div id="context">
 			<table>
-                <tr><td width=50%><?php echo "<img id='PIC' src='".$detail[0]['ACTOR_PHOTO']."'>";?></td>
+                <tr><td width=50%><?php echo "<img id='PIC' src='".$detail[0][2]."'>";?></td>
 					<td width=50%>
-						<p id='actor_name' style='color:hotpink;'><?php echo $detail[0]['ACTOR_NAME'];?> <?php if(!is_null($detail[0]['ACTOR_FB'])) {echo "<a href=".$detail[0]['ACTOR_FB']."><img id='FB' src='../PIC/top/FB.png'></a>";}?></p>
-						<p>生日：<?php echo $detail[0]['AcTOR_BIRTH'];?></p>
+						<p id='actor_name' style='color:hotpink;'><?php echo $detail[0][0];?> <?php if(!is_null($detail[0][3])) {echo "<a href=".$detail[0][3]."><img id='FB' src='../PIC/top/FB.png'></a>";}?></p>
+						<p>生日：<?php echo $detail[0][4];?></p>
 						<p style='color:hotpink;'>介紹</p>
-						<p><?php echo $detail[0]['ACTOR_HISTORY']."<a href='https://zh.wikipedia.org/wiki/".$detail[0]['ACTOR_NAME']."'/>" ?>詳全文</a></p>
+						<p><?php echo $detail[0][1]."<a href='https://zh.wikipedia.org/wiki/".$detail[0][0]."'/>" ?>詳全文</a></p>
 					</td>
 				</tr>
 			</table>
 		</div>
+		<footer><table><tr>
+				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
+				<td><a href="./About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="../PIC/footer/dev.png"></a></td>
+				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
+				
+			</tr>
+			<tr>
+				<td colspan=3>© 2017 IMDB,KUASMIS</td>
+			</tr></table></footer>
     </div>
-	<div id='line'><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div>
 </body>
 
 </html>

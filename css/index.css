@@ -36,4 +36,5 @@ table{
 }
 footer{
 	bottom:-120%;
+	position: absolute;
 }
