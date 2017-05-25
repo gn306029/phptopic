@@ -1,0 +1,106 @@
+﻿body{
+	background-color:black;
+	background-image: url();
+	border-radius:8px;
+	font-family:"微軟正黑體";
+	font-size:20px;
+	color:white;
+}
+#main {
+	position: relative;
+	max-width: 1080px;
+	margin: auto;
+	background-color:black;
+}
+/*header*/
+#header table{
+	width:100%;
+}
+
+#header {
+	background-color:black;
+}
+#header a{
+	color:LightSkyBlue;
+}
+#logo {
+	width:210px;
+}
+#search  {
+	width:510px;
+	text-align:center;
+}
+#search input{
+	border-radius:8px;
+	font-family:"微軟正黑體";
+	font-size:16px;
+	font-weight:bold;
+	opacity:0.7;
+	width:130px;
+}
+#search img{
+	 vertical-align:middle;
+}
+#memberlogin {
+	width:300px;
+	text-align:top;
+	font-family:"微軟正黑體";
+	font-size:20px;
+	color:white;
+}
+#memberlogin input{
+	border-radius:8px;
+	font-family:"微軟正黑體";
+	font-size:16px;
+	font-weight:bold;
+	opacity:0.7;
+}
+#memberlogin img{
+	 vertical-align:middle;
+}
+#memberlogin2 {
+	width:60px;
+}
+#memberlogin2 img{
+	 vertical-align:middle;
+}
+select,option{
+	border-radius:8px;
+	font-family:"微軟正黑體";
+	font-size:16px;
+	font-weight:bold;
+	opacity:0.7;
+}
+/*context*/
+#context{
+	position: relative;
+	max-width: 1000px;
+	margin: auto;
+	background-image: url();
+}
+#context input,textarea{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:16px;
+	font-weight:bold;
+}
+footer{
+    position: relative;
+    bottom: -25%;
+    width: 100%;
+    text-align: center;
+}
+footer td{
+	text-align:center;
+	width: 33%;
+}
+footer img{
+	border-radius:8px;
+}
+footer table{
+	width:100%;
+	border-spacing:5px;
+	text-align:center;
+	font-family:"微軟正黑體";
+	font-size:20px;
+}

@@ -1,0 +1,19 @@
+﻿a{
+	color:LightSkyBlue;
+}
+#context div{
+	width:130px;
+	height:130px;
+    background:white;
+    -webkit-clip-path:circle(65px at 50% 50%);
+	display: -webkit-inline-box;
+}
+#context table{
+	width:100%;
+	text-align:center;
+	font-family:"微軟正黑體";
+	font-size:20px;
+}
+footer{
+	bottom:-50%;
+}
