@@ -169,16 +169,16 @@
     <link type="text/css" rel="stylesheet" href="../css/search.css">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="../js/url.min.js"></script>
     <script type="text/javascript">
         /*
          * 用下拉選單選擇 Page 時觸發的事件
+         * url 用法請參照 https://github.com/websanova/js-url
          *
          */
         $(function(){
             $("#select_page").change(function(){
-                $.get("./Page_SearchList.php?page="+$("#select_page").val()+"&search="+$("#search_hidden").val()+"&kind="+$("#category_hidden").val()+"&category="+$("#kind_hidden").val(),function(data){
-                    $("body").html(data);
-                })
+                window.location = "./Page_Movie.php?page="+$(this).val()+"&search="+url("?search")+"&kind="+url("?kind")+"&category="+url("?category");
             })
         })
     </script>

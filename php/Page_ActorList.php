@@ -115,9 +115,7 @@
          */
         $(function(){
             $("#select_page").change(function(){
-                $.get("./Page_ActorList.php?page="+$("#select_page").val(),function(data){
-                    $("body").html(data);
-                })
+                window.location = "./Page_ActorList.php?page="+$(this).val();
             })
         })
     </script>
