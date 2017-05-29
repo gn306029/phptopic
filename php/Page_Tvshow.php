@@ -178,7 +178,7 @@
          */
         $(function(){
             $("#select_page").change(function(){
-                window.location = "./Page_Movie.php?page="+$(this).val()+"&search="+url("?search")+"&kind="+url("?kind")+"&category="+url("?category");
+                window.location = "./Page_Tvshow.php?page="+$(this).val()+"&search="+url("?search")+"&kind="+url("?kind")+"&category="+url("?category");
             })
         })
     </script>
