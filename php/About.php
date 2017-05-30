@@ -1,4 +1,4 @@
-﻿<?php
+<?php
    
 ?>
 <?php
@@ -90,9 +90,9 @@
 					<tr>
 						<td></td>
 						<td align="center">
-							<a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-							<a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-							<a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+							<a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+							<a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+							<a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
 							<a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
 						</td>
 						<td></td>
@@ -112,10 +112,12 @@
 				<?php
 				if($_GET['action'] == "Me"){
 					echo "<table>";
-					echo "<tr><td>這是個網站</td></tr>";
-					echo "<tr><td>用來查電影</td></tr>";
-					echo "<tr><td>跟用來評分</td></tr>";
-					echo "<tr><td>大Guy4這樣</td></tr>";
+					echo "<tr><td>為了許多需要影視娛樂增添生活色彩</td></tr>";
+					echo "<tr><td>卻又不知如何選擇節目而花費大量時間的你們</td></tr>";
+					echo "<tr><td>本團隊為您量身打造了IMDB這個線上影視評分網站</td></tr>";
+					echo "<tr><td>歡迎大家來到這裡尋找精神存糧</td></tr>";
+					echo "<tr><td>尋獲屬於自己的知音</td></tr>";
+					echo "<tr><td>用您的文字讓大家熱血沸騰</td></tr>";
 					echo "</table>";
 				}else if($_GET['action'] == "Dev"){
 					echo "<table>";
