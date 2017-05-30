@@ -45,7 +45,7 @@
 		<link type="text/css" rel="stylesheet" href="./css/common.css">
 		<link type="text/css" rel="stylesheet" href="./css/index.css">
 		<link href="./js/js-image-slider.css" rel="stylesheet" />
-    	<script src="./js/js-image-slider.js" type="text/javascript"></script>
+    		<script src="./js/js-image-slider.js" type="text/javascript"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script type="text/javascript">
 			function ajax(action,rate){
@@ -158,9 +158,9 @@
 					<tr>
 						<td></td>
 						<td align="center">
-							<a href="php/Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='PIC/top/movie.png'" onMouseOver="document.movie.src='PIC/top/movie-1.png'"><img src="PIC/top/movie.png" name="movie" width="70px"></a> 
-							<a href="php/Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='PIC/top/drama.png'" onMouseOver="document.drama.src='PIC/top/drama-1.png'"><img src="PIC/top/drama.png" name="drama" width="70px"></a> 
-							<a href="php/Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='PIC/top/tvshow-1.png'"><img src="PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+							<a href="php/Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='PIC/top/movie.png'" onMouseOver="document.movie.src='PIC/top/movie-1.png'"><img src="PIC/top/movie.png" name="movie" width="70px"></a> 
+							<a href="php/Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='PIC/top/drama.png'" onMouseOver="document.drama.src='PIC/top/drama-1.png'"><img src="PIC/top/drama.png" name="drama" width="70px"></a> 
+							<a href="php/Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='PIC/top/tvshow-1.png'"><img src="PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
 							<a href="php/Page_ActorList.php" onMouseOut="document.actor.src='PIC/top/actor.png'" onMouseOver="document.actor.src='PIC/top/actor-1.png'"><img src="PIC/top/actor.png" name="actor" width="70px"></a>
 						</td>
 						<td></td>
@@ -190,12 +190,16 @@
 									}
 								}
 						?>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB1.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB2.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB5.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB9.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/STB10.jpg"/></a>
-						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/Lin_LoLi-2.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/01.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/02.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/03.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/04.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/05.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/06.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/07.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/08.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/09.jpg"/></a>
+						<a class="ns-img"><img width="700px" height="300px" src="./PIC/banner/10.jpg"/></a>
 					</div>
 				</div>
 				<div id='rank'>

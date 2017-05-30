@@ -23,10 +23,10 @@
 
 	<head>
 		<title>忘記密碼</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link type="text/css" rel="stylesheet" href="../css/common.css">
 		<link type="text/css" rel="stylesheet" href="../css/video.css">
-		<link href="../js/jquery.loading.css" rel="stylesheet">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="../js/jquery.loading.css" rel="stylesheet">	
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 		<script src="../js/jquery.loading.js"></script>
 		<script type="text/javascript">
@@ -42,7 +42,7 @@
 						success:function(output){
 							setTimeout(function(){
 								$("body").loading('stop');
-								alert(output);
+								alert("寄信成功");
 							},500)
 						},
 						error: function (request, status, error) {
@@ -51,7 +51,7 @@
 					})
 				})
 			})
-		</script>
+ 		</script>
 	</head>
 
 	<body>
@@ -107,9 +107,9 @@
 					<tr>
 						<td></td>
 						<td align="center">
-							<a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-							<a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-							<a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+							<a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+							<a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+							<a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
 							<a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
 						</td>
 						<td></td>

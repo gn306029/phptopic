@@ -23,18 +23,19 @@
      * limit 等於 null , 為計算資料總數用的 Sql
      *
      */
+	$db_host = 'db.mis.kuas.edu.tw';
+    $db_name = 's1104137130';
+    $db_user = 's1104137130';
+    $db_password = '1314520';
+    $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
+    $conn = new PDO($dsn,$db_user,$db_password);
     function search_function($search,$category,$kind,$limit){
         /*
          * 建立資料庫連線
          *
          */
-        $db_host = 'db.mis.kuas.edu.tw';
-        $db_name = 's1104137130';
-        $db_user = 's1104137130';
-        $db_password = '1314520';
-        $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
-        $conn = new PDO($dsn,$db_user,$db_password);
-         if($limit != null){
+        global $conn;
+        if($limit != null){
             $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind." Order by `RELEASE_DATE` desc ".$limit;
         }else{
             $sql = "Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`SCORE`,`RELEASE_DATE`,`PHOTO` From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_NAME` Like '%".$search."%' And ".$category." And ".$kind;
@@ -126,16 +127,37 @@
      * 頁碼設定
      *
      */
-    if($now_pages == 1 && $all_num == 1){
-        $table .= "<tr><td colspan='8' align='center'>".$page_list."</td></tr>";
-    }else if($now_pages == 1){
-        $table .= "<tr><td colspan='8' align='center'>".$page_list."<a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
-    }else if($now_pages == $all_num){
-        $table .= "<tr><td colspan='8' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list."</td></tr>";
-    }else{
+	if($all_num==0){
+		
+	}
+    else if($now_pages == 1 && $all_num==1){
+		$table .= "<tr><td colspan='8' align='center'>".$page_list."</td></tr>";
+    }else if($now_pages == 1 && $all_num!=1){
+		$table .= "<tr><td colspan='8' align='center'>".$page_list."<a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
+	}
+	else if($now_pages==$all_num){
+		$table .= "<tr><td colspan='8' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list."</td></tr>";
+    }else if($now_pages>$all_num){
+		echo "<script>alert('查無資料');history.go(-1)</script>";
+	}else{
         $table .= "<tr><td colspan='8' align='center'><a href='./Page_SearchList.php?page=".($now_pages-1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>前一頁</a>".$page_list." <a href='./Page_SearchList.php?page=".($now_pages+1)."&search=".$_GET['search']."&kind=".$_GET['kind']."&category=".$_GET['category']."'>下一頁</a></td></tr>";
     }
     /*
+     * 搜尋所有種類
+     *
+     */
+    $category_table='';
+    $category_table .= "<tr>";
+    $stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID='".$_GET['kind']."'");
+    foreach($stmt as $row){ 
+        $category_table .= "<td><a href=./Page_SearchList.php?search=".$_GET['search']."&kind=".$_GET['kind']."&category=". $row['CATEGORY_ID']. ">". $row['CATEGORY_NAME']."</a></td>";
+        $i++;
+        if($i%10==0){
+            $category_table .='</tr><tr>';
+        }
+    }
+    $category_table .= "</tr>";
+    /* 
      * 使用下拉選單時 , 存儲條件的地方
      *
      */
@@ -158,11 +180,9 @@
          * 用下拉選單選擇 Page 時觸發的事件
          *
          */
-        $(function(){
+		 $(function(){
             $("#select_page").change(function(){
-                $.get("./Page_SearchList.php?page="+$("#select_page").val()+"&search="+$("#search_hidden").val()+"&kind="+$("#category_hidden").val()+"&category="+$("#kind_hidden").val(),function(data){
-                    $("body").html(data);
-                })
+                window.location="./Page_SearchList.php?page="+$("#select_page").val()+"&search="+$("#search_hidden").val()+"&kind="+$("#kind_hidden").val()+"&category="+$("#category_hidden").val();
             })
         })
     </script>
@@ -220,9 +240,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
@@ -239,6 +259,15 @@
         </div>
 		<br>
         <div id="context">
+			<table align='center'>
+                <?php
+                    /*
+                     * 輸出那一排 選擇種類 的標題
+                     *
+                     */
+                     echo $category_table;
+                ?>
+            </table>
 			<table>
 				<tr>
 					<td colspan='2'>名稱</td><td>類別</td><td>類型</td><td>語言</td><td>上映日期</td><td>分數</td>

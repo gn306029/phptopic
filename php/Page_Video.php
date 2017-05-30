@@ -150,6 +150,27 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script>
+	$(function(){
+		$("#send").click(function(){
+			$.ajax({
+				url:"./Page_Comment.php",
+				type:"post",
+				data:$("#comment_form").serialize(),
+				success:function(output){
+					var result = JSON.parse(output);
+					var html = "<div class='member_message'>#"+(parseInt($(".member_message").last().text().substring(1,2))+1)+"   </br>";
+					html += "Dear "+result[0]['MEMBER_NAME']+" says：</br>";
+					html += "留言時間："+result[0]['COMMENT_TIME']+"</br>";
+            		html += result[0]['COMMENTARY']+"</div><br>";
+					$("#show_comment").append(html);
+				},
+                error: function (request, status, error) {
+                    $("#error_log").html(request.responseText);
+                }
+			})
+		})
+	})
+
 	//加入我的最愛
 	function favorite(){
 		$.ajax({
@@ -208,7 +229,6 @@
 				}
 				else{
 					check = 1;
-					console.log(output[0]);
 					var rate_html = "　";
 					for(i=0;i<output[0];i++){
 						rate_html += "<img src='../PIC/top/star-1.png' style=\"width:20px\"/>";
@@ -239,26 +259,12 @@
 				rating:img_num
 			},
 			type:"get",	
+			dataType:"json",
 			success: function(output) {
-				if(output == "1"){
-					alert("評分成功");
-					check = 1;
-					var imgArray = obj.getElementsByTagName("img"); 
-					for(var i=0;i<imgArray.length;i++){ 
-					   imgArray[i]._num = i;
-					}  
-					for(var j=0;j<img_num;j++){  
-					 imgArray[j].src=imgSrc_2;
-					 } 
-					for(var j=0;j<10-img_num;j++){ 
-					 imgArray[j].src=imgSrc; 
-					} 
-				} 
-				else{
-					
-					alert("評分失敗");
-			}}
-			,
+				alert("評分成功");
+				check = 1;
+				$("#ratings").html("評分："+output[0][0]);
+			},
 			error: function (request, status, error) {
 				$("#error_log").html(request.responseText);
 			}
@@ -343,9 +349,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
@@ -379,7 +385,7 @@
 							}
 						?>
 						<p id="ratings">評分：<?php echo $data[0]['SCORE'];?></p>
-						<p class='starWrapper' onmouseover='rate(this,event)' onclick='phprating()'></p>
+						<p class='starWrapper' onmouseover='rate(this,event)' onclick='phprating(this)'></p>
 						<p id='rerate'></p>
 						<p id = "error_log"></p>
 						<p>類　　型：<?php echo $data[0]['CATEGORY_NAME'];?></p>
@@ -420,11 +426,11 @@
 			<div id='message'>
 			<?php
 				if(isset($_SESSION['username'])){
-					echo "<form action='./Page_Comment.php' method='POST'>";
+					echo "<form id='comment_form'>";
 					echo "<textarea name='comment' rows='5' cols='100' style='width:100%;'></textarea>";
 					echo "<input type='hidden' name='userid' value='".$_SESSION['userid']."'/>";
 					echo "<input type='hidden' id='vid' name='videoid' value='".$_GET['VIDEO_ID']."'/>";
-					echo "<input type='submit' value='送出' />";
+					echo "<input type='button' id='send' value='送出' />";
 					echo "</form>";
 				}
 			?>
