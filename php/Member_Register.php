@@ -45,31 +45,35 @@
 	 *
 	 *
 	 */
-    var isInput = false;
-
+    var isInput = [true,true,true,true,true,true];
     function checkAccount() {
         var REGISTER_ACCOUNT = $('#REGISTER_ACCOUNT').val();
-        if(!checkspecial(REGISTER_ACCOUNT)){
-            $.ajax({
-                url: "../php/SQL.php",
-                data: {
-                    action: 'checkaccount',
-                    account: REGISTER_ACCOUNT
-                },
-                type: 'post',
-                success: function(output) {
-                    if (output == 0) {
-                        $('#imply').html("該帳號可以使用");
-                        isInput = true;
-                    } else if (output == 1) {
-                        $('#imply').html("該帳號已有人使用");
-                        isInput = false;
+        if(REGISTER_ACCOUNT.length != 0){
+            if(!checkspecial(REGISTER_ACCOUNT)){
+                $.ajax({
+                    url: "../php/SQL.php",
+                    data: {
+                        action: 'checkaccount',
+                        account: REGISTER_ACCOUNT
+                    },
+                    type: 'post',
+                    success: function(output) {
+                        if (output == 0) {
+                            $('#imply').html("該帳號可以使用");
+                            isInput[0] = true;
+                        } else if (output == 1) {
+                            $('#imply').html("該帳號已有人使用");
+                            isInput[0] = false;
+                        }
                     }
-                }
-            })
+                })
+            }else{
+                $('#imply').html("不得包含特殊字元");
+                isInput[0] = false;
+            }
         }else{
-            $('#imply').html("不得包含特殊字元");
-            isInput = false;
+            $('#imply').html("");
+            isInput[0] = false;
         }
     }
 	/*
@@ -80,17 +84,17 @@
     function checkPassword() {
         var DETERMIND_PASSWORD = $('#DETERMIND_PASSWORD').val();
         var REGISTER_PASSWORD = $('#REGISTER_PASSWORD').val();
-        if(!checkspcial(DETERMIND_PASSWORD) && !checkspcial(REGISTER_PASSWORD)){
+        if(!checkspecial(DETERMIND_PASSWORD) && !checkspecial(REGISTER_PASSWORD)){
             if (REGISTER_PASSWORD != DETERMIND_PASSWORD) {
                 $('#passwordImply').html("密碼不同");
-                isInput = false;
+                isInput[1] = false;
             } else {
                 $('#passwordImply').html("正確");
-                isInput = true;
+                isInput[1] = true;
             }
         }else{
             $('#passwordImply').html("不得包含特殊字元");
-            isInput = false;
+            isInput[1] = false;
         }
     }
 	/*
@@ -102,10 +106,10 @@
         var pattern = /^09\d{8}$/;
         if (pattern.test(phone_num)) {
             $('#phoneImply').html("");
-            isInput = true;
+            isInput[2] = true;
         } else {
             $('#phoneImply').html("格式錯誤");
-            isInput = false;
+            isInput[2] = false;
         }
     }
 	/*
@@ -117,10 +121,10 @@
         var pattern = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
         if (pattern.test(email)) {
             $('#emailImply').html("");
-            isInput = true;
+            isInput[3] = true;
         } else {
             $('#emailImply').html("格式錯誤");
-            isInput = false;
+            isInput[3] = false;
         }
     }
 	/*
@@ -167,7 +171,7 @@
             if ($('#REGISTER_EMAIL').val() == "") {
                 input = false;
             }
-            if (input && isInput) {
+            if (input && isInput[0] && isInput[1] && isInput[2] && isInput[3] && isInput[4] && isInput[5]) {
                 $.post("./Member_Register_Set.php", $('#register_form').serialize(), function(data) {
                     if (data.substring(1) == "Insert成功") {
                         alert("成功");
@@ -185,7 +189,61 @@
         $("#REGISTER_JOB").change(function(){
             if(checkspecial($(this).val())){
                 $('#job_imply').html("不得包含特殊字元");
-                isInput = false;
+                isInput[4] = false;
+            }else{
+                $('#job_imply').html("");
+                isInput[4] = true;
+            }
+        })
+        $("#REGISTER_NAME").change(function(){
+            if(checkspecial($(this).val())){
+                $('#name_imply').html("不得包含特殊字元");
+                isInput[5] = false;
+            }else{
+                $('#name_imply').html("");
+                isInput[5] = true;
+            }
+        })
+        $("#REGISTER_PASSWORD").change(function(){
+            if(checkspecial($(this).val())){
+                $('#password_Imply').html("不得包含特殊字元");
+                $('#passwordImply').html("");
+                if(checkspecial($("#DETERMIND_PASSWORD").val())){
+                    $('#password_Imply').html("不得包含特殊字元");
+                }
+                isInput[1] = false;
+            }else{
+                if(checkspecial($("#DETERMIND_PASSWORD").val())){
+                    $('#password_Imply').html("不得包含特殊字元");
+                    isInput[1] = false;
+                }else{
+                    $('#password_Imply').html("");
+                    isInput[1] = true;
+                }
+            }
+        })
+        $("#DETERMIND_PASSWORD").change(function(){
+            if(checkspecial($(this).val())){
+                $('#passwordImply').html("不得包含特殊字元");
+                isInput[1] = false;
+            }else{
+                $('#passwordImply').html("");
+                if(!checkspecial($("#REGISTER_PASSWORD").val())){
+                    var DETERMIND_PASSWORD = $('#DETERMIND_PASSWORD').val();
+                    var REGISTER_PASSWORD = $('#REGISTER_PASSWORD').val();
+                    if (REGISTER_PASSWORD != DETERMIND_PASSWORD) {
+                        $('#passwordImply').html("密碼不同");
+                        $('#password_Imply').html("");
+                       isInput[1] = false;
+                    } else {
+                        $('#password_Imply').html("");
+                        $('#passwordImply').html("正確");
+                        isInput[1] = true;
+                    }
+                }else{
+                    $('#password_Imply').html("不得包含特殊字元");
+                    isInput[1] = false;
+                }
             }
         })
     })
@@ -245,9 +303,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
@@ -267,12 +325,12 @@
                 <p> 　帳　　號　：
                     <input type="text" id="REGISTER_ACCOUNT" name="REGISTER_ACCOUNT" onchange="checkAccount()" /><span id="imply"></span></p>
                 <p> 　密　　碼　：
-                    <input type="password" id="REGISTER_PASSWORD" name="REGISTER_PASSWORD" onchange="checkPassword()" />
+                    <input type="password" id="REGISTER_PASSWORD" name="REGISTER_PASSWORD" onchange="checkPassword()" /><span id="password_Imply"></span>
                 </p>
                 <p> 　確認密碼　：
                     <input type="password" id="DETERMIND_PASSWORD" name="DETERMIND_PASSWORD" onchange="checkPassword()"><span id="passwordImply"></span></p>
                 <p> 　姓　　名　：
-                    <input type="text" id="REGISTER_NAME" name="REGISTER_NAME" />
+                    <input type="text" id="REGISTER_NAME" name="REGISTER_NAME" /><span id="name_imply"></span>
                 </p>
                 <p> 　生　　日　：
                     <input type="date" id="REGISTER_BIRTHDAY" name="REGISTER_BIRTHDAY" style="width:173px" />

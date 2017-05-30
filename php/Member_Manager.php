@@ -102,7 +102,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript">
-        function checkspecial(val) {
+		function checkspecial(val) {
             var toalarm = false;
             var ch;
             var stralarm = new Array("<", ">", ".", "!", "'","/","\\");
@@ -126,100 +126,100 @@
              * 格式檢查
              *
              */
-            var ischeck = false;
+            var ischeck = [true,true,true,true,true,true,true];
             $("body").on("change","#video_detail_name",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_name").html("不得包含特殊字元");
-                    ischeck = false;
+                    ischeck[0] = false;
                 }else{
                     $("#imply_name").html("");
-                    ischeck = true;
+                    ischeck[0] = true;
                 }
             })
             $("body").on("change","#video_detail_language",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_language").html("不得包含特殊字元");
-                    ischeck = false;
+                    ischeck[1] = false;
                 }else{
                     $("#imply_language").html("");
-                    ischeck = true;
+                    ischeck[1] = true;
                 }
             })
             $("body").on("change","#video_detail_region",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_region").html("不得包含特殊字元");
-                    ischeck = false;
+                    ischeck[2] = false;
                 }else{
                     $("#imply_region").html("");
-                    ischeck = true;
+                    ischeck[2] = true;
                 }
             })
             $("body").on("change","#video_detail_score",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_score").html("不得包含特殊字元");
-                    ischeck = false;
+                    ischeck[3] = false;
                 }else{
                     if(!isNaN($(this).val())){
                         if($(this).val()<=0 || $(this).val()>=11){
                             $("#imply_score").html("分數只能在 1 ~ 10 之間");
-                            ischeck = false;
+                            ischeck[3] = false;
                         }else{
                             $("#imply_score").html("");
-                            ischeck = true;
+                            ischeck[3] = true;
                         }
                     }else{
                         $("#imply_score").html("只能輸入數字");
-                        ischeck = false;
+                        ischeck[3] = false;
                     }
                 }
             })
             $("body").on("change","#video_detail_budget",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_budget").html("不得包含特殊字元");
-                    ischeck = false;
+                    ischeck[4] = false;
                 }else{
                     if(!isNaN($(this).val())){
                         if($(this).val()<=-1){
                             $("#imply_budget").html("預算不得為負");
-                            ischeck = false;
+                            ischeck[4] = false;
                         }else{
                             $("#imply_budget").html("");
-                            ischeck = true;
+                            ischeck[4] = true;
                         }
                     }else{
                         $("#imply_budget").html("只能輸入數字");
-                        ischeck = false;
+                        ischeck[4] = false;
                     }
                 }
             })
             $("body").on("change","#video_detail_boxoffice",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_boxoffice").html("不得包含特殊字元");
-                    ischeck = false;
+                    ischeck[5] = false;
                 }else{
                     if(!isNaN($(this).val())){
                         if($(this).val()<=-1){
                             $("#imply_boxoffice").html("票房不得為負");
-                            ischeck = false;
+                            ischeck[5] = false;
                         }else{
                             $("#imply_boxoffice").html("");
-                            ischeck = true;
+                            ischeck[5] = true;
                         }
                     }else{
                         $("#imply_boxoffice").html("只能輸入數字");
-                        ischeck = false;
+                        ischeck[5] = false;
                     }
                 }
             })
             $("body").on("change","#video_detail_playtime",function(){
                 if(checkspecial($(this).val())){
                     $("#imply_playtime").html("不得包含特殊字元");
-                    ischeck = false;
+                   ischeck[6] = false;
                 }else{
                     var check = $(this).val().split(":");
                     if(check.length != 3){
                         $("#imply_playtime").html("請依照 XX:XX:XX 格式輸入");
-                        ischeck = false;
+                        ischeck[6] = false;
                     }else{
                         var timecheck = false;
                         if(check[0] < "00" || check[0] > "23" || check[1] < "00" || check[1] > "59" || check[2] < "00" || check[2] > "59"){
@@ -237,10 +237,10 @@
                         }
                         if(!timecheck){
                             $("#imply_playtime").html("時間格式有誤");
-                            ischeck = false;
+                            ischeck[6] = false;
                         }else{
                             $("#imply_playtime").html("");
-                            ischeck = true;
+                            ischeck[6] = true;
                         }
                     }
                 }
@@ -413,13 +413,12 @@
              */
             $("body").on("click","#add_new_video",function(){
                 var video_infor = "<form id='add_new_video_form'>";
-                video_infor += "<p>影片名稱：<input type='text' id='video_detail_name' name='video_name' /><span id='imply_name'></span></p>";
+				video_infor += "<p>影片名稱：<input type='text' id='video_detail_name' name='video_name' /><span id='imply_name'></span></p>";
                 video_infor += "<p>上映日期：<input type='date' id='video_detail_release' name='release_date' /></p>";
                 video_infor += "<p>影片種類：<select name='add_kind'>"+$("[name=kind]").html()+"</select></p>";
                 video_infor += "<p>影片類別：<select name='add_category'>"+$("[name=category]").html()+"</select></p>";
-                video_infor += "<p>影片語言：<input type='text' id='video_detail_language' name='language' /><span id='imply_language'></span></p>";
+				video_infor += "<p>影片語言：<input type='text' id='video_detail_language' name='language' /><span id='imply_language'></span></p>";
                 video_infor += "<p>影片地區：<input type='text' id='video_detail_region' name='region' /><span id='imply_region'></span></p>";
-                video_infor += "<p>影片分數：<input type='text' id='video_detail_score' name='score' /><span id='imply_score'></span></p>";
                 video_infor += "<p>影片預算：<input type='text' id='video_detail_budget' name='budget' /><span id='imply_budget'></span></p>";
                 video_infor += "<p>影片票房：<input type='text' id='video_detail_boxoffice' name='boxoffice' value='0'/><span id='imply_boxoffice'></span></p>";
                 video_infor += "<p>影片長度：<input type='text' id='video_detail_playtime' name='playtime' /><span id='imply_playtime'>  EX:23:59:59</span></p>";
@@ -435,7 +434,7 @@
              *
              */
             $("body").on("click","#do_add_new_video",function(){
-                //判斷所有欄位是否都輸入
+				//判斷所有欄位是否都輸入
                 var form_status = true;
                 $("#add_new_video_form input").each(function(){
                     if($(this).val() == ""){
@@ -443,8 +442,8 @@
                             form_status = false;
                         }
                     }
-                });
-                if(ischeck && form_status){
+				});
+				if(ischeck[0] && ischeck[1] && ischeck[2] && ischeck[3] && ischeck[4] && ischeck[5] && ischeck[6] && form_status){
                     $.ajax({
                         url:"./Member_Information_Set.php",
                         data:$("#add_new_video_form").serialize()+"&action=add_new_video",
@@ -464,7 +463,8 @@
                 }else{
                     alert("請檢察表單是否輸入確實");
                 }
-            })
+
+			})
             /*
              * 取出影片資料欄位
              * 用 ajax 抓出所有影片
@@ -534,7 +534,7 @@
                         if(output != "false"){
                             html = "<form id='video_detail'>";
                             html += "<input type='hidden' name='video_id' value='"+output[0]['VIDEO_ID']+"'/>";
-                            html += "<p>影片名稱：<input type='text' id='video_detail_name' name='video_name' value='"+output[0]['VIDEO_NAME']+"'><span id='imply_name'></span></p>";
+							html += "<p>影片名稱：<input type='text' id='video_detail_name' name='video_name' value='"+output[0]['VIDEO_NAME']+"'><span id='imply_name'></span></p>";
                             html += "<p>上映日期：<input type='date' id='video_detail_release' name='release_date' value='"+output[0]['RELEASE_DATE']+"'/></p>";
                             html += "<p>影片種類：<select name='add_kind'>"+output_kind+"</select></p>";
                             html += "<p>影片類別：<select name='add_category'>"+output_category+"</select></p>";
@@ -564,7 +564,7 @@
              * 送出更新資料
              *
              */
-            $("body").on("click","#do_update_video",function(){
+             $("body").on("click","#do_update_video",function(){
                 var form_status = true;
                 $("#video_detail input").each(function(){
                     if($(this).val() == ""){
@@ -668,9 +668,10 @@
 				actor_infor += "<button id='do_add_new_actor' >新增演員</button>";
                 $("#my_infor").html(actor_infor);
             })
-            /*
+			/*
              * 取得電影清單
              *
+			 *
              */
 			$("body").on("click","#add_more_actorlist",function(){
                 $.ajax({
@@ -693,6 +694,174 @@
                         $("#error_log").html(request.responseText);
                     }
                  })
+            })
+			/*
+             * 確定新增演員
+             *
+             */
+            $("body").on("click","#do_add_new_actor",function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:$("#add_new_actor_form").serialize()+"&action=add_new_actor",
+                    type:"post",
+                    success:function(output){
+						if(output == "success"){
+                            alert("新增成功");
+                            $("#my_infor").html("");
+                        }else{
+                            alert("新增失敗");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			/*
+             * 取出影片資料欄位
+             * 用 ajax 抓出所有影片
+             * 更新與刪除都使用這個方法
+             *
+             */
+            $("body").on("click","#get_actor_detail",function(){
+                 $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:{
+                        action:"get_actor"
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(output){
+                        $("#my_infor").html("");
+                        var select_tag = "<select name='actor_select'>";
+                        select_tag += "<option value='0' selected>---------------請選擇---------------</option>";
+                        for(var i =0;i<output.length;i++){
+                            select_tag += "<option value='"+output[i]['ACTOR_ID']+"'>"+output[i]['ACTOR_NAME']+"</option>";
+                        }
+                        select_tag += "</select>";
+                        $("#my_infor").html("請選擇演員名稱："+select_tag);
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                 })
+            })
+            /*
+             * 建立刪除影片的欄位
+             * 用 ajax 把相關資料丟到後台
+             * 再把資料顯示到前台
+             * 讓管理者做修改
+             *
+             */
+            $("body").on("change","[name=actor_select]",function(){
+                $.ajax({
+                    url:"./Member_Information_Set.php",
+                    data:{
+                        action:"get_actor_detail",
+                        actor_id:$("[name=actor_select]").val()
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function(output){
+                        /*
+                         * 把該部影片的類別與種類設為預設
+                         *
+                         */
+                       
+                        if(output != "false"){
+                            html = "<form id='actor_detail'>";
+                            html += "<input type='hidden' name='actor_id' value='"+output[0]['ACTOR_ID']+"'/>";
+							html += "<p>演員名稱：<input type='text' id='actor_detail_name' name='actor_name' value='"+output[0]['ACTOR_NAME']+"'><span id='imply_name'></span></p>";
+							html += "<p>演員生日：<input type='date' id='actor_detail_birth' name='birth' value='"+output[0]['ACTOR_Birth']+"'><span id='imply_name'></span></p>";
+							html += "<p>演員生平：<input type='text' id='actor_detail_history' name='history' value='"+output[0]['ACTOR_HISTORY']+"'><span id='imply_name'></span></p>";
+							html += "<p>演員照片：<input type='text' id='actor_detail_photo' name='actor_photo' value='"+output[0]['ACTOR_PHOTO']+"'><span id='imply_name'></span></p>";
+							html += "<p>演員臉書：<input type='text' id='actor_detail_fb' name='actor_fb' value='"+output[0]['ACTOR_FB']+"'><span id='imply_name'></span></p>";
+                            html += "</form>";
+                            html += "<button id='do_update_actor'>更新</button>      ";
+							html += "<button id='do_delete_actor'>刪除</button>";
+                            $("#my_infor").html(html);
+                        }else{
+                            alert("請選擇電影");
+                        }
+                    },
+                    error: function (request, status, error) {
+                        $("#error_log").html(request.responseText);
+                    }
+                })
+            })
+            /*
+             * 送出更新資料
+             *
+             */
+             $("body").on("click","#do_update_actor",function(){
+                var form_status = true;
+                $("#actor_detail input").each(function(){
+                    if($(this).val() == ""){
+                        if(!($(this).is($("#actor_detail_fb")))){
+                            form_status = false;
+                        }
+                    }
+                });
+                if(form_status){
+                    $.ajax({
+                        url:"./Member_Information_Set.php",
+                        data:$("#actor_detail").serialize() + "&action=update_actor",
+                        type:"post",
+                        success:function(output){
+                            if(output == "success"){
+                                alert("更新成功");
+                            }else{
+                                alert(output);
+                            }
+                        },
+                        error: function (request, status, error) {
+                            $("#error_log").html(request.responseText);
+                        }
+                    })
+                }else{
+                    alert("請表單是否輸入確實");
+                }
+            })
+            /*
+             * 建立刪除影片的欄位
+             * 用 ajax 把相關資料丟到後台做相關處理
+             *
+             */
+            $("body").on("click","#do_delete_actor",function(){
+                if(confirm("確定刪除這部影片嗎?")){
+                    if(confirm("你真的確定刪除這部影片嗎?")){
+                        if(confirm("你真的真的不會後悔嗎?")){
+                            if(confirm("再問最後一次，你真的不後悔嗎?")){
+                                if(confirm("真的?")){
+                                    alert("好吧");
+                                    $.ajax({
+                                        url:"./Member_Information_Set.php",
+                                        data:{
+                                            action:"delete_actor",
+                                            actor_id:$("[name=actor_id]").val()
+                                        },
+                                        type:"post",
+                                        success:function(output){
+                                            if(output == "success"){
+                                                alert("刪除成功");
+                                                var msg = "<div>被刪除的演員就像變了心的基友，回不來了</div>";
+                                                msg += "<img src='http://img.ltn.com.tw/Upload/ent/page/800/2015/09/18/1449261_2.jpg'></img>";
+                                                $("#my_infor").html(msg);
+
+                                            }else{
+                                                alert(output);
+                                            }
+                                        },
+                                        error: function (request, status, error) {
+                                            $("#error_log").html(request.responseText);
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    }
+                }
             })
 		});
     </script>
@@ -751,9 +920,9 @@
                 <tr>
                     <td></td>
                     <td align="center">
-                        <a href="Page_Movie.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-                        <a href="Page_Drama.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-                        <a href="Page_Tvshow.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
+                        <a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
                         <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
                     </td>
                     <td></td>
