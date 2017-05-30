@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 	session_start();
 	$db_host = 'db.mis.kuas.edu.tw';
     $db_name = 's1104137130';
@@ -91,9 +91,8 @@
              *
              */
             $sql = "INSERT INTO `video`(`VIDEO_NAME`,`RELEASE_DATE`,`CATEGORY_ID`,`LANGUAGE`,`REGION`,`SCORE`,`BUDGET`,`BOXOFFICE`,`PLAYTIME`,`KIND_ID`,`PHOTO`,`STORY`,`TRAIL`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            $array = array($_POST['video_name'],$_POST['release_date'],$_POST['add_category'],$_POST['language'],$_POST['region'],$_POST['score'],$_POST['budget'],$_POST['boxoffice'],$_POST['playtime'],$_POST['add_kind'],$_POST['photo'],$_POST['story'],$_POST['trail']);
-            
-            $test = sql_exec($sql,$array);
+            $array = array($_POST['video_name'],$_POST['release_date'],$_POST['add_category'],$_POST['language'],$_POST['region'],0,$_POST['budget'],$_POST['boxoffice'],$_POST['playtime'],$_POST['add_kind'],$_POST['photo'],$_POST['story'],$_POST['trail']);
+			$test = sql_exec($sql,$array);
             if(gettype($test) != false){
                 echo "success";
             }else{
@@ -149,7 +148,7 @@
                 sql_exec($sql,null);
                 $sql = "DELETE FROM `commentary` WHERE `VIDEO_ID` = '".$_POST['video_id']."'";
                 sql_exec($sql,null);
-                $sql = "DELETE FROM `rating` WHERE `VIDEO_ID` = '".$_POST['video_id']."'";
+				$sql = "DELETE FROM `rating` WHERE `VIDEO_ID` = '".$_POST['video_id']."'";
                 sql_exec($sql,null);
                 $sql = "DELETE FROM `favorite` WHERE `VIDEO_ID` = '".$_POST['video_id']."'";
                 sql_exec($sql,null);
@@ -187,7 +186,7 @@
             $result = sql_select($sql,null);
             echo json_encode($result);
             break;
-		case 'new_actor':
+		case 'add_new_actor':
 			/*
 			 * 新增演員
              *
@@ -195,7 +194,7 @@
 			//$sql = "INSERT INTO `actor`(`ACTOR_NAME`, `ACTOR_Birth`, `ACTOR_HISTORY`, `ACTOR_PHOTO`, `ACTOR_FB`) VALUES ('".$_POST['actor_name']."','".$_POST['actor_birth']."','".$_POST['actor_history']."','".$_POST['actor_photo']."','".$_POST['actor_fb']."')";
             $sql = "INSERT INTO `actor`(`ACTOR_NAME`, `ACTOR_Birth`, `ACTOR_HISTORY`, `ACTOR_PHOTO`, `ACTOR_FB`) VALUES (?,?,?,?,?)";
             $array = array($_POST['actor_name'],$_POST['actor_birth'],$_POST['actor_history'],$_POST['actor_photo'],$_POST['actor_fb']);
-			if(gettype(sql_exec($sql,$array)) != boolean){
+			if(gettype(sql_exec($sql,$array)) != false){
                 echo "success";
             }else{
                 echo "fail";
@@ -206,9 +205,23 @@
              * 撈出所有演員 id 與名稱
              *
              */
-            $sql = "SELECT `ACTOR_ID`,`ACTOR_NAME` From `ACTOR`";
+            $sql = "SELECT `ACTOR_ID`,`ACTOR_NAME` From `ACTOR` order by `ACTOR_NAME`";
             $result = sql_select($sql,null);
             echo json_encode($result);
+            break;
+		case 'get_actor_detail':
+            /*
+             * 撈出管理者要更新或刪除的演員內容
+             * 若沒有選擇演員就直接回傳 false
+             */
+            if($_POST['actor_id'] != 0){
+                $sql = "SELECT * From `actor` Where `ACTOR_ID` = ?";
+                $array = array($_POST['actor_id']);
+                $result = sql_select($sql,$array);
+                echo json_encode($result);
+            }else{
+                echo "false";
+            }
             break;
 		case 'update_actor':
             /*
@@ -216,9 +229,10 @@
              * 這裡尚未做資料格式的檢查
              *
              */
-            $sql = "UPDATE `actor` SET `ACTOR_NAME` = '".$_POST['actor_name']."','".$_POST['actor_birth']."','".$_POST['actor_history']."','".$_POST['actor_photo']."','".$_POST['actor_fb']."'"; 
+			$sql = "UPDATE `actor` SET `ACTOR_NAME` = ?, `ACTOR_Birth`=?, `ACTOR_HISTORY`= ?, `ACTOR_PHOTO`= ?, `ACTOR_FB`= ? where `ACTOR_ID`=?";
+			$array = array($_POST['actor_name'],$_POST['birth'],$_POST['history'],$_POST['actor_photo'],$_POST['actor_fb'],$_POST['actor_id']);
             try{
-                sql_exec($sql);
+                sql_exec($sql,$array);
                 echo "success";
             }catch(Execption $e){
                 echo $e -> getMessage();
@@ -232,9 +246,9 @@
              */
             try{
                 $sql = "DELETE FROM `actor_list` WHERE `ACTOR_ID` = '".$_POST['actor_id']."'";
-                sql_exec($sql);
+                sql_exec($sql,null);
                 $sql = "DELETE FROM `ACTOR` WHERE `ACTOR_ID` = '".$_POST['actor_id']."'";
-                sql_exec($sql);
+                sql_exec($sql,null);
                 echo "success";
             }catch(Exception $e){
                 echo $e -> getMessage();
