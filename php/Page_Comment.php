@@ -21,11 +21,13 @@
     $comment_time = date("Y-m-d H:i:s");
 
     $sql = "INSERT INTO `commentary`(`VIDEO_ID`,`MEMBER_ID`,`COMMENT_TIME`,`COMMENTARY`) Values ('".$video_id."','".$member_id."','".$comment_time."','".nl2br($comment)."')";
-    echo $sql;
-    $result = $conn -> exec($sql);
-	/*
-     * 重新導向該電影
-     *
-     */
-    header("Location: ./Page_Video.php?VIDEO_ID=".$video_id);
+    try{
+        $conn -> exec($sql);
+
+        $sql = "SELECT `MEMBER_NAME` , `COMMENT_TIME` , `COMMENTARY` , `COMMENTARY_ID` From `commentary` Join `member` On `commentary`.`MEMBER_ID` = `member`.`MEMBER_ID` Where `VIDEO_ID` = '".$video_id."' ORDER BY COMMENTARY_ID DESC LIMIT 1";
+        $result = $conn -> query($sql) -> fetchAll();
+        echo json_encode($result);
+    }catch(Exception $e){
+        echo $e -> getMessage();
+    }
 ?>
