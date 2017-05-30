@@ -20,13 +20,23 @@
 			$time = date("Y-m-d H:i:s");
 			$sql = "UPDATE `rating` SET `RATE`='".$_GET['rating']."',`DATE`='".$time."' WHERE member_id = '".$id."' And VIDEO_ID = '".$vid."'";
 			$result = $conn -> exec($sql);
-			$conn = null;
-			echo $result;
-		}else{
-			$sql = "INSERT INTO `rating`(`MEMBER_ID`, `VIDEO_ID`, `RATE`) VALUES ('".$id."','".$vid."','".$_GET['rating']."')";
+			$sql = "UPDATE `video` SET `SCORE`=(select avg(rate) from rating where VIDEO_ID = '".$vid."') WHERE VIDEO_ID = '".$vid."'";
 			$result = $conn -> exec($sql);
+			$sql = "SELECT `SCORE` FROM `video` WHERE VIDEO_ID = '".$vid."'";
+			$result = $conn -> query($sql);
 			$conn = null;
-			echo $result;
+			$result = $result -> fetchAll();
+			echo json_encode($result);
+		}else{
+			$sql = "INSERT INTO `rating`(`MEMBER_ID`, `VIDEO_ID`, `RATE`) VALUES ('".$id."','".$vid."','".$_GET['rating']."')"; 
+			$result = $conn -> exec($sql);
+			$sql = "UPDATE `video` SET `SCORE`=(select avg(rate) from rating where VIDEO_ID = '".$vid."') WHERE VIDEO_ID = '".$vid."'";
+			$result = $conn -> exec($sql);
+			$sql = "SELECT `SCORE` FROM `video` WHERE VIDEO_ID = '".$vid."'";
+			$result = $conn -> query($sql);
+			$conn = null;
+			$result = $result -> fetchAll();
+			echo json_encode($result);
 		}
 	}else {
 		$sql = "Select `RATE` From rating Where member_id = '".$id."' And VIDEO_ID = '".$vid."'";
