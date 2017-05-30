@@ -36,6 +36,7 @@
 	height:70px;
     	background:white;
     	-webkit-clip-path:circle(35px at 50% 50%);
+	text-align:center;
 }
 footer{
 	bottom:-50%;
