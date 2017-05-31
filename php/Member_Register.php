@@ -6,13 +6,6 @@
 	 *
 	 */
     include './Page_Search_Set.php';
-    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
-    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
-    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-	$login_form .= "</form>";
-
     $form_category = "";
     $index = 0;
     foreach ($Allcategory as $row) {

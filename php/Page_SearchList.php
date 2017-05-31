@@ -5,16 +5,6 @@
      *
      */
      include './Page_Search_Set.php';
-    /*
-     * 帳號與密碼的輸入框
-     *
-     */
-    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
-    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
-    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-	$login_form .= "</form>";
 ?>
 <?php
     /*
@@ -23,11 +13,6 @@
      * limit 等於 null , 為計算資料總數用的 Sql
      *
      */
-	$db_host = 'db.mis.kuas.edu.tw';
-    $db_name = 's1104137130';
-    $db_user = 's1104137130';
-    $db_password = '1314520';
-    $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
     function search_function($search,$category,$kind,$limit){
         /*
@@ -44,7 +29,7 @@
         $result = $conn -> query($sql);
         return $result;
     }
-    $search = $_GET['search'];
+    $search = addslashes($_GET['search']);
     $kind_ = $_GET['kind'];
     $category_ = $_GET['category'];
 	/*
@@ -54,12 +39,12 @@
     if($kind_ == "0"){
         $kind_ = "`video`.`KIND_ID` LIKE '%%'";
     }else{
-        $kind_ = "`video`.`KIND_ID` = '".$_GET['kind']."'";
+        $kind_ = "`video`.`KIND_ID` = '".addslashes($_GET['kind'])."'";
     }
     if($category_ == "0"){
         $category_ = "`video`.`CATEGORY_ID` LIKE '%%'";
     }else{
-        $category_ = "`video`.`CATEGORY_ID` = '".$_GET['category']."'";
+        $category_ = "`video`.`CATEGORY_ID` = '".addslashes($_GET['category'])."'";
     }
     /*
      * 預設頁數
@@ -71,8 +56,20 @@
      *
      */
     if (isset($_GET['page'])) {
-      $now_pages = $_GET['page'];
+        $now_pages = str_replace(    
+        array('!', '"', '#', '$', '%', '&', '\'', '(', ')', '*',    
+            '+', ', ', '-', '.', '/', ':', ';', '<', '=', '>',    
+            '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|',    
+            '}', '~', '；', '﹔', '︰', '﹕', '：', '，', '﹐', '、',    
+            '．', '﹒', '˙', '·', '。', '？', '！', '～', '‥', '‧',    
+            '′', '〃', '〝', '〞', '‵', '‘', '’', '『', '』', '「',    
+            '」', '“', '”', '…', '❞', '❝', '﹁', '﹂', '﹃', '﹄'),    
+        '',$_GET['page']);
+        if(!is_numeric($now_pages)){
+            $now_pages = 1;
+        }
     }
+    
     /*
      * result 為要顯示的資料
      * count_search 為要計算總數的查詢
@@ -148,7 +145,7 @@
      */
     $category_table='';
     $category_table .= "<tr>";
-    $stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID='".$_GET['kind']."'");
+    $stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID='".addslashes($_GET['kind'])."'");
     foreach($stmt as $row){ 
         $category_table .= "<td><a href=./Page_SearchList.php?search=".$_GET['search']."&kind=".$_GET['kind']."&category=". $row['CATEGORY_ID']. ">". $row['CATEGORY_NAME']."</a></td>";
         $i++;

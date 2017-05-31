@@ -5,16 +5,6 @@
 	 *
 	 */
     include './Page_Search_Set.php';
-	/*
-	 * 帳號與密碼的輸入框
-	 *
-	 */
-    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
-    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
-    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-	$login_form .= "</form>";
 ?>
 <?php
 	 function search_function($sql){
@@ -37,7 +27,22 @@
 	 *
 	 */
     if (isset($_GET['page'])) {
-      $now_pages = $_GET['page'];
+      /*
+       * 去除所有標點符號
+       *
+       */
+       $now_pages = str_replace(    
+        array('!', '"', '#', '$', '%', '&', '\'', '(', ')', '*',    
+            '+', ', ', '-', '.', '/', ':', ';', '<', '=', '>',    
+            '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|',    
+            '}', '~', '；', '﹔', '︰', '﹕', '：', '，', '﹐', '、',    
+            '．', '﹒', '˙', '·', '。', '？', '！', '～', '‥', '‧',    
+            '′', '〃', '〝', '〞', '‵', '‘', '’', '『', '』', '「',    
+            '」', '“', '”', '…', '❞', '❝', '﹁', '﹂', '﹃', '﹄'),    
+        '',$_GET['page']);
+        if(!is_numeric($now_pages)){
+            $now_pages = 1;
+        }
     }
     /*
      * result 為要顯示的資料

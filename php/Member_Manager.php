@@ -9,22 +9,11 @@
 	 *
 	 */
     include './Page_Search_Set.php';
-    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
-    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
-    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-    $login_form .= "</form>";
     /*
 	 * 建立連線
 	 *
 	 *
 	 */
-    $db_host = 'db.mis.kuas.edu.tw';
-    $db_name = 's1104137130';
-    $db_user = 's1104137130';
-    $db_password = '1314520';
-    $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
 	/*
 	 * 取得會員喜歡的類別
@@ -101,21 +90,8 @@
     <link type="text/css" rel="stylesheet" href="../css/manager.css" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="../js/checkspecial.js"></script>
     <script type="text/javascript">
-		function checkspecial(val) {
-            var toalarm = false;
-            var ch;
-            var stralarm = new Array("<", ">", ".", "!", "'","/","\\");
-            for (var i = 0; i < stralarm.length; i++) { //依序載入使用者輸入的每個字元
-                for (var j = 0; j < val.length; j++) {
-                    ch = val.substr(j, 1);
-                    if (ch == stralarm[i]) //如果包含禁止字元
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
         /*
 		 * 取得會員詳細資料
 		 *

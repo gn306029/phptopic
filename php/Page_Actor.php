@@ -17,21 +17,22 @@
 	$login_form .= "</form>";
 ?>
 <?php
-    function actor_detail(){
+    function actor_detail($sql,$array){
         $db_host = 'db.mis.kuas.edu.tw';
         $db_name = 's1104137130';
         $db_user = 's1104137130';
         $db_password = '1314520';
         $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
         $conn = new PDO($dsn,$db_user,$db_password);
-        $sql = "Select `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = ?";
-        $array = array($_GET['actor_id']);
         $stmt = $conn -> prepare($sql);
         $stmt -> execute($array);
-        $conn = null;
         return $stmt -> fetchAll();
     }
-    $detail = actor_detail();
+    $sql = "SELECT `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = ?";
+    $array = array($_GET['actor_id']);
+    $detail = actor_detail($sql,$array);
+    $sql = "SELECT `actor_list`.`VIDEO_ID`,`VIDEO_NAME` FROM `actor_list` JOIN `video` ON `actor_list`.`VIDEO_ID` = `video`.`VIDEO_ID` Where `Actor_ID` = ?";
+    $actor_list = actor_detail($sql,$array);
 ?>
 
 <!DOCTYPE html>
@@ -116,15 +117,35 @@
 		<br>
         <div id="context">
 			<table>
-                <tr><td width=50%><?php echo "<img id='PIC' src='".$detail[0][2]."'>";?></td>
-					<td width=50%>
-						<p id='actor_name' style='color:hotpink;'><?php echo $detail[0][0];?> <?php if(!is_null($detail[0][3])) {echo "<a href=".$detail[0][3]."><img id='FB' src='../PIC/top/FB.png'></a>";}?></p>
-						<p>生日：<?php echo $detail[0][4];?></p>
-						<p style='color:hotpink;'>介紹</p>
-						<p><?php echo $detail[0][1]."<a href='https://zh.wikipedia.org/wiki/".$detail[0][0]."'/>" ?>詳全文</a></p>
-					</td>
-				</tr>
+                <?php
+                    if(isset($detail[0][0])){
+                        echo "<tr>";
+                        echo "<td width=50%><img id='PIC' src='".addslashes($detail[0][2])."'></td>";
+                        echo "<td width=50%>";
+                        if(!is_null($detail[0][3])){
+                            echo "<p id='actor_name' style='color:hotpink;'>".addslashes($detail[0][0])."<a href=".addslashes($detail[0][3])."><img id='FB' src='../PIC/top/FB.png'></a></p>";
+                        }else{
+                            echo "<p id='actor_name' style='color:hotpink;'>".addslashes($detail[0][0]);
+                        }
+                        echo "<p>生日：".addslashes($detail[0][4])."</p>";
+                        echo "<p style='color:hotpink;'>介紹</p>";
+                        echo "<p>".$detail[0][1]."<a href='https://zh.wikipedia.org/wiki/".addslashes($detail[0][0])."'/>詳全文</a></p></td>";
+                        echo "</tr>";
+                    }else{
+                        echo "無此藝人";
+                    }
+                ?>
 			</table>
+            <table id="actor_list">
+                <?php
+                    if(isset($detail[0][0])){
+                        echo "作品列表：</br>";
+                        foreach ($actor_list as $row) {
+                            echo "<tr><td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</a></td></tr>";
+                        }
+                    }
+                ?>
+            </table>
 		</div>
 		<footer><table><tr>
 				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
