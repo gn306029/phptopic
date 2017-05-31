@@ -5,16 +5,6 @@
 	 *
 	 */
     include './Page_Search_Set.php';
-	/*
-	 * 帳號與密碼的輸入框
-	 *
-	 */
-    $login_form = "<form name='memberlogin' action='./Member_Login.php' method='POST'>";
-    $login_form .= "<img src=\"../PIC/top/account.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"text\" name=\"MEMBER_ACCOUNT\" /></br>";
-    $login_form .= "<img src=\"../PIC/top/password.png\" width=\"70px\" />";
-    $login_form .= "<input type=\"password\" name=\"MEMBER_PASSWORD\"></br>";
-    $login_form .= "</form>";
 ?>
 
 
@@ -28,27 +18,48 @@
 		<link type="text/css" rel="stylesheet" href="../css/video.css">
 		<link href="../js/jquery.loading.css" rel="stylesheet">	
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="../js/checkspecial.js"></script>
 		<script src="../js/jquery.loading.js"></script>
 		<script type="text/javascript">
 			$(function(){
+				var ischeck = [true,true];
+				$("#username").change(function(){
+					if(checkspecial($(this).val())){
+						ischeck[0] = false;
+					}else{
+						ischeck[0] = true;
+					}
+				})
+				$("#email").change(function(){
+					var pattern = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+			        if (pattern.test($(this).val())) {
+			            ischeck[1] = true;
+			        } else {
+			            ischeck[1] = false;
+			        }
+				})
 				$("#send").click(function(){
-					$("body").loading({
-					  stoppable: true
-					});
-					$.ajax({
-						url:"./Member_Forget_Set.php",
-						data:$("#data").serialize(),
-						type:"post",
-						success:function(output){
-							setTimeout(function(){
-								$("body").loading('stop');
-								alert("寄信成功");
-							},500)
-						},
-						error: function (request, status, error) {
-		                   $("#error_log").html(request.responseText);
-		            	}
-					})
+					if(ischeck[0] && ischeck[1] && $("#username").val().length != 0 && $("#email").val().length != 0){
+						$("body").loading({
+						  stoppable: true
+						});
+						$.ajax({
+							url:"./Member_Forget_Set.php",
+							data:$("#data").serialize(),
+							type:"post",
+							success:function(output){
+								setTimeout(function(){
+									$("body").loading('stop');
+									alert("寄信成功");
+								},500)
+							},
+							error: function (request, status, error) {
+			                   $("#error_log").html(request.responseText);
+			            	}
+						})
+					}else{
+						alert("請檢察表單輸入是否確實");
+					}
 				})
 			})
  		</script>
@@ -127,8 +138,8 @@
 			<br>
 			<div id="context">
 				<form id='data' method="POST">
-					<p>帳　　號：<input type='text' name='username' /></p>
-					<p>電子郵件：<input type='text' name='email' /></br></p>
+					<p>帳　　號：<input type='text' name='username' id="username"/></p>
+					<p>電子郵件：<input type='email' name='email' id="email"/></br></p>
 					<input type='button' id='send' value='送出' />
 				</form>
 			</div>
