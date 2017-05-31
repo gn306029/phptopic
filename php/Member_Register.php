@@ -44,17 +44,18 @@
         if(REGISTER_ACCOUNT.length != 0){
             if(!checkspecial(REGISTER_ACCOUNT)){
                 $.ajax({
-                    url: "../php/SQL.php",
+                    url: "./Member_Information_Set.php",
                     data: {
                         action: 'checkaccount',
                         account: REGISTER_ACCOUNT
                     },
                     type: 'post',
                     success: function(output) {
-                        if (output == 0) {
+                        var result = JSON.parse(output);
+                        if (result.length == 0) {
                             $('#imply').html("該帳號可以使用");
                             isInput[0] = true;
-                        } else if (output == 1) {
+                        } else if (result.length == 1) {
                             $('#imply').html("該帳號已有人使用");
                             isInput[0] = false;
                         }

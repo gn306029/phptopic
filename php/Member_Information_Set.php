@@ -253,6 +253,18 @@
             }catch(Exception $e){
                 echo $e -> getMessage();
             }
+            break;
+        case 'checkaccount':
+            /*
+             * 檢查帳號是否重複
+             *
+             */
+            $sql = "SELECT MEMBER_ACCOUNT FROM MEMBER WHERE MEMBER_ACCOUNT = ?";
+            $array = array($_POST['account']);
+            $result = sql_select($sql,$array);
+            echo json_encode($result);
+            break;
+
 
     }
 
