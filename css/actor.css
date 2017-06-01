@@ -17,6 +17,7 @@
 #context td{
 	vertical-align:top;
 	padding-left:15px;
+	
 }
 #PIC{
 	width:100%;
@@ -28,5 +29,24 @@
 #FB{
 	width:45px;
 	vertical-align:middle;
+}
+#actor_list{
+	border-radius:5px;
+	font-family:"微軟正黑體";
+	font-size:26px;
+	font-weight:bold;
+	width:100%;
+}
+#actor_list td{
+	text-align:center;
+	width:20%;
+}
+#actor_list div{
+	width:70px;
+	height:70px;
+    	background:white;
+    	-webkit-clip-path:circle(35px at 50% 50%);
+	display:inline-block;
+	text-align:center;
 }
 
