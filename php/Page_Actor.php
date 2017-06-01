@@ -31,7 +31,7 @@
     $sql = "SELECT `ACTOR_NAME`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,AcTOR_BIRTH From `actor` Where `ACTOR_ID` = ?";
     $array = array($_GET['actor_id']);
     $detail = actor_detail($sql,$array);
-    $sql = "SELECT `actor_list`.`VIDEO_ID`,`VIDEO_NAME` FROM `actor_list` JOIN `video` ON `actor_list`.`VIDEO_ID` = `video`.`VIDEO_ID` Where `Actor_ID` = ?";
+    $sql = "SELECT `actor_list`.`VIDEO_ID`,`VIDEO_NAME`,`PHOTO` FROM `actor_list` JOIN `video` ON `actor_list`.`VIDEO_ID` = `video`.`VIDEO_ID` Where `Actor_ID` = ?";
     $actor_list = actor_detail($sql,$array);
 ?>
 
@@ -139,10 +139,19 @@
             <table id="actor_list">
                 <?php
                     if(isset($detail[0][0])){
-                        echo "作品列表：</br>";
+                        echo "<tr><th colspan='5'><p style='color:hotpink;'>作品列表</p></th></tr>";
+                        $list="<tr>";
+                        $i=1;
                         foreach ($actor_list as $row) {
-                            echo "<tr><td><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</a></td></tr>";
+                            if($i%6!=0){
+                                $list.="<td><div><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' height='100%'></a></div><br><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</a></td>";
+                            }else{
+                                $list.="</tr><tr><td><div><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' height='100%'></a></div><br><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</a></td>";
+                            }
+                            $i++;
                         }
+                        $list.="</tr>";
+                        echo $list;
                     }
                 ?>
             </table>

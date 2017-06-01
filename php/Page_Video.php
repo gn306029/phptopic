@@ -44,26 +44,21 @@
      *
      */
     $data = $result;
-    $actor_table = "";
+    $actor_table = "<tr class='actor'>";
     $commentary_div = "";
-    $index = 0;
+    $index = 1;
     /*
      * 演員的Table表格
      *
      */
     foreach($actor as $row){
-        /*
-         * 一行塞兩個
-         *
-         */
-        if($index == 0){        
-            $actor_table .= "<tr class='actor'><td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
-            $index = 1;
-        }else if($index == 1){
-            $actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td></tr>";
-            $index = 0;
-        }
+		if($index%6!=0){
+            $actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
+		}else{
+			$actor_table .= "</tr><tr class='actor'><td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
+		}
     }
+	$actor_table.="</tr>";
     /*
      * 評論 table
      *
@@ -358,11 +353,6 @@
 							echo "<p>片　　長：".addslashes($data[0]['PLAYTIME'])."</p>";
 							echo "</td>";
 							echo "</tr>";
-							echo "<tr><td colspan=2><p>".$actor_table."</p></td></tr>";
-							echo "<tr><td colspan=2><p style='color:hotpink;'>介紹</p><p>".addslashes($data[0]['STORY'])."<a href='https://zh.wikipedia.org/wiki/".addslashes($data[0]['VIDEO_NAME'])."'/>詳全文</a></p></td></tr>";
-							echo "<tr><td colspan=2><p style='color:hotpink;'>影片</p></td></tr>";
-							echo "<tr><td colspan=2 align='center'><iframe width='863' height='485' src='https://www.youtube.com/embed/".addslashes($data[0]['TRAIL'])."' frameborder='0' allowfullscreen></iframe></td></tr>";
-							echo "<tr><td colspan=2><p style='color:hotpink;'>評論</td></p></td></tr>";
 						}else{
 							echo "無此影片";
 						}	
@@ -370,6 +360,17 @@
 						echo $e -> getMessage();
 						}
 				?> 
+			</table>
+			<table>
+				<?php
+					if(isset($data[0]["VIDEO_ID"])){
+						echo "<tr><td colspan=5><p>".$actor_table."</p></td></tr>";
+						echo "<tr><td colspan=5><p style='color:hotpink;'>介紹</p><p>".addslashes($data[0]['STORY'])."<a href='https://zh.wikipedia.org/wiki/".addslashes($data[0]['VIDEO_NAME'])."'/>詳全文</a></p></td></tr>";
+						echo "<tr><td colspan=5><p style='color:hotpink;'>影片</p></td></tr>";
+						echo "<tr><td colspan=5 align='center'><iframe width='863' height='485' src='https://www.youtube.com/embed/".addslashes($data[0]['TRAIL'])."' frameborder='0' allowfullscreen></iframe></td></tr>";
+						echo "<tr><td colspan=5><p style='color:hotpink;'>評論</td></p></td></tr>";
+					}
+				?>
 			</table>
 		</div>
         <div id="commentary">
