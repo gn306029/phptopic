@@ -63,7 +63,7 @@
                     }
                 })
             }else{
-                $('#imply').html("不得包含特殊字元");
+                $('#imply').html("不得包含特殊字元或中文字");
                 isInput[0] = false;
             }
         }else{
@@ -88,7 +88,7 @@
                 isInput[1] = true;
             }
         }else{
-            $('#passwordImply').html("不得包含特殊字元");
+            $('#passwordImply').html("不得包含特殊字元或中文字");
             isInput[1] = false;
         }
     }
@@ -127,21 +127,6 @@
 	 *
 	 *
 	 */
-    function checkspecial(val){
-        var toalarm = false;
-        var ch;
-        var stralarm = new Array("<",">",".","!","'");
-        for (var i=0;i<stralarm.length;i++){ //依序載入使用者輸入的每個字元
-            for (var j=0;j<val.length;j++)
-            {
-                ch=val.substr(j,1);
-                if (ch==stralarm[i]) //如果包含禁止字元
-                {
-                    return true;
-                }
-            } 
-        }
-    }
     $(document).ready(function() {
         $('#btn').click(function() {
             var input = true;
@@ -183,7 +168,7 @@
         })
         $("#REGISTER_JOB").change(function(){
             if(checkspecial($(this).val())){
-                $('#job_imply').html("不得包含特殊字元");
+                $('#job_imply').html("不得包含特殊字元或中文字");
                 isInput[4] = false;
             }else{
                 $('#job_imply').html("");
@@ -192,7 +177,7 @@
         })
         $("#REGISTER_NAME").change(function(){
             if(checkspecial($(this).val())){
-                $('#name_imply').html("不得包含特殊字元");
+                $('#name_imply').html("不得包含特殊字元或中文字");
                 isInput[5] = false;
             }else{
                 $('#name_imply').html("");
@@ -201,15 +186,15 @@
         })
         $("#REGISTER_PASSWORD").change(function(){
             if(checkspecial($(this).val())){
-                $('#password_Imply').html("不得包含特殊字元");
+                $('#password_Imply').html("不得包含特殊字元或中文字");
                 $('#passwordImply').html("");
                 if(checkspecial($("#DETERMIND_PASSWORD").val())){
-                    $('#password_Imply').html("不得包含特殊字元");
+                    $('#password_Imply').html("不得包含特殊字元或中文字");
                 }
                 isInput[1] = false;
             }else{
                 if(checkspecial($("#DETERMIND_PASSWORD").val())){
-                    $('#password_Imply').html("不得包含特殊字元");
+                    $('#password_Imply').html("不得包含特殊字元或中文字");
                     isInput[1] = false;
                 }else{
                     $('#password_Imply').html("");
@@ -219,7 +204,7 @@
         })
         $("#DETERMIND_PASSWORD").change(function(){
             if(checkspecial($(this).val())){
-                $('#passwordImply').html("不得包含特殊字元");
+                $('#passwordImply').html("不得包含特殊字元或中文字");
                 isInput[1] = false;
             }else{
                 $('#passwordImply').html("");
@@ -236,7 +221,7 @@
                         isInput[1] = true;
                     }
                 }else{
-                    $('#password_Imply').html("不得包含特殊字元");
+                    $('#password_Imply').html("不得包含特殊字元或中文字");
                     isInput[1] = false;
                 }
             }
