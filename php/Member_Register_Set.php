@@ -24,7 +24,7 @@
 
 		$MEMBER_ACCOUNT = $member_account;
 
-		$sql = "SELECT MEMBER_ACCOUNT FROM MEMBER WHERE MEMBER_ACCOUNT LIKE '".$MEMBER_ACCOUNT."'";
+		$sql = "SELECT MEMBER_ACCOUNT FROM MEMBER WHERE MEMBER_ACCOUNT = '".$MEMBER_ACCOUNT."'";
 		$result = mysqli_query($connection,$sql);
 		if(mysqli_num_rows($result) == 0){
 			//echo 是 Ajax 要抓的資料，我前台的 js 要用
