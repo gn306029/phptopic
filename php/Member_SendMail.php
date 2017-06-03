@@ -21,13 +21,7 @@ function send_email($user_name,$user_email,$email_title,$email_content){
 	$name=$user_name;
 	// 收件者的名稱or暱稱
 	$mail->From = $webmaster_email;
-	$regex = "/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i"; 
-	// Run the preg_match() function on regex against the email address
-	if (preg_match($regex, $email)) {
-	     echo $email . " is a valid email. We can accept it.";
-	} else { 
-	     echo $email . " is an invalid email. Please try again.";
-	} 
+
 
 	$mail->AddAddress($email,$name);
 	$mail->AddReplyTo($webmaster_email,"Squall.f");

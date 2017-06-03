@@ -28,12 +28,12 @@ try{
 	if(count($data) == 1){
 		try{
 			$a = send_email($data[0]['MEMBER_NAME'],$data[0]['MEMBER_EMAIL'],"您的密碼","密碼是 ".$data[0]['MEMBER_PASSWORD']);
-			echo $a;
+			echo "success";
 		}catch(Exception $e){
-			echo "寄信時出現錯誤，請洽管理員";
+			echo "err";
 		}		
 	}else{
-		echo "資料有誤";
+		echo "no data";
 	}
 }catch(Exception $e){
 	return $e->getMessage();

@@ -50,7 +50,13 @@
 							success:function(output){
 								setTimeout(function(){
 									$("body").loading('stop');
-									alert("寄信成功");
+									if(output=="err"){
+										alert("寄信時出現錯誤，請洽管理員");
+									}else if(output == "no data"){
+										alert("資料有誤");
+									}else if(output == "success"){
+										alert("寄信成功");
+									}
 								},500)
 							},
 							error: function (request, status, error) {
