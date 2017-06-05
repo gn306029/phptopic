@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     session_start();
 	/*
      * include 為產生下拉清單的 Php
@@ -46,16 +46,16 @@
     $data = $result;
     $actor_table = "<tr class='actor'>";
     $commentary_div = "";
-    $index = 1;
+    $index = 0;
     /*
      * 演員的Table表格
      *
      */
     foreach($actor as $row){
-		if($index%6!=0){
-            $actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
-		}else{
-			$actor_table .= "</tr><tr class='actor'><td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
+		$index++;
+        $actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
+		if($index%5==0){
+			$actor_table .="<tr class='actor'>";
 		}
     }
 	$actor_table.="</tr>";
@@ -81,17 +81,13 @@
 	     * 搜尋我的最愛資料
 	     *
 	     */
-		$f_array = array($_SESSION['userid']);
-		$favorite = sql_select("Select `video`.`VIDEO_ID` , `VIDEO_NAME` , `PHOTO` From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = ? ",$array);
-		$msg="";
-		foreach ($favorite as $row){
-			if($data[0]["VIDEO_ID"] == $row['VIDEO_ID'] ){
-				$msg="<input type='button' value='取消我的最愛' id='favorite' style='background-color: black;color: white;' onclick=\"favorite()\"/>";
-				break;
-			}else{
-				$msg="<input type='button' value='加入我的最愛' id='favorite' style='background-color:yellow;' onclick=\"favorite()\"/>";
-			}
-		}
+		$f_array = array($_SESSION['userid'],$data[0]["VIDEO_ID"]);
+		$favorite = sql_select("Select count(`video`.`VIDEO_ID`) From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = ? and `video`.`VIDEO_ID` = ?",$f_array);
+		if($favorite[0][0]=='1'){
+			$msg="<input type='button' value='取消我的最愛' id='favorite' style='background-color: black;color: white;' onclick=\"favorite()\"/>";
+		}else{
+			$msg="<input type='button' value='加入我的最愛' id='favorite' style='background-color:yellow;' onclick=\"favorite()\"/>";
+		}	
 	}
 ?>
 
@@ -125,7 +121,6 @@
 			})
 		})
 	})
-
 	//加入我的最愛
 	function favorite(){
 		$.ajax({

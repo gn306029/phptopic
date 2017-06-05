@@ -4,7 +4,7 @@
 	$MEMber_account = $_POST['MEMBER_ACCOUNT'];
 	$MEMber_password = $_POST['MEMBER_PASSWORD'];
 
-	$sql = "SELECT MEMBER_ID,MEMBER_ACCOUNT,MEMBER_PASSWORD, MEMBER_NAME ,MEMBER_LEVEL FROM `MEMBER` WHERE MEMBER_ACCOUNT = '".$MEMber_account."' AND MEMBER_PASSWORD = '".$MEMber_password."'";
+	$sql = "SELECT MEMBER_ID,MEMBER_ACCOUNT,MEMBER_PASSWORD, MEMBER_NAME ,MEMBER_LEVEL FROM `MEMBER` WHERE MEMBER_ACCOUNT LIKE '".$MEMber_account."' AND MEMBER_PASSWORD LIKE '".$MEMber_password."'";
 	mysqli_query ($connection,"SET NAMES UTF8"); 
 	$result = mysqli_query($connection,$sql);
 	$data = mysqli_fetch_array($result);

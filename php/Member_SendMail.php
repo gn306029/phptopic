@@ -21,8 +21,6 @@ function send_email($user_name,$user_email,$email_title,$email_content){
 	$name=$user_name;
 	// 收件者的名稱or暱稱
 	$mail->From = $webmaster_email;
-
-
 	$mail->AddAddress($email,$name);
 	$mail->AddReplyTo($webmaster_email,"Squall.f");
 	//這不用改

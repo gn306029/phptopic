@@ -21,7 +21,6 @@ function search_account_result($account,$email){
 	$result = $conn -> query($sql);
 	return $result;
 }
-
 try{
 	$result = search_account_result($_POST['username'],$_POST['email']);
 	$data = $result -> fetchAll();
@@ -38,5 +37,4 @@ try{
 }catch(Exception $e){
 	return $e->getMessage();
 }
-
 ?>

@@ -16,7 +16,6 @@
         $form_category .= "<input type=\"checkbox\" id=\"REGISTER_CATEGORY\" name=\"REGISTER_CATEGORY[]\" value='".$row["CATEGORY_ID"]."''>".$row['CATEGORY_NAME'];
         $index ++;
     }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -32,7 +31,7 @@
     </style>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script type="text/javascript" src="../js/checkspecial.js"></script>
+	<script type="text/javascript" src="../js/checkspecial.js"></script>
     <script type="text/javascript">
     /*
 	 * 檢查帳號是否重複
@@ -43,7 +42,7 @@
     function checkAccount() {
         var REGISTER_ACCOUNT = $('#REGISTER_ACCOUNT').val();
         if(REGISTER_ACCOUNT.length != 0){
-            if(!checkspecial(REGISTER_ACCOUNT) && !checkchinese(REGISTER_ACCOUNT)){
+            if(!checkspecial(REGISTER_ACCOUNT)&& !checkchinese(REGISTER_ACCOUNT)){
                 $.ajax({
                     url: "./Member_Information_Set.php",
                     data: {
@@ -63,7 +62,7 @@
                     }
                 })
             }else{
-                $('#imply').html("不得包含特殊字元或中文字");
+                $('#imply').html("不得包含特殊字元及中文字");
                 isInput[0] = false;
             }
         }else{
@@ -88,7 +87,7 @@
                 isInput[1] = true;
             }
         }else{
-            $('#passwordImply').html("不得包含特殊字元");
+            $('#passwordImply').html("不得包含特殊字元及中文字");
             isInput[1] = false;
         }
     }
@@ -122,11 +121,6 @@
             isInput[3] = false;
         }
     }
-	/*
-	 * 檢查表單是否遺漏以及格式是否正確
-	 *
-	 *
-	 */
     $(document).ready(function() {
         $('#btn').click(function() {
             var input = true;
@@ -168,7 +162,7 @@
         })
         $("#REGISTER_JOB").change(function(){
             if(checkspecial($(this).val())){
-                $('#job_imply').html("不得包含特殊字元");
+                $('#job_imply').html("不得包含特殊字元及中文字");
                 isInput[4] = false;
             }else{
                 $('#job_imply').html("");
@@ -177,7 +171,7 @@
         })
         $("#REGISTER_NAME").change(function(){
             if(checkspecial($(this).val())){
-                $('#name_imply').html("不得包含特殊字元");
+                $('#name_imply').html("不得包含特殊字元及中文字");
                 isInput[5] = false;
             }else{
                 $('#name_imply').html("");
@@ -186,15 +180,15 @@
         })
         $("#REGISTER_PASSWORD").change(function(){
             if(checkspecial($(this).val())){
-                $('#password_Imply').html("不得包含特殊字元");
+                $('#password_Imply').html("不得包含特殊字元及中文字");
                 $('#passwordImply').html("");
                 if(checkspecial($("#DETERMIND_PASSWORD").val())){
-                    $('#password_Imply').html("不得包含特殊字元");
+                    $('#password_Imply').html("不得包含特殊字元及中文字");
                 }
                 isInput[1] = false;
             }else{
                 if(checkspecial($("#DETERMIND_PASSWORD").val())){
-                    $('#password_Imply').html("不得包含特殊字元");
+                    $('#password_Imply').html("不得包含特殊字元及中文字");
                     isInput[1] = false;
                 }else{
                     $('#password_Imply').html("");
@@ -204,7 +198,7 @@
         })
         $("#DETERMIND_PASSWORD").change(function(){
             if(checkspecial($(this).val())){
-                $('#passwordImply').html("不得包含特殊字元");
+                $('#passwordImply').html("不得包含特殊字元及中文字");
                 isInput[1] = false;
             }else{
                 $('#passwordImply').html("");
@@ -221,7 +215,7 @@
                         isInput[1] = true;
                     }
                 }else{
-                    $('#password_Imply').html("不得包含特殊字元");
+                    $('#password_Imply').html("不得包含特殊字元及中文字");
                     isInput[1] = false;
                 }
             }

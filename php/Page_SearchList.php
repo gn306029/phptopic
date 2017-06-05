@@ -5,6 +5,10 @@
      *
      */
      include './Page_Search_Set.php';
+    /*
+     * 帳號與密碼的輸入框
+     *
+     */
 ?>
 <?php
     /*
@@ -13,6 +17,11 @@
      * limit 等於 null , 為計算資料總數用的 Sql
      *
      */
+	$db_host = 'db.mis.kuas.edu.tw';
+    $db_name = 's1104137130';
+    $db_user = 's1104137130';
+    $db_password = '1314520';
+    $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8";
     $conn = new PDO($dsn,$db_user,$db_password);
     function search_function($search,$category,$kind,$limit){
         /*
@@ -56,20 +65,19 @@
      *
      */
     if (isset($_GET['page'])) {
-        $now_pages = str_replace(    
-        array('!', '"', '#', '$', '%', '&', '\'', '(', ')', '*',    
-            '+', ', ', '-', '.', '/', ':', ';', '<', '=', '>',    
-            '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|',    
-            '}', '~', '；', '﹔', '︰', '﹕', '：', '，', '﹐', '、',    
-            '．', '﹒', '˙', '·', '。', '？', '！', '～', '‥', '‧',    
-            '′', '〃', '〝', '〞', '‵', '‘', '’', '『', '』', '「',    
-            '」', '“', '”', '…', '❞', '❝', '﹁', '﹂', '﹃', '﹄'),    
-        '',$_GET['page']);
+		$now_pages = str_replace(    
+			array('!', '"', '#', '$', '%', '&', '\'', '(', ')', '*',    
+				'+', ', ', '-', '.', '/', ':', ';', '<', '=', '>',    
+				'?', '@', '[', '\\', ']', '^', '_', '`', '{', '|',    
+				'}', '~', '；', '﹔', '︰', '﹕', '：', '，', '﹐', '、',    
+				'．', '﹒', '˙', '·', '。', '？', '！', '～', '‥', '‧',    
+				'′', '〃', '〝', '〞', '‵', '‘', '’', '『', '』', '「',    
+				'」', '“', '”', '…', '❞', '❝', '﹁', '﹂', '﹃', '﹄'),    
+				'',$_GET['page']);
         if(!is_numeric($now_pages)){
             $now_pages = 1;
         }
     }
-    
     /*
      * result 為要顯示的資料
      * count_search 為要計算總數的查詢
@@ -111,7 +119,7 @@
 	$table = "";
     foreach ($result as $row) {
         $table .= "<tr>";
-	$table .= "<td><div><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' height='100%'></a></div></td>";
+		$table .= "<td><div><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'><img src='".$row['PHOTO']."' height='100%'></a></div></td>";
         $table .= "<th><a href='./Page_Video.php?VIDEO_ID=".$row['VIDEO_ID']."'>".$row['VIDEO_NAME']."</th>";
         $table .= "<td>".$row['CATEGORY_NAME']."</td>";
         $table .= "<td>".$row['KIND_NAME']."</td>";
@@ -145,8 +153,8 @@
      */
     $category_table='';
     $category_table .= "<tr>";
-    $stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID='".addslashes($_GET['kind'])."'");
-    foreach($stmt as $row){ 
+	$stmt=$conn->query("SELECT DISTINCT A.CATEGORY_ID, B.CATEGORY_NAME FROM VIDEO A JOIN CATEGORY B ON A.CATEGORY_ID=B.CATEGORY_ID where a.KIND_ID='".addslashes($_GET['kind'])."'");    
+	foreach($stmt as $row){ 
         $category_table .= "<td><a href=./Page_SearchList.php?search=".$_GET['search']."&kind=".$_GET['kind']."&category=". $row['CATEGORY_ID']. ">". $row['CATEGORY_NAME']."</a></td>";
         $i++;
         if($i%10==0){

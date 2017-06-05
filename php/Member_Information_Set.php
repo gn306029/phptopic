@@ -104,7 +104,7 @@
              * 撈出所有影片 id 與名稱
              *
              */
-            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME` From `video`";
+            $sql = "SELECT `VIDEO_ID`,`VIDEO_NAME` From `video` order by `VIDEO_NAME`";
             $result = sql_select($sql,null);
             echo json_encode($result);
             break;
@@ -128,8 +128,8 @@
              * 這裡尚未做資料格式的檢查
              *
              */
-            $sql = "UPDATE `video` SET `VIDEO_NAME` = ?, `RELEASE_DATE` = ?, `LANGUAGE` = ?, `CATEGORY_ID` = ?, `REGION` = ?, `SCORE` = ?, `BUDGET` = ?, `BOXOFFICE` = ?, `PLAYTIME` = ?, `KIND_ID` = ?, `PHOTO` = ?, `STORY` = ?, `TRAIL` = ? WHERE `VIDEO_ID` = ?";
-            $array = array($_POST['video_name'],$_POST['release_date'],$_POST['language'],$_POST['add_category'],$_POST['region'],$_POST['score'],$_POST['budget'],$_POST['boxoffice'],$_POST['playtime'],$_POST['add_kind'],$_POST['photo'],$_POST['story'],$_POST['trail'],$_POST['video_id']);
+            $sql = "UPDATE `video` SET `VIDEO_NAME` = ?, `RELEASE_DATE` = ?, `LANGUAGE` = ?, `CATEGORY_ID` = ?, `REGION` = ?, `BUDGET` = ?, `BOXOFFICE` = ?, `PLAYTIME` = ?, `KIND_ID` = ?, `PHOTO` = ?, `STORY` = ?, `TRAIL` = ? WHERE `VIDEO_ID` = ?";
+            $array = array($_POST['video_name'],$_POST['release_date'],$_POST['language'],$_POST['add_category'],$_POST['region'],$_POST['budget'],$_POST['boxoffice'],$_POST['playtime'],$_POST['add_kind'],$_POST['photo'],$_POST['story'],$_POST['trail'],$_POST['video_id']);
             try{
                 sql_exec($sql,$array);
                 echo "success";
@@ -195,11 +195,30 @@
             $sql = "INSERT INTO `actor`(`ACTOR_NAME`, `ACTOR_Birth`, `ACTOR_HISTORY`, `ACTOR_PHOTO`, `ACTOR_FB`) VALUES (?,?,?,?,?)";
             $array = array($_POST['actor_name'],$_POST['actor_birth'],$_POST['actor_history'],$_POST['actor_photo'],$_POST['actor_fb']);
 			if(gettype(sql_exec($sql,$array)) != false){
-                echo "success";
+				$sql = "SELECT MAX(ACTOR_ID) FROM actor";
+				$result = sql_select($sql,null);
+				echo json_encode($result);
             }else{
                 echo "fail";
             }
             break;
+		case 'add_new_actorlist':
+			/*
+			 * 新增演員清單
+             *
+             */
+			if(!(isset($_POST['video_list']))){
+				echo "success";
+				break;
+			}
+			$actor_list=$_POST['video_list'];
+			foreach($actor_list as $row){
+				$sql = "INSERT INTO `actor_list`(`ACTOR_ID`, `VIDEO_ID`) VALUES (?,?)";
+				$array = array($_POST['actorid'],$row);
+				$result = sql_exec($sql,$array);
+			}
+            echo "success" ;
+            break;	  
 		case 'get_actor':
             /*
              * 撈出所有演員 id 與名稱
@@ -215,14 +234,38 @@
              * 若沒有選擇演員就直接回傳 false
              */
             if($_POST['actor_id'] != 0){
-                $sql = "SELECT * From `actor` Where `ACTOR_ID` = ?";
-                $array = array($_POST['actor_id']);
-                $result = sql_select($sql,$array);
-                echo json_encode($result);
+                $sql = "SELECT a.`ACTOR_ID`,`ACTOR_NAME`,`ACTOR_Birth`,`ACTOR_HISTORY`,`ACTOR_PHOTO`,`ACTOR_FB`,c.`VIDEO_ID`,`VIDEO_NAME` FROM `actor`as a left join `actor_list`as b on a.actor_id=b.actor_id LEFT join video as c on b.video_id=c.VIDEO_ID where a.actor_id= ? ";
+                $array=array($_POST['actor_id']);
+				$result = sql_select($sql,$array);
+                echo json_encode($result) ;
             }else{
                 echo "false";
             }
             break;
+		case 'do_actor_list':
+            /*
+             * 取得actor_list
+             * 
+             */
+			try{
+				$sql = "DELETE FROM `actor_list` WHERE `ACTOR_ID`= ? ";
+				$array=array($_POST['actor_id']);
+				$result = sql_exec($sql,$array);
+				if(!(isset($_POST['video_list']))){
+					echo "success";
+					break;
+				}
+				$new_video_id=$_POST['video_list'];
+				foreach($new_video_id as $row){
+					$sql = "INSERT INTO `actor_list`(`ACTOR_ID`, `VIDEO_ID`) VALUES (?,?)";
+					$array=array($_POST['actor_id'],$row);
+					$result = sql_exec($sql,$array);
+				}
+				echo "success";
+			}catch(Execption $e){
+                echo $e -> getMessage();
+            }
+			break;
 		case 'update_actor':
             /*
              * 更新演員資料
@@ -253,7 +296,7 @@
             }catch(Exception $e){
                 echo $e -> getMessage();
             }
-            break;
+			break;
         case 'checkaccount':
             /*
              * 檢查帳號是否重複
@@ -264,8 +307,6 @@
             $result = sql_select($sql,$array);
             echo json_encode($result);
             break;
-
-
     }
 
 ?>
