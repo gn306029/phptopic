@@ -4,7 +4,7 @@
      * include 為產生下拉清單的 Php
      *
      */
-    include './Page_Search_Set.php';
+    include './Page_View_Set.php';
 ?>
 <?php
     
@@ -27,67 +27,69 @@
      * 尋找電影詳細資訊
      *
      */
-    $array = array($_GET['VIDEO_ID']);
-    $result = sql_select("Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`REGION`,`SCORE`,`RELEASE_DATE`,`PLAYTIME`,`BUDGET`,`BOXOFFICE`,`PLAYTIME`,`PHOTO`,`STORY`,`TRAIL`From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_ID` = ?",$array);
-    /*
-     * 尋找演員
-     *
-     */
-    $actor = sql_select("Select `actor`.`ACTOR_ID`,`ACTOR_NAME`,`ACTOR_PHOTO` From `actor` Join `actor_list` On `actor`.`ACTOR_ID` = `actor_list`.`ACTOR_ID` Where `VIDEO_ID` = ?",$array);
-    /*
-     * 尋找該部電影評論
-     *
-     */
-    $commentary = sql_select("Select `MEMBER_NAME` , `COMMENT_TIME` , `COMMENTARY` , `COMMENTARY_ID` From `commentary` Join `member` On `commentary`.`MEMBER_ID` = `member`.`MEMBER_ID` Where `VIDEO_ID` = ? ",$array);
-	/*
-     * data 為電影資料
-     *
-     */
-    $data = $result;
-    $actor_table = "<tr class='actor'>";
-    $commentary_div = "";
-    $index = 0;
-    /*
-     * 演員的Table表格
-     *
-     */
-    foreach($actor as $row){
-		$index++;
-        $actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
-		if($index%5==0){
-			$actor_table .="<tr class='actor'>";
-		}
-    }
-	$actor_table.="</tr>";
-    /*
-     * 評論 table
-     *
-     */
-    $comment_data = $commentary;
-    if(empty($comment_data[0])){
-        $commentary_div = "<div class='member_message'>目前暫無評論</div>";
-    }else{
-        $index = 1;
-        foreach ($comment_data as $row) {
-            $commentary_div .= "<div class='member_message'>#".$index."   </br>";
-            $commentary_div .= "Dear ".$row[0]." says：</br>";
-            $commentary_div .= "留言時間：".$row[1]."</br>";
-            $commentary_div .= $row[2]."</div><br>";
-            $index++;
-        }
-    }
-	if(isset($_SESSION['username'])){
+	 if(isset($_GET['VIDEO_ID'])){
+		$array = array($_GET['VIDEO_ID']);		 
+		$result = sql_select("Select `VIDEO_ID`,`VIDEO_NAME`,`CATEGORY_NAME`,`KIND_NAME`,`LANGUAGE`,`REGION`,`SCORE`,`RELEASE_DATE`,`PLAYTIME`,`BUDGET`,`BOXOFFICE`,`PLAYTIME`,`PHOTO`,`STORY`,`TRAIL`From `video` Join `kind` On `video`.`KIND_ID` = `kind`.`KIND_ID` Join `category` On `video`.`CATEGORY_ID` = `category`.`CATEGORY_ID` Where `VIDEO_ID` = ?",$array);
 		/*
-	     * 搜尋我的最愛資料
-	     *
-	     */
-		$f_array = array($_SESSION['userid'],$data[0]["VIDEO_ID"]);
-		$favorite = sql_select("Select count(`video`.`VIDEO_ID`) From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = ? and `video`.`VIDEO_ID` = ?",$f_array);
-		if($favorite[0][0]=='1'){
-			$msg="<input type='button' value='取消我的最愛' id='favorite' style='background-color: black;color: white;' onclick=\"favorite()\"/>";
+		 * 尋找演員
+		 *
+		 */
+		$actor = sql_select("Select `actor`.`ACTOR_ID`,`ACTOR_NAME`,`ACTOR_PHOTO` From `actor` Join `actor_list` On `actor`.`ACTOR_ID` = `actor_list`.`ACTOR_ID` Where `VIDEO_ID` = ?",$array);
+		/*
+		 * 尋找該部電影評論
+		 *
+		 */
+		$commentary = sql_select("Select `MEMBER_NAME` , `COMMENT_TIME` , `COMMENTARY` , `COMMENTARY_ID` From `commentary` Join `member` On `commentary`.`MEMBER_ID` = `member`.`MEMBER_ID` Where `VIDEO_ID` = ? ",$array);
+		/*
+		 * data 為電影資料
+		 *
+		 */
+		$data = $result;
+		$actor_table = "<tr class='actor'>";
+		$commentary_div = "";
+		$index = 0;
+		/*
+		 * 演員的Table表格
+		 *
+		 */
+		foreach($actor as $row){
+			$index++;
+			$actor_table .= "<td><div><a href='Page_Actor.php?actor_id=$row[0]'/><img src='".$row[2]."' height='100%'></a></div><br><a href='Page_Actor.php?actor_id=$row[0]'/>$row[1]</a></td>";
+			if($index%5==0){
+				$actor_table .="<tr class='actor'>";
+			}
+		}
+		$actor_table.="</tr>";
+		/*
+		 * 評論 table
+		 *
+		 */
+		$comment_data = $commentary;
+		if(empty($comment_data[0])){
+			$commentary_div = "<div class='member_message'>目前暫無評論</div>";
 		}else{
-			$msg="<input type='button' value='加入我的最愛' id='favorite' style='background-color:yellow;' onclick=\"favorite()\"/>";
-		}	
+			$index = 1;
+			foreach ($comment_data as $row) {
+				$commentary_div .= "<div class='member_message'>#".$index."   </br>";
+				$commentary_div .= "Dear ".$row[0]." says：</br>";
+				$commentary_div .= "留言時間：".$row[1]."</br>";
+				$commentary_div .= $row[2]."</div><br>";
+				$index++;
+			}
+		}
+		if(isset($_SESSION['username'])){
+			/*
+			 * 搜尋我的最愛資料
+			 *
+			 */
+			$f_array = array($_SESSION['userid'],$data[0]["VIDEO_ID"]);
+			$favorite = sql_select("Select count(`video`.`VIDEO_ID`) From `video` Join `favorite` On `video`.`VIDEO_ID` = `favorite`.`VIDEO_ID` Where `MEMBER_ID` = ? and `video`.`VIDEO_ID` = ?",$f_array);
+			if($favorite[0][0]=='1'){
+				$msg="<input type='button' value='取消我的最愛' id='favorite' style='background-color: black;color: white;' onclick=\"favorite()\"/>";
+			}else{
+				$msg="<input type='button' value='加入我的最愛' id='favorite' style='background-color:yellow;' onclick=\"favorite()\"/>";
+			}	
+		}
 	}
 ?>
 
@@ -124,8 +126,9 @@
 	//加入我的最愛
 	function favorite(){
 		$.ajax({
-			url:"./Member_Favorite.php",
+			url:"./Member_Information_Set.php",
 			data:{
+				action:"video_favorite",
 				videoid:$("#vid").val()
 			},
 			type:"post",
@@ -248,75 +251,9 @@
 
 <body>
     <div id="main">
-        <div id="header">
-            <table>
-                <tr>
-                    <td id="logo">
-                        <a href="../index.php"><img src="../PIC/top/logo.png" width="200px"></a>
-                    </td>
-                    <!--搜尋列-->
-                    <td id="search">
-                        <form name="search" action="../php/Page_SearchList.php" method="GET">
-                            <input type="text" name="search" />
-                            <select name="kind">
-                                <?php
-                                    echo $kind;
-                                ?>
-                            </select>
-                            <select name="category">
-                                <?php
-                                    echo $category;
-                                ?>
-                            </select>
-                            <img src="../PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px"></form>
-                    </td>
-                    <!--帳號密碼-->
-                    <td id="memberlogin">
-                        <?php
-                            //判斷登入狀態
-                            if(isset($_SESSION["username"])){
-                                echo $_SESSION["username"].",您好<br>";
-								echo " <a href=./Member_Manager.php><img src=../PIC/top/manager-1.png name=manager width=150px></a>　　";
-								echo "<a href='./Member_Logout.php'/><img src=\"../PIC/top/logout.png\" width=\"70px\"></a>";
-                            }else{
-                                echo $login_form;   
-                            }
-                        ?>
-                    </td>
-                    <!--註冊-->
-                    <td id="memberlogin2">
-                        <?php
-                            //判斷登入狀態
-                            if(isset($_SESSION["username"])){
-                               
-                            }else{
-                                echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
-                                echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
-                            }
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td align="center">
-                        <a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-                        <a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-                        <a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
-                        <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
-                    </td>
-                    <td></td>
-                    <td>
-                        <?php
-                            //判斷登入狀態
-                            if(!isset($_SESSION["username"])){
-                                echo "<a href=\"./Member_Forget.php\"><img src=\"../PIC/top/forget.png\" width=\"130px\" /></a>";
-                            }
-                        ?>
-                    </td>
-                </tr>
-            </table>
-        </div>
-		<br>
+        <?php
+        	echo $div_header;
+        ?>
         <div id="context">
 			<table>
 				<?php
@@ -389,15 +326,9 @@
 			?>
 			</div>
         </div>
-		<footer><table><tr>
-				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
-				<td><a href="./About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="../PIC/footer/dev.png"></a></td>
-				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
-				
-			</tr>
-			<tr>
-				<td colspan=3>© 2017 IMDB,KUASMIS</td>
-			</tr></table></footer>
+		<?php
+			echo $footer;
+		?>
     </div>
 </body>
 

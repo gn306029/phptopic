@@ -6,6 +6,7 @@
 	session_start();
 	unset($_SESSION['username']);
 	unset($_SESSION['userid']);
-	header("Location: ../index.php");
+	unset($_SESSION['level']);
+	header("Location: ./index.php");
 	echo "<script>alert('已登出');</script>";
 ?>

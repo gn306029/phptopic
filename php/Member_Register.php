@@ -5,7 +5,7 @@
 	 *
 	 *
 	 */
-    include './Page_Search_Set.php';
+    include './Page_View_Set.php';
     $form_category = "";
     $index = 0;
     foreach ($Allcategory as $row) {
@@ -16,6 +16,9 @@
         $form_category .= "<input type=\"checkbox\" id=\"REGISTER_CATEGORY\" name=\"REGISTER_CATEGORY[]\" value='".$row["CATEGORY_ID"]."''>".$row['CATEGORY_NAME'];
         $index ++;
     }
+	if(isset($_SESSION['username'])){
+		echo "<script>alert('你註冊過了 你他媽滾回去');location.href='../index.php';</script>" ;
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -226,74 +229,9 @@
 
 <body>
     <div id="main">
-        <div id="header">
-            <table>
-                <tr>
-                    <td id="logo">
-                        <a href="../index.php"><img src="../PIC/top/logo.png" width="200px"></a>
-                    </td>
-                    <td id="search">
-                            <form name="search" action="../php/Page_SearchList.php" method="GET">
-                                <input type="text" name="search" />
-                                <select name="kind">
-                                <?php
-                                    echo $kind;
-                                ?>
-                                </select>
-                                <select name="category">
-                                <?php
-                                    echo $category;
-                                ?>
-                                </select>
-                                <img src="../PIC/top/searchbutton.png" onclick="document.search.submit()" width="42px">
-                            </form>
-                    </td>
-                    <!--帳號密碼-->
-                    <td id="memberlogin">
-                        <?php
-                            //判斷登入狀態
-                            if(isset($_SESSION["username"])){
-                                echo $_SESSION["username"].",您好<br>";
-								echo " <a href=./Member_Manager.php><img src=../PIC/top/manager-1.png name=manager width=150px></a>　　";
-								echo "<a href='./Member_Logout.php'/><img src=\"../PIC/top/logout.png\" width=\"70px\"></a>";
-                            }else{
-                                echo $login_form;   
-                            }
-                        ?>
-                    </td>
-                    <!--註冊-->
-                    <td id="memberlogin2">
-                        <?php
-                            //判斷登入狀態
-                            if(isset($_SESSION["username"])){
-                               
-                            }else{
-                                echo "<a href=\"./Member_Register.php\"><img src=\"../PIC/top/register.png\" width=\"70px\"></a><br>";
-                                echo "<img src=\"../PIC/top/login.png\" onclick=\"document.memberlogin.submit()\" width=\"70px\"><br>";    
-                            }
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td align="center">
-                        <a href="Page_SearchList.php?search=&kind=1&category=0" onMouseOut="document.movie.src='../PIC/top/movie.png'" onMouseOver="document.movie.src='../PIC/top/movie-1.png'"><img src="../PIC/top/movie.png" name="movie" width="70px"></a> 
-                        <a href="Page_SearchList.php?search=&kind=3&category=0" onMouseOut="document.drama.src='../PIC/top/drama.png'" onMouseOver="document.drama.src='../PIC/top/drama-1.png'"><img src="../PIC/top/drama.png" name="drama" width="70px"></a> 
-                        <a href="Page_SearchList.php?search=&kind=2&category=0" onMouseOut="document.tvshow.src='../PIC/top/tvshow.png'" onMouseOver="document.tvshow.src='../PIC/top/tvshow-1.png'"><img src="../PIC/top/tvshow.png" name="tvshow" width="70px"></a> 
-                        <a href="Page_ActorList.php" onMouseOut="document.actor.src='../PIC/top/actor.png'" onMouseOver="document.actor.src='../PIC/top/actor-1.png'"><img src="../PIC/top/actor.png" name="actor" width="70px"></a>
-                    </td>
-                    <td></td>
-                    <td>
-                        <?php
-                            //判斷登入狀態
-                            if(!isset($_SESSION["username"])){
-                                echo "<a href=\"./Member_Forget.php\"><img src=\"../PIC/top/forget.png\" width=\"130px\" /></a>";
-                            }
-                        ?>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <?php
+            echo $div_header;
+        ?>
         <div id="context">
             <form id="register_form">
                 <p> 　帳　　號　：
@@ -329,15 +267,9 @@
 				<input type="button" id="btn" name="button" value="註冊" />
 			</p>
         </div>
-		<footer><table><tr>
-				<td><a href="./About.php?action=Me"><img height="36" border="0" alter="關於" src="../PIC/footer/about.png"></a></td>
-				<td><a href="./About.php?action=Dev"><img height="36" border="0" alter="開發人員" src="../PIC/footer/dev.png"></a></td>
-				<td><div><a href="https://line.me/R/ti/p/%40gib2079k"><img height="36" border="0" alt="加入好友" src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png"></a></div></td>
-				
-			</tr>
-			<tr>
-				<td colspan=3>© 2017 IMDB,KUASMIS</td>
-			</tr></table></footer>
+		<?php
+            echo $footer;
+        ?>
     </div>
 </body>
 

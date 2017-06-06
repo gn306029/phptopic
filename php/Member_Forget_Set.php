@@ -22,17 +22,19 @@ function search_account_result($account,$email){
 	return $result;
 }
 try{
-	$result = search_account_result($_POST['username'],$_POST['email']);
-	$data = $result -> fetchAll();
-	if(count($data) == 1){
-		try{
-			$a = send_email($data[0]['MEMBER_NAME'],$data[0]['MEMBER_EMAIL'],"您的密碼","密碼是 ".$data[0]['MEMBER_PASSWORD']);
-			echo "success";
-		}catch(Exception $e){
-			echo "err";
-		}		
-	}else{
-		echo "no data";
+	if(isset($_POST['username'],$_POST['email'])){
+		$result = search_account_result($_POST['username'],$_POST['email']);
+		$data = $result -> fetchAll();
+		if(count($data) == 1){
+			try{
+				$a = send_email($data[0]['MEMBER_NAME'],$data[0]['MEMBER_EMAIL'],"您的密碼","密碼是 ".$data[0]['MEMBER_PASSWORD']);
+				echo "success";
+			}catch(Exception $e){
+				echo "err";
+			}		
+		}else{
+			echo "no data";
+		}
 	}
 }catch(Exception $e){
 	return $e->getMessage();
